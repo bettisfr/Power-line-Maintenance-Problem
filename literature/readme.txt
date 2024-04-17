@@ -1,0 +1,1 @@
+La directory contiene i nostri articoli correlati al problema di partenza, in cui i droni posso trasportare un solo pacco alla volta, e nuove soluzioni in cui i droni hanno capacità estese (numero di pacchi, ricarica, etc.).
