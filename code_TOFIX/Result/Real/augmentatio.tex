@@ -1,0 +1,82 @@
+% \documentclass[border=10pt]{standalone}
+\documentclass[border={-5pt -4pt 0pt 0pt},tikz]{standalone}
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{scaled x ticks=false}
+
+\pgfplotsset{width=6.5cm, compat=1.6}
+
+\begin{document}
+	
+
+	\begin{tikzpicture}
+	
+		\begin{groupplot}[
+		    group style={
+		        group size=2 by 2,
+		        horizontal sep = 1 cm, 
+                vertical sep = 1.5 cm
+            }, 
+			legend columns=1,
+			legend style={
+				cells={anchor=west},
+				legend pos=south east,
+				legend style={font=\tiny},
+				at={(2.75,0.35)}
+			},
+			xlabel={Day},
+			ylabel={ratio},
+			every axis plot/.append style={thick},
+			xmajorgrids, ymajorgrids,
+			width=5.5cm, height=5.5cm,
+			xtick={0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+			ytick={0, 0.2, ..., 1.2},
+			xticklabels={1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+			y label style={at={(-0.15,0.5)}},
+			x label style={at={(0.5,-0.065)}},
+            xmin=-1, xmax=10, ymin=0.18, ymax=1.05,
+		]
+		
+		
+
+		
+		
+
+		%m=5
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title={$m=5, n=50$},
+		]
+
+		\addplot +[ blue, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+			table[x=index, y=Col-M_mean, y error=Col-M_std, col sep=comma]{plots/aggregati5_50.csv};
+		\addlegendentry{\textsc{Col-M}}
+		\addplot +[ orange, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		  table[x=index, y=Col-M-na_mean, y error=Col-M_std, col sep=comma]{plots/aggregati5_50.csv};
+		\addlegendentry{\textsc{Col-M-na}}
+	
+
+			
+			
+			
+		
+		
+		%m=5
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title={$m=5, n=100$},
+		]
+
+		\addplot +[ blue, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+			table[x=index, y=Col-M_mean, y error=Col-M_std, col sep=comma]{plots/aggregati5_100.csv};
+		
+		\addplot +[ orange, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		 table[x=index, y=Col-M-na_mean, y error=Col-M_std, col sep=comma]{plots/aggregati5_100.csv};
+		
+		
+		
+		\end{groupplot}
+	\end{tikzpicture}
+\end{document}

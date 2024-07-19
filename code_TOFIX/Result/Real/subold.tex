@@ -1,0 +1,151 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{Brief Article}
+\author{The Author}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+In this section, we focus on the case of a single drone, i.e., \(k=1\), and we show that a simple greedy hill-climbing approach (Algorithm~\ref{alg:submodular-greedy}) gives a constant factor approximation to the problem of maximizing \prob.
+To give a lower bound on the approximation ratio of Algorithm~\ref{alg:submodular-greedy}, we show that the objective function $\mathcal{P}(S)$ is \emph{monotone and submodular}: For a ground set $N$, a function $z:2^N\rightarrow \R$ is submodular if for any pair of sets $S\subseteq T \subseteq N$ and for any element $e\in N\setminus T$, $z(S\cup\{e\}) - z(S) \geq z(T\cup \{e\}) - z(T)$.
+Then, since we have an additive cost constraints function, we can exploit a known result on submodular function optimization~\cite{sviridenko2004note}.
+Given a finite set $N$, an integer $k'$, two non-decreasing real-valued functions $z$ and $c$ defined on the set of subsets of $N$, the problem of finding a set $S\subseteq N$ such that $c(S)\leq k'$ and $z(S)$ is maximum can be $1-\frac{1}{e}$ approximated by starting with the empty set and repeatedly adding the element that maximizes the ratio between the reward gained and the cost, i.e., \(\frac{z(S\cup\{x\}) - z(S)}{c(\{x\})}\), if $z$ is monotone and submodular.
+%\federico{forse e' venuta un po' ``brodosa''. Potremmo pensare di tagliare/accorciare/spostare queste cose sopra.}
+
+
+\begin{theorem}
+Function \(\mathcal{P}(S)\) is monotone and submodular with respect to any feasible solution for \prob.
+\end{theorem}
+\begin{proof}
+
+Let us first note that, given a solution \(S\), it is not possible to add an interval \(\bar{I}\) if it is not compatible with at least one other interval in \(S\), i.e., \(\exists I_j \in S\text{ s.t. } \bar{I} \cap I_j \neq \emptyset\).
+Thus, if \(\bar{I}\) is not compatible \(\mathcal{P}(S \cup \{\bar{I}\}) = \mathcal{P}(S)\) since it can not be added to the solution.
+Moreover, in the following we make use of the observation that, by definition, \(\mathcal{P}(S\cup\{\bar{I}\}) = \mathcal{P}(S) + p_{\bar{I}}\) for any set \(S\) and interval \(\bar{I}\).
+
+
+To prove that \(\mathcal{P}(S)\) is monotone, we prove that for each interval \(\bar{I}\in I\) and solution \(S \subseteq I\) we have 
+\(
+\mathcal{P}(S) \le \mathcal{P}(S \cup \{\bar{I}\})
+\).
+
+
+We first notice that there are two possible cases depending on the compatibility of interval \(\bar{I}\) w.r.t. to the solution set \(S\).
+Namely, if there exists an interval \(I_j \in S\) such that the intersection is not empty, i.e., \(\bar{I} \cap I_j \neq \emptyset\),then we have
+\( \mathcal{P}(S) \le \mathcal{P}(S \cup \{\bar{I}\}) = \mathcal{P}(S)\).
+Otherwise we have that
+% \begin{align*}
+% \mathcal{P}(S) &\le \mathcal{P}(S \cup \{\bar{I}\}) = \mathcal{P}(S) + p_{\bar{I}}
+% \\
+% 0 &\le p_{\bar{I}}
+% \end{align*}
+\(
+\mathcal{P}(S) \le \mathcal{P}(S \cup \{\bar{I}\}) = \mathcal{P}(S) + p_{\bar{I}}
+\), thus \(0 \le p_{\bar{I}}\) which is always true.
+
+
+To prove that \(\mathcal{P}(S)\) is submodular, we prove that for any two solutions \(S,T\) such that \(S\subseteq T\) and for any interval \(I_j \in I\setminus T\), it holds:
+\[
+ \mathcal{P}(S\cup\{\bar{I}\}) - \mathcal{P}(S) \geq \mathcal{P}(T\cup \{\bar{I}\}) - \mathcal{P}(T).
+\]
+
+We analyze the following cases:
+\begin{itemize}
+\item If there not exists an interval \(I_j \in T\) such that \(\bar{I} \cap I_j \neq \emptyset\). 
+% \begin{align*}
+% \mathcal{P}(S\cup\{\bar{I}\}) - \mathcal{P}(S) &\geq \mathcal{P}(T\cup \{\bar{I}\}) - \mathcal{P}(T)
+% \\
+% p_{\bar{I}} &\geq p_{\bar{I}}
+% \end{align*}
+\(
+\mathcal{P}(S\cup\{\bar{I}\}) - \mathcal{P}(S) \geq \mathcal{P}(T\cup \{\bar{I}\}) - \mathcal{P}(T)
+\), thus \(p_{\bar{I}} \geq p_{\bar{I}}\) which is always true.
+
+\item If there not exists an interval  \(u \in T\setminus S\) such that \(\bar{I} \cap I_j \neq \emptyset\)
+% \begin{align*}
+% \mathcal{P}(S\cup\{\bar{I}\}) - \mathcal{P}(S) &\geq \mathcal{P}(T\cup \{\bar{I}\}) - \mathcal{P}(T)
+% \\
+% p_{\bar{I}} \geq 0
+% \end{align*}
+\(
+\mathcal{P}(S\cup\{\bar{I}\}) - \mathcal{P}(S) \geq \mathcal{P}(T\cup \{\bar{I}\}) - \mathcal{P}(T)
+\), thus \(p_{\bar{I}} \geq 0\) which is always true.
+
+\item If there not exists an interval  \(u \in S\) such that \(\bar{I} \cap I_j \neq \emptyset\)
+\(
+0 = \mathcal{P}(S\cup\{\bar{I}\}) - \mathcal{P}(S) \geq \mathcal{P}(T\cup \{\bar{I}\}) - \mathcal{P}(T) = 0
+\)
+\end{itemize}
+\end{proof}
+
+\begin{corollary}
+Algorithm~\ref{alg:submodular-greedy} provides a $\left(1-\frac{1}{e}\right)$-approximation for \prob.
+\end{corollary}
+
+\begin{algorithm}[ht]
+	$S \gets \emptyset$\;
+	\While{$ c(S) \le B $} {
+		$\bar{I} \gets \argmax_{I_i \in I \setminus S} \frac{p_i}{c(v_i)}$\;
+		
+		\If{$ c(S \cup \bar{I}) \le B \land \bar{I} \cap I_j = \emptyset\; \forall I_j \in S$ } {
+			$S \gets S \cup \bar{I}$\;
+		}
+	}
+	\Return{$S$}
+	\caption{\apxs}
+	\label{alg:submodular-greedy}
+\end{algorithm}
+
+\end{document}

@@ -1,0 +1,125 @@
+\documentclass[border={10pt},tikz]{standalone}
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\usepackage{pgfplotstable}
+\usepackage{siunitx}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{scaled x ticks=false}
+
+\pgfplotsset{width=6.5cm, compat=1.6}
+\definecolor{RYB6}{RGB}{253, 180, 98}
+\begin{document}
+	
+
+	\begin{tikzpicture}
+	
+		\begin{groupplot}[
+		    group style={
+		        group size=3 by 2,
+		        horizontal sep = 1 cm, 
+                vertical sep = 1.5 cm
+            }, 
+			legend columns=1,
+			legend style={
+				cells={anchor=west},
+				legend pos=south east,
+				legend style={font=\tiny},
+				at={(3.95,0.35)}
+			},
+			xlabel={\#drones},
+			ylabel={reward (\si[per-mode=symbol]{\kilo\joule})},
+			every axis plot/.append style={thick},
+			xmajorgrids, ymajorgrids,
+			xtick={0, 1, 2,3,4,5,6,7,8,9},
+			xtick distance={100},
+			width=0.65\textwidth,
+			%ytick={0, 0.1, ..., 1.2},
+			xticklabels={ $\Sigma_1$, $\Sigma_2$,$\Sigma_3$,$\Sigma_4$,$\Sigma_5$,$\Sigma_6$,$\Sigma_7$,$\Sigma_8$,$\Sigma_9$,$\Sigma_{10}$},
+			y label style={at={(-0.15,0.5)}},
+            		xmin=-1, xmax=11, ymin=0.18,
+		]
+		
+		
+		%first row
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title=\footnotesize{$d_s=\SI[per-mode=symbol]{10}{\metre\per\second}, n=25$},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			y label style={yshift=0.45cm},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%ymin=-0.05, ymax=1.05,
+			%ytick={0, 0.1, ..., 1.2},
+		]
+			
+		
+
+		\addplot +[RYB6, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		table[x=index, y=opt_reward, col sep=comma]{raw_s10_p25_b5000.csv};
+		\addlegendentry{\textsc{Opt}}
+		
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title=\footnotesize{$d_s=\SI[per-mode=symbol]{10}{\metre\per\second}, n=50$},
+			%ymin=-0.05, ymax=1.05,
+			%ytick={0, 0.1, ..., 1.2},
+		]
+			
+		
+		
+		\addplot +[RYB6, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		table[x=index, y=opt_reward, col sep=comma]{raw_s10_p50_b5000.csv};
+		
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title=\footnotesize{$d_s=\SI[per-mode=symbol]{10}{\metre\per\second}, n=75$},
+			%ymin=-0.05, ymax=1.05,
+			%ytick={0, 0.1, ..., 1.2},
+		]
+			
+
+		
+		\addplot +[RYB6, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		table[x=index, y=opt_reward, col sep=comma]{raw_s10_p75_b5000.csv};
+		%second row
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title=\footnotesize{$d_s=\SI[per-mode=symbol]{20}{\metre\per\second}, n=25$},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			y label style={yshift=0.45cm},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%ymin=-0.05, ymax=1.05,
+			%ytick={0, 0.1, ..., 1.2},
+		]
+			
+		
+		
+		\addplot +[RYB6, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		table[x=index, y=opt_reward, col sep=comma]{raw_s20_p25_b5000.csv};
+		\addlegendentry{\textsc{Opt}}
+		
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title=\footnotesize{$d_s=\SI[per-mode=symbol]{20}{\metre\per\second}, n=50$},
+			%ymin=-0.05, ymax=1.05,
+			%ytick={0, 0.1, ..., 1.2},
+		]
+			
+		
+		
+		\addplot +[RYB6, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		table[x=index, y=opt_reward, col sep=comma]{raw_s20_p50_b5000.csv};
+
+		\nextgroupplot[
+		    title style={yshift=-2ex},
+			title=\footnotesize{$d_s=\SI[per-mode=symbol]{20}{\metre\per\second}, n=75$},
+			%ymin=-0.05, ymax=1.05,
+			%ytick={0, 0.1, ..., 1.2},
+		]
+			
+		
+		
+		\addplot +[RYB6, solid, mark options={scale=0.75}, smooth, error bars/.cd, y fixed, y dir=both, y explicit] 
+		table[x=index, y=opt_reward, col sep=comma]{raw_s20_p75_b5000.csv};
+		\end{groupplot}
+	\end{tikzpicture}
+\end{document}
