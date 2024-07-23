@@ -1,6 +1,4 @@
 #include "algorithms.h"
-#include <vector>
-#include <unordered_set>
 
 algorithms::algorithms(deployment *m_dep) {
     dep = m_dep;
@@ -51,7 +49,3 @@ solution algorithms::greedy_ending_selection() {
 solution algorithms::greedy_reward_selection() {
     return solution();
 }
-
-
-
-

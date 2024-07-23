@@ -1,5 +1,4 @@
 #include <random>
-#include <algorithm>
 
 #include "deployment.h"
 

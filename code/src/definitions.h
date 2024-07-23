@@ -1,13 +1,11 @@
-#ifndef TOSN_DEFINITIONS_H
-#define TOSN_DEFINITIONS_H
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #include <iostream>
 #include <iomanip>
 #include <vector>
 
 using namespace std;
-
-typedef tuple<double, double> point;
 
 struct solution {
     // General info to be saved
@@ -25,4 +23,4 @@ struct solution {
     }
 };
 
-#endif // TOSN_DEFINITIONS_H
+#endif //DEFINITIONS_H
