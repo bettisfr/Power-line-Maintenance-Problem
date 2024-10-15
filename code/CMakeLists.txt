@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.28)
 project(code)
 
@@ -14,4 +15,5 @@ add_executable(code
         src/output.cpp
         src/output.h
         src/deployment.h
-        src/deployment.cpp)
+        src/deployment.cpp
+)

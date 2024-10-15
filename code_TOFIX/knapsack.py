@@ -1,21 +1,13 @@
-import random
 import bisect
 import math
 from sympy import *	
-import numpy as np
 from model import compute_prefixes
-import time
-from scipy.spatial import ConvexHull, convex_hull_plot_2d
 import matplotlib.pyplot as plt
 from shapely import geometry
-from functools import reduce
-import operator
 import pandas as pd
 import interval
-import os
-from opt_CPLEX import *
+#from opt_CPLEX import *
 import scipy.stats as stats
-from ast import literal_eval
 
 ############## FUNCTION FROM RETTA_FINAL ###################
 def compute_wind_classes(n_class,median=False):

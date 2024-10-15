@@ -16,7 +16,7 @@ struct solution {
 
     friend ostream &operator<<(ostream &os, const solution &out) {
         os << "Total reward: " << out.total_reward << endl;
-        os << "Tours costs: " << out.total_cost << endl;
+        os << "Total costs: " << out.total_cost << endl;
         os << "Running Time: " << out.running_time << endl;
 
         return os;

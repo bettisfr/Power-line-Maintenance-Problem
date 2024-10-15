@@ -46,7 +46,7 @@ public:
 
     solution coloring_multidrone();
 
-    solution greedy_weight_selection();
+    solution greedy_weight_selection(vector<vector<int>> intervals, int drone, int budget);
 
     solution greedy_ending_selection();
 

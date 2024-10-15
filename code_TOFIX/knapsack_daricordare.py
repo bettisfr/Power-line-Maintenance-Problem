@@ -1,4 +1,4 @@
-import random
+import random_input
 import bisect
 import math
 from sympy import *	
