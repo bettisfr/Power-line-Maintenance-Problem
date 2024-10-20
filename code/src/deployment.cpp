@@ -1,6 +1,7 @@
 #include <random>
 #include <iostream>
 #include "deployment.h"
+#include "algorithms.h"
 
 using namespace std;
 
@@ -52,6 +53,8 @@ deployment::deployment(const input &par) {
         << ", reward: " << reward << endl;
     }
 
+    algorithms algo(this);//ad algo passo l'istanza corrente; se ne creassi un'altra algo non potrebbe accedere ai dati di questa istanza
+    algo.greedy_weight_selection(input, 1, 5000);//qui mi chiede 3 parametri
 }
 
 int deployment::get_num_drones() {

@@ -32,26 +32,29 @@ private:
     };
 
 public:
-    explicit algorithms(deployment *);
+explicit algorithms(deployment *);
 
-    solution run_experiment(int);
+solution run_experiment(int);
 
-    solution opt_ilp();
+solution opt_ilp();
 
-    solution knapsack_multidrone();
+solution knapsack_multidrone();
 
-    solution greedy_submodular_multidrone();
+solution greedy_submodular_multidrone();
 
-    solution generalize_bin_packing();
+solution generalize_bin_packing();
 
-    solution coloring_multidrone();
+solution coloring_multidrone();
 
-    solution greedy_weight_selection(vector<vector<int>> intervals, int drone, int budget);
+solution greedy_weight_selection(vector<vector<int>> intervals, int drone, int budget);
 
-    solution greedy_ending_selection();
+solution greedy_ending_selection();
 
-    solution greedy_reward_selection();
+solution greedy_reward_selection();
 
+bool check_correct_interval(vector<vector<int>> &vector1, vector<int> vector2);
+
+int getOverLap(vector<int> i, vector<int> vector1);
 };
 
 #endif //ALGORITHMS_H
