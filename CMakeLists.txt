@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.28)
 
 project(code)
 
+set(CMAKE_CXX_STANDARD 17)
+
 option(CXX "enable C++ compilation" ON)
 
 if(CXX)
@@ -39,8 +41,10 @@ set(sources src/algorithms.cpp
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
+
+
 if(CXX)
-    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD 17)
     target_link_libraries(${CMAKE_PROJECT_NAME} optimized ${GUROBI_CXX_LIBRARY}
             debug ${GUROBI_CXX_DEBUG_LIBRARY})
 endif()

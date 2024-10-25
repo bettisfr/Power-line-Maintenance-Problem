@@ -26,7 +26,8 @@ void print_parameters(const input &par) {
     cout << "Maximum drone_load for a delivery = " << par.max_load << endl;
     cout << "Drone's drone_battery capacity = " << par.battery << endl;
     cout << "Drone's drone_load capacity = " << par.load << endl;
-
+    cout << "Height of the deliveries = " << par.height << endl;
+    cout << "Energy consumption of a drone per distance = " << par.energy_per_flight << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
     cout << "Iterations=" << par.iterations << endl;
 
@@ -46,6 +47,8 @@ void save_parameters(const input &par) {
     file_cfg << "max_load=" << par.max_load << endl;
     file_cfg << "drone_battery=" << par.battery << endl;
     file_cfg << "drone_load=" << par.load << endl;
+    file_cfg << "height=" << par.height << endl;
+    file_cfg << "energy_per_flight=" << par.energy_per_flight << endl;
     file_cfg << "algorithm=" << par.algorithm << endl;
     file_cfg << "iterations=" << par.iterations << endl;
 
@@ -93,6 +96,10 @@ input load_parameters(input &par) {
                 par.battery = stoi(value);
             } else if (key == "drone_load") {
                 par.load = stoi(value);
+            }else if (key == "height") {
+                par.height = stoi(value);
+            }else if (key == "energy_per_flight") {
+                par.energy_per_flight = stoi(value);
             }
         }
     }
@@ -135,7 +142,11 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.battery = stoi(argv[i + 1]);
             } else if (arg == "-drone_load") {
                 par.load = stoi(argv[i + 1]);
-            } else {
+            }else if (arg == "-height") {
+                par.height = stoi(argv[i + 1]);
+            }else if (arg == "-energy_per_flight") {
+                par.energy_per_flight = stoi(argv[i + 1]);
+            }else {
                 cerr << "Unknown option: " << arg << endl;
             }
         }
