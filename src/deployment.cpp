@@ -119,12 +119,12 @@ vector<vector<int>> deployment::compute_all_flights(){
                         double energy = compute_energy_cost(flight);
                         if(energy <= drone_battery){
                             all_flights.push_back(flight);
-                            cout << "L: " << L << " , " << "R: " << R << " -- ";
-                            cout << " energy: " << energy << " , delivery: ";
-                            for (auto i:flight){
-                                    cout << i << ", ";
-                            }
-                            cout << endl;
+                            // cout << "L: " << L << " , " << "R: " << R << " -- ";
+                            // cout << " energy: " << energy << " , delivery: ";
+                            // for (auto i:flight){
+                            //         cout << i << ", ";
+                            // }
+                            // cout << endl;
                         }
                     }
                 }
@@ -134,7 +134,6 @@ vector<vector<int>> deployment::compute_all_flights(){
 
     return all_flights;
 }
-
 
 
 int deployment::get_num_deliveries() const {
