@@ -15,21 +15,21 @@ void run_experiment(input &par) {
         // Deployment creation with respect to the input parameters
         deployment dep(par);
 
-        // cout << "Iteration: " << (i + 1) << "/" << par.iterations << endl;
+        cout << "Iteration: " << (i + 1) << "/" << par.iterations << endl;
 
-        // algorithms alg(&dep);
+        algorithms alg(&dep);
 
-        // auto start_time = chrono::high_resolution_clock::now();
+        auto start_time = chrono::high_resolution_clock::now();
 
-        // solution out = alg.run_experiment(par.algorithm);
+        solution out = alg.run_experiment(par.algorithm);
 
-        // auto end_time = chrono::high_resolution_clock::now();
-        // auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
-        // out.running_time = duration.count() / 1e+3;
+        auto end_time = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+        out.running_time = duration.count() / 1e+3;
 
-        // cout << out << endl;
+        cout << out << endl;
 
-        // outputs.push_back(out);
+        outputs.push_back(out);
     }
 
     if (par.save == 1) {
