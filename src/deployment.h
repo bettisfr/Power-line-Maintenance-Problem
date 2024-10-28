@@ -31,9 +31,6 @@ private:
 
 public:
     explicit deployment(const input &);
-    double get_distance(int, int, int, int);
-    vector<vector<int>> compute_all_flights();
-    double compute_energy_cost(vector<int>);
     int get_num_deliveries() const;
     const vector<int> &get_launches() const;
     const vector<int> &get_rendezvouses() const;
