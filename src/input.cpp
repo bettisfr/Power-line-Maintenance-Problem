@@ -146,7 +146,7 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.height = stoi(argv[i + 1]);
             }else if (arg == "-energy_per_flight") {
                 par.energy_per_flight = stoi(argv[i + 1]);
-            }else {
+            } else {
                 cerr << "Unknown option: " << arg << endl;
             }
         }

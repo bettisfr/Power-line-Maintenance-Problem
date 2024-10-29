@@ -6,6 +6,7 @@
 #include <iterator>
 
 #include "gurobi_c++.h"
+#include "util.h"
 
 algorithms::algorithms(deployment *m_dep) {
     dep = m_dep;
@@ -25,7 +26,7 @@ solution algorithms::run_experiment(int algorithm) {
     return out;
 }
 
-int algorithms::compute_profit(vector<int>delivery_ids) {
+int algorithms::compute_profit(const vector<int>&delivery_ids) {
     int profit = 0;
     vector<int> profits = dep->get_profits();
     for (auto id:delivery_ids){
@@ -35,7 +36,7 @@ int algorithms::compute_profit(vector<int>delivery_ids) {
     return profit;
 }
 
-int algorithms::compute_load(vector<int>delivery_ids) {
+int algorithms::compute_load(const vector<int>&delivery_ids) {
     int load = 0;
     vector<int> loads = dep->get_loads();
     for (auto id:delivery_ids){
@@ -45,19 +46,12 @@ int algorithms::compute_load(vector<int>delivery_ids) {
     return load;
 }
 
-double algorithms::get_distance(int x1, int y1, int x2, int y2) {
-    double delta_x = x2 - x1;
-    double delta_y = y2 - y1;
-
-    return sqrt(delta_x * delta_x + delta_y * delta_y);
-}
-
-double algorithms::compute_energy_cost(vector<int>delivery_ids){
+double algorithms::compute_energy(const vector<int>&delivery_ids){
     vector<int> delivery_points = dep->get_delivery_points();
     vector<int> launches = dep->get_launches();
     vector<int> rendezvouses = dep->get_rendezvouses();
     int height = dep->get_height();
-        int energy_per_flight = dep->get_energy_per_flight();
+    int energy_per_flight = dep->get_energy_per_flight();
 
     vector<int>delivery_locations;
     vector<int>launch_points;
@@ -75,16 +69,16 @@ double algorithms::compute_energy_cost(vector<int>delivery_ids){
     int L_delivery = *min_element(delivery_locations.begin(), delivery_locations.end());
     int R_delivery = *max_element(delivery_locations.begin(), delivery_locations.end());
 
-    double a = get_distance(L, 0, L_delivery, height);
+    double a = util::get_distance(L, 0, L_delivery, height);
     double b = R_delivery - L_delivery;
-    double c = get_distance(R_delivery, height, R, 0);
+    double c = util::get_distance(R_delivery, height, R, 0);
 
     return (a + b + c) * energy_per_flight;
 }
 
 
 tuple<vector<vector<int>>, vector<double>> algorithms::compute_all_flights(){
-    // For any lunch L and rendezvous point R, compute the set of deliveris such that their
+    // For any lunch L and rendezvous point R, compute the set of deliveries such that their
     // lunch and rendezvous point lies in [L, R]
     vector<int> launches = dep->get_launches();
     vector<int> rendezvouses = dep->get_rendezvouses();
@@ -113,8 +107,8 @@ tuple<vector<vector<int>>, vector<double>> algorithms::compute_all_flights(){
                             break;
                         }
                     }
-                    if(flight.size() >= 1 && flight.size() <= drone_load){
-                        double energy = compute_energy_cost(flight);
+                    if(!flight.empty() && flight.size() <= drone_load){
+                        double energy = compute_energy(flight);
                         if(energy <= drone_battery){
                             all_flights.push_back(flight);
                             energy_costs.push_back(energy);
@@ -133,14 +127,6 @@ tuple<vector<vector<int>>, vector<double>> algorithms::compute_all_flights(){
     return {all_flights, energy_costs};
 }
 
-bool algorithms::check_intersection(vector<int> flight1, vector<int> flight2){
-    vector<int> temp;
-    set_intersection(flight1.begin(), flight1.end(), 
-                          flight2.begin(), flight2.end(),
-                          back_inserter(temp));
-    return !temp.empty();
-}
-
 
 solution algorithms::opt_ilp() {
     auto sets = compute_all_flights();
@@ -155,7 +141,7 @@ solution algorithms::opt_ilp() {
 
     vector<int> flights_load;
     vector<int> flights_proft;
-    for (auto f:all_flights){
+    for (const auto& f:all_flights){
         int load = compute_load(f);
         flights_load.push_back(load);
 
@@ -209,7 +195,7 @@ solution algorithms::opt_ilp() {
         for (int i = 0; i < X; i++){
             for (int k = 0; k < X; k++){
                 if (i != k){
-                    if (check_intersection(all_flights[i], all_flights[k])){
+                    if (util::check_intersection(all_flights[i], all_flights[k])){
                         model.addConstr(x[i] + x[k] <= 1);
                     }
                 }         
