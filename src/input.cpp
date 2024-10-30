@@ -15,6 +15,7 @@ void print_parameters(const input &par) {
             {0, "opt ilp (OPT)"},
             {1, "heuristic 1 (H1)"},
             {2, "heuristic 2 (H2)"},
+            {3, "Bin_S"}
     };
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;

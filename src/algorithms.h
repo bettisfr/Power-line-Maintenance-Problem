@@ -33,9 +33,18 @@ private:
     int compute_load(const vector<int>&);
     double compute_energy(const vector<int> &delivery_ids);
 
+    tuple<int, int>compute_LR(const vector<int>&);
+    vector<int> largest_nonoverlap_delivery(vector<int>, vector<int>);
+    vector<int> weighted_interval(vector<int>, vector<int>, vector<int>,
+                                        vector<int>, vector<int>);
+    int compute_opt(int, vector<int>, vector<int>, vector<int>,
+                                        vector<int>, vector<int>);
+    vector<int> find_solution(int, vector<int>, vector<int>, 
+                                      vector<int>, vector<int>,
+                                      vector<int>, vector<int>);
+
 public:
     explicit algorithms(deployment *);
->>>>>>> refs/remotes/origin/main
     solution run_experiment(int);
 
     solution opt_ilp();

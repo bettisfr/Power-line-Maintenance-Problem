@@ -239,7 +239,7 @@ solution algorithms::opt_ilp() {
 }
 
 /////////// Bin_S /////////
-tuple<int, int> algorithms::compute_LR(vector<int> flight){
+tuple<int, int> algorithms::compute_LR(const vector<int>&flight){
     vector<int> launches = dep->get_launches();
     vector<int> rendezvouses = dep->get_rendezvouses();
 
