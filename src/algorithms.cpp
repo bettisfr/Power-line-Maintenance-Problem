@@ -303,10 +303,10 @@ vector<int> algorithms::weighted_interval(vector<int> launches, vector<int> rend
                                       vector<int> profits, vector<int> opt,
                                       vector<int> p){
 
-        for (int i = 0; i < launches.size(); i++){
-            int opt_i = compute_opt(i, launches, rendezvouses,  profits, opt, p);
-            opt.push_back(opt_i);
-        }
+    for (int i = 0; i < launches.size(); i++){
+        int opt_i = compute_opt(i, launches, rendezvouses,  profits, opt, p);
+        opt.push_back(opt_i);
+    }
         
     return opt;                                 
 }
