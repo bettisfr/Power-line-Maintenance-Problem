@@ -325,18 +325,17 @@ vector<int> algorithms::find_solution(int j, vector<int> lunches, vector<int> re
             return find_solution(j-1, lunches, rendezvouses, profits, opt, p, O);
         }
     }
-    
 }
 
 solution algorithms::Bin_S() {
     solution sol;
 
+    int B = dep->get_drone_battery();
     // compute all flights and energy, sort them
     auto sets = compute_all_flights();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets); 
 
-    //vector<int> delivery_points_temp = dep->get_delivery_points();
     vector<int> lunches_temp;
     vector<int> rendezvouses_temp;
 
@@ -375,14 +374,14 @@ solution algorithms::Bin_S() {
     // compute p
     vector<int>p = largest_nonoverlap_delivery(lunches, rendezvouses);
 
-    // for (int i=0;i<all_flights.size(); i++){
-    //     for (auto j:all_flights[i]){
-    //         cout << j << ", ";
-    //     }
-    //     cout << " L: " << lunches[i] << " R: " << rendezvouses[i] << " p: " << p[i] << endl;
-    // }    
+    for (int i=0;i<all_flights.size(); i++){
+        for (auto j:all_flights[i]){
+            cout << j << ", ";
+        }
+        cout << " L: " << lunches[i] << " R: " << rendezvouses[i] << " p: " << p[i] << endl;
+    }    
 
-    vector<int> opt; // values
+    vector<int> opt; // profits
     vector<int> pp = weighted_interval(lunches, rendezvouses, profits, opt, p);
     // for (auto i:pp){
     //     cout << i << " , " << endl;
@@ -391,12 +390,62 @@ solution algorithms::Bin_S() {
     vector<int> O;  // ids
     vector<int> opt_flights;
     opt_flights = find_solution(lunches.size()-1, lunches, rendezvouses, profits, pp, p, O);
-
-    // for (auto f:opt_flights){
-    //     cout << f << " , ";
-    // }
+    reverse(opt_flights.begin(), opt_flights.end());
+    
+    cout << "opt_flights: ";
+    for (auto f:opt_flights){
+        cout << f << " , ";
+    }
+    cout << endl;
    
-   // bin packing
+    // bin packing
+    vector<vector<int>> bin_sol;
+	vector<int> reward(opt_flights.size(), 0);
+    vector<int> cost(opt_flights.size(), 0);
+
+    for (int i = 0; i < opt_flights.size(); i++){
+        bin_sol.push_back(vector<int>());
+    }
+    
+    int bins = 0;
+    for (int k : opt_flights){
+        bool assigned = false;
+        for (int j = 0; j < bins; j++){
+            if (cost[j] + energy_costs[k] <= B && assigned == false){
+                assigned = true;
+                bin_sol[j].push_back(k);
+                reward[j] = reward[j] + profits[k];
+                cost[j] = cost[j] + energy_costs[k];
+            }
+        }
+
+        if (assigned == false){
+            bins++;
+            assigned = true;
+            bin_sol.push_back(vector<int>());
+            reward.push_back(0);
+            cost.push_back(0);
+            bin_sol[bins].push_back(k);
+            reward[bins] += profits[k];
+            cost[bins] += energy_costs[k];
+        }
+        
+    }
+
+    for (int i = 0; i < bin_sol.size(); i++){
+        for (auto j:bin_sol[i]){
+            cout << j << " , ";
+        }
+        cout << " reward: " << reward[i] << " cost: " << cost[i] << endl;
+        
+    }
+    
+
+    
+
+
+
+
 
 
     return sol;
