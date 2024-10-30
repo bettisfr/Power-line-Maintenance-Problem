@@ -374,12 +374,12 @@ solution algorithms::Bin_S() {
     // compute p
     vector<int>p = largest_nonoverlap_delivery(lunches, rendezvouses);
 
-    for (int i=0;i<all_flights.size(); i++){
-        for (auto j:all_flights[i]){
-            cout << j << ", ";
-        }
-        cout << " L: " << lunches[i] << " R: " << rendezvouses[i] << " p: " << p[i] << endl;
-    }    
+    // for (int i=0;i<all_flights.size(); i++){
+    //     for (auto j:all_flights[i]){
+    //         cout << j << ", ";
+    //     }
+    //     cout << " L: " << lunches[i] << " R: " << rendezvouses[i] << " p: " << p[i] << endl;
+    // }    
 
     vector<int> opt; // profits
     vector<int> pp = weighted_interval(lunches, rendezvouses, profits, opt, p);
@@ -392,11 +392,11 @@ solution algorithms::Bin_S() {
     opt_flights = find_solution(lunches.size()-1, lunches, rendezvouses, profits, pp, p, O);
     reverse(opt_flights.begin(), opt_flights.end());
     
-    cout << "opt_flights: ";
-    for (auto f:opt_flights){
-        cout << f << " , ";
-    }
-    cout << endl;
+    // cout << "opt_flights: ";
+    // for (auto f:opt_flights){
+    //     cout << f << " , ";
+    // }
+    // cout << endl;
    
     // bin packing
     vector<vector<int>> bin_sol;
@@ -407,7 +407,7 @@ solution algorithms::Bin_S() {
         bin_sol.push_back(vector<int>());
     }
     
-    int bins = 0;
+    int bins = 1; 
     for (int k : opt_flights){
         bool assigned = false;
         for (int j = 0; j < bins; j++){
@@ -432,22 +432,13 @@ solution algorithms::Bin_S() {
         
     }
 
-    for (int i = 0; i < bin_sol.size(); i++){
-        for (auto j:bin_sol[i]){
-            cout << j << " , ";
-        }
-        cout << " reward: " << reward[i] << " cost: " << cost[i] << endl;
-        
-    }
+    // for (int i = 0; i < bin_sol.size(); i++){
+    //     for (auto j:bin_sol[i]){
+    //         cout << j << " , ";
+    //     }
+    //     cout << " reward: " << reward[i] << " cost: " << cost[i] << endl;
+    // }
     
-
-    
-
-
-
-
-
-
     return sol;
 }
 
