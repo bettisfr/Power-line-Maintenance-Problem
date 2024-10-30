@@ -27,26 +27,15 @@ private:
             &algorithms::Bin_S
     };
 
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights();
+
+    int compute_profit(const vector<int>&);
+    int compute_load(const vector<int>&);
+    double compute_energy(const vector<int> &delivery_ids);
+
 public:
     explicit algorithms(deployment *);
-
-    double get_distance(int, int, int, int);
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights();
-    double compute_energy_cost(vector<int>);
-    int compute_profit(vector<int>);
-    int compute_load(vector<int>);
-    bool check_intersection(vector<int>, vector<int>);
-    tuple<int, int>compute_LR(vector<int>);
-    vector<int> largest_nonoverlap_delivery(vector<int>, vector<int>);
-    vector<int> weighted_interval(vector<int>, vector<int>, vector<int>,
-                                        vector<int>, vector<int>);
-    int compute_opt(int, vector<int>, vector<int>, vector<int>,
-                                        vector<int>, vector<int>);
-    vector<int> find_solution(int, vector<int>, vector<int>, 
-                                      vector<int>, vector<int>,
-                                      vector<int>, vector<int>);
-
-
+>>>>>>> refs/remotes/origin/main
     solution run_experiment(int);
 
     solution opt_ilp();

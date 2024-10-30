@@ -37,7 +37,9 @@ set(sources src/algorithms.cpp
         src/output.cpp
         src/output.h
         src/deployment.cpp
-        src/deployment.h)
+        src/deployment.h
+        src/util.cpp
+        src/util.h)
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
