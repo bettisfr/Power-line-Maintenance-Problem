@@ -331,7 +331,7 @@ solution algorithms::Bin_S() {
     solution sol;
 
     int B = dep->get_drone_battery();
-    // compute all flights and energy, sort them
+    // compute all flights and energy, then sort them
     auto sets = compute_all_flights();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets); 
@@ -383,9 +383,6 @@ solution algorithms::Bin_S() {
 
     vector<int> opt; // profits
     vector<int> pp = weighted_interval(launches, rendezvouses, profits, opt, p);
-    // for (auto i:pp){
-    //     cout << i << " , " << endl;
-    // }
     
     vector<int> O;  // ids
     vector<int> opt_flights;
