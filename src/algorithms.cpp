@@ -16,7 +16,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 2) {
+    if (index >= 0 && index <= 3) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -57,7 +57,7 @@ double algorithms::compute_energy_cost(vector<int>delivery_ids){
     vector<int> launches = dep->get_launches();
     vector<int> rendezvouses = dep->get_rendezvouses();
     int height = dep->get_height();
-        int energy_per_flight = dep->get_energy_per_flight();
+    int energy_per_flight = dep->get_energy_per_flight();
 
     vector<int>delivery_locations;
     vector<int>launch_points;
@@ -118,12 +118,6 @@ tuple<vector<vector<int>>, vector<double>> algorithms::compute_all_flights(){
                         if(energy <= drone_battery){
                             all_flights.push_back(flight);
                             energy_costs.push_back(energy);
-                            // cout << "L: " << L << " , " << "R: " << R << " -- ";
-                            // cout << " energy: " << energy << " , delivery: ";
-                            // for (auto i:flight){
-                            //         cout << i << ", ";
-                            // }
-                            // cout << endl;
                         }
                     }
                 }
@@ -151,7 +145,7 @@ solution algorithms::opt_ilp() {
     int num_deliveries = dep->get_num_deliveries();
     int drone_load = dep->get_drone_load();
 
-    int drone_battery = dep->get_drone_battery();
+    int B = dep->get_drone_battery();
 
     vector<int> flights_load;
     vector<int> flights_proft;
@@ -162,20 +156,24 @@ solution algorithms::opt_ilp() {
         int profit = compute_profit(f);
         flights_proft.push_back(profit);
     }
+
+    // for (int i=0;i<all_flights.size(); i++){
+    //     for (auto j:all_flights[i]){
+    //         cout << j << ", ";
+    //     }
+    //     cout << " load: " << flights_load[i] << " Energy: " << energy_costs[i] 
+    //                       << " p: "<< flights_proft[i]<< endl;
+    // }                    
     
     solution sol;
 
     try {
-        // Create an environment
         GRBEnv env = GRBEnv(true);
         // env.set("LogFile", "mip1.log");
         env.start();
-
-        // Create an empty model
         GRBModel model = GRBModel(env);
-
-        // Create variables
-        // For flights       
+ 
+        // Variables for flights       
         GRBVar x[X];
         for (int i = 0; i < X; i++){
             ostringstream vname ;
@@ -183,7 +181,7 @@ solution algorithms::opt_ilp() {
             x[i] = model.addVar(0.0, 1.0, 0.0, GRB_BINARY, vname.str());
         }
 
-        // For deliveris 
+        // Variables for deliveris 
         GRBVar y[num_deliveries];
         for (int j = 0; j < num_deliveries; j++){
             ostringstream yname ;
@@ -226,7 +224,7 @@ solution algorithms::opt_ilp() {
         for (int i = 0; i < X; i++){
             sum_energy += energy_costs[i] * x[i];
         }
-        model.addConstr(sum_energy <= drone_battery);
+        model.addConstr(sum_energy <= B);
 
         // (1)
         GRBLinExpr sum_profit = 0;
@@ -250,6 +248,170 @@ solution algorithms::opt_ilp() {
     } catch(...) {
         cout << "Exception during optimization" << endl;
     }
+
+    return sol;
+}
+
+/////////// Bin_S /////////
+tuple<int, int> algorithms::compute_LR(vector<int> flight){
+    vector<int> launches = dep->get_launches();
+    vector<int> rendezvouses = dep->get_rendezvouses();
+
+    vector<int>launch_points;
+    vector<int>rendezvous_points;
+
+    for (auto id:flight){
+        launch_points.push_back(launches[id]);
+        rendezvous_points.push_back(rendezvouses[id]);
+    }
+    
+    int L = *min_element(launch_points.begin(), launch_points.end());
+    int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
+
+    return {L, R};
+}
+
+vector<int> algorithms::largest_nonoverlap_delivery(vector<int> lunches, vector<int> rendezvouses){
+    vector<int> p;  // >= -1
+    for (int i = 0; i < lunches.size(); i++){
+        int id = -10;
+        for (int j = 0; j < lunches.size(); j++){
+            if (i != j){
+                if (rendezvouses[j] >= lunches[i]){
+                    id = j - 1;
+                    if (id == i){
+                        id = id - 1;
+                    }
+                    p.push_back(id);
+                    id = -10;
+                    break;
+                } else {
+                    id = j;
+                }
+            }
+        }
+        if (id >= 0){
+            p.push_back(id);
+        }
+    }
+    
+    return p;
+}
+
+int algorithms::compute_opt(int id, vector<int> lunches, vector<int> rendezvouses, 
+                                      vector<int> profits, vector<int> opt,
+                                      vector<int> p){
+
+    if (id == -1){
+        return 0;
+    } else if(id >= 0 && id < opt.size()){
+        return opt[id];
+    } else {
+        return max(profits[id] + compute_opt(p[id], lunches, rendezvouses, profits, opt, p),
+                                  compute_opt(id-1, lunches, rendezvouses, profits, opt, p));
+    }                        
+}
+
+
+vector<int> algorithms::weighted_interval(vector<int> lunches, vector<int> rendezvouses, 
+                                      vector<int> profits, vector<int> opt,
+                                      vector<int> p){
+
+        for (int i = 0; i < lunches.size(); i++){
+            int opt_i = compute_opt(i, lunches, rendezvouses,  profits, opt, p);
+            opt.push_back(opt_i);
+        }
+        
+    return opt;                                 
+}
+
+vector<int> algorithms::find_solution(int j, vector<int> lunches, vector<int> rendezvouses, 
+                                      vector<int> profits, vector<int> opt,
+                                      vector<int> p, vector<int> O){
+
+    if (j == -1){
+        return O;
+    } else {
+        if (profits[j] + opt[p[j]] >= opt[j-1]){
+            O.push_back(j);
+            return find_solution(p[j], lunches, rendezvouses, profits, opt, p, O);
+        } else {
+            return find_solution(j-1, lunches, rendezvouses, profits, opt, p, O);
+        }
+    }
+    
+}
+
+solution algorithms::Bin_S() {
+    solution sol;
+
+    // compute all flights and energy, sort them
+    auto sets = compute_all_flights();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets); 
+
+    //vector<int> delivery_points_temp = dep->get_delivery_points();
+    vector<int> lunches_temp;
+    vector<int> rendezvouses_temp;
+
+    for (auto flight:all_flights_temp){
+        auto points = compute_LR(flight);
+        lunches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+    
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+    vector<int> profits;
+    vector<int> lunches;
+    vector<int> rendezvouses;
+
+    // sort according to rendezvouses_temp
+    vector<pair<int, int> > Ri; 
+    for (int i = 0; i < all_flights_temp.size(); i++){
+        Ri.push_back({rendezvouses_temp[i], i});
+    }
+    
+    sort(Ri.begin(), Ri.end());
+
+    for (auto it:Ri){
+        all_flights.push_back(all_flights_temp[it.second]);
+        energy_costs.push_back(energy_costs_temp[it.second]);
+        lunches.push_back(lunches_temp[it.second]);
+        rendezvouses.push_back(rendezvouses_temp[it.second]);
+    } 
+
+    for (auto flight:all_flights){
+        int profit = compute_profit(flight);
+        profits.push_back(profit);
+    }
+    
+    // compute p
+    vector<int>p = largest_nonoverlap_delivery(lunches, rendezvouses);
+
+    // for (int i=0;i<all_flights.size(); i++){
+    //     for (auto j:all_flights[i]){
+    //         cout << j << ", ";
+    //     }
+    //     cout << " L: " << lunches[i] << " R: " << rendezvouses[i] << " p: " << p[i] << endl;
+    // }    
+
+    vector<int> opt; // values
+    vector<int> pp = weighted_interval(lunches, rendezvouses, profits, opt, p);
+    // for (auto i:pp){
+    //     cout << i << " , " << endl;
+    // }
+    
+    vector<int> O;  // ids
+    vector<int> opt_flights;
+    opt_flights = find_solution(lunches.size()-1, lunches, rendezvouses, profits, pp, p, O);
+
+    // for (auto f:opt_flights){
+    //     cout << f << " , ";
+    // }
+   
+   // bin packing
+
 
     return sol;
 }

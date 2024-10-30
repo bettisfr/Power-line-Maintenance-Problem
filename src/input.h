@@ -25,7 +25,8 @@ struct input {
     // 0: opt_ilp,
     // 1: heuristic_1,
     // 2: heuristic_2,
-    int algorithm = 0;
+    // 3: Bin_S,
+    int algorithm = 3;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -49,7 +50,7 @@ struct input {
     int max_load = 1;
 
     // Drone's energy drone_battery
-    int battery = 30000;
+    int battery = 50000;
 
     // Drone's drone_load capacity
     int load = 3;

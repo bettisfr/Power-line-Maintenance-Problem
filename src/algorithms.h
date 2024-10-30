@@ -23,7 +23,8 @@ private:
     vector<function<solution(algorithms &)>> algorithm_functions = {
             &algorithms::opt_ilp,
             &algorithms::heuristic_1,
-            &algorithms::heuristic_2
+            &algorithms::heuristic_2,
+            &algorithms::Bin_S
     };
 
 public:
@@ -35,10 +36,21 @@ public:
     int compute_profit(vector<int>);
     int compute_load(vector<int>);
     bool check_intersection(vector<int>, vector<int>);
+    tuple<int, int>compute_LR(vector<int>);
+    vector<int> largest_nonoverlap_delivery(vector<int>, vector<int>);
+    vector<int> weighted_interval(vector<int>, vector<int>, vector<int>,
+                                        vector<int>, vector<int>);
+    int compute_opt(int, vector<int>, vector<int>, vector<int>,
+                                        vector<int>, vector<int>);
+    vector<int> find_solution(int, vector<int>, vector<int>, 
+                                      vector<int>, vector<int>,
+                                      vector<int>, vector<int>);
+
 
     solution run_experiment(int);
 
     solution opt_ilp();
+    solution Bin_S();
 
     solution heuristic_1();
 
