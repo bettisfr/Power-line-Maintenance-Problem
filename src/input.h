@@ -26,7 +26,9 @@ struct input {
     // 1: heuristic_1,
     // 2: heuristic_2,
     // 3: Bin_S,
-    int algorithm = 3;
+    // 4: knapsack,
+    // 5: col-s,
+    int algorithm = 4;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;

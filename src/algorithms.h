@@ -24,7 +24,9 @@ private:
             &algorithms::opt_ilp,
             &algorithms::heuristic_1,
             &algorithms::heuristic_2,
-            &algorithms::Bin_S
+            &algorithms::Bin_S,
+            &algorithms::knapsack_opt,
+            &algorithms::col_s,
     };
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights();
@@ -47,12 +49,18 @@ public:
     explicit algorithms(deployment *);
     solution run_experiment(int);
 
+    /// Opt
     solution opt_ilp();
+    solution knapsack_opt();
+
+    ///APX
     solution Bin_S();
+    solution col_s();
 
+    /// Heuristics
     solution heuristic_1();
-
     solution heuristic_2();
+
 };
 
 #endif //ALGORITHMS_H

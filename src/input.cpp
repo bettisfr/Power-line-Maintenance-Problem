@@ -12,10 +12,12 @@ void print_parameters(const input &par) {
     };
 
     map<int, string> algorithm_str = {
-            {0, "opt ilp (OPT)"},
-            {1, "heuristic 1 (H1)"},
-            {2, "heuristic 2 (H2)"},
-            {3, "Bin_S"}
+            {0, "ILP (OPT)"},
+            {1, "Heuristic 1 (H1)"},
+            {2, "Heuristic 2 (H2)"},
+            {3, "Bin_S (APX)"},
+            {4, "Knapsack (OPT)"},
+            {5, "Col-s (APX)"}
     };
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;

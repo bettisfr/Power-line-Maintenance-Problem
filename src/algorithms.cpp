@@ -17,7 +17,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 3) {
+    if (index >= 0 && index <= 5) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -487,3 +487,85 @@ solution algorithms::heuristic_1() {
 solution algorithms::heuristic_2() {
     return solution();
 }
+
+
+//// Knapsack
+solution algorithms::knapsack_opt(){
+    int n = dep->get_num_deliveries();
+    vector<int> launches = dep->get_launches();
+    vector<int> rendezvouses = dep->get_rendezvouses();
+    vector<int> profits = dep->get_profits();
+    vector<int> loads = dep->get_loads();
+    int B = dep->get_drone_battery();
+    int L = dep->get_drone_load();
+
+    auto sets = compute_all_flights();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    vector<int> launches_temp;
+    vector<int> rendezvouses_temp;
+
+    for (auto flight:all_flights_temp){
+        auto points = compute_LR(flight);
+        launches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+
+    // sort according to rendezvouses_temp
+    vector<pair<int, int> > Ri;
+    for (int i = 0; i < all_flights_temp.size(); i++){
+        Ri.push_back({rendezvouses_temp[i], i});
+    }
+
+    for (int i = 0; i < launches.size(); i++) {
+        cout << "del: " << i << " launch: " << launches_temp[i] << " rendezvous: " << rendezvouses_temp[i] << endl;
+    }
+    sort(Ri.begin(), Ri.end());
+
+    for (auto it:Ri){
+        all_flights.push_back(all_flights_temp[it.second]);
+        energy_costs.push_back(energy_costs_temp[it.second]);
+        launches.push_back(launches_temp[it.second]);
+        rendezvouses.push_back(rendezvouses_temp[it.second]);
+    }
+
+    printf("CIAOOO");
+    for (int i = 0; i < launches.size(); i++) {
+        cout << "del: " << i << " launch: " << launches[i] << " rendezvous: " << rendezvouses[i] << " profit: " << profits[i] << endl;
+    }
+    printf("CIAOOO");
+
+    for (auto flight:all_flights){
+        int profit = compute_profit(flight);
+        profits.push_back(profit);
+    }
+
+    Ri.clear();
+    for (int i = 0; i < rendezvouses.size(); i++) {
+        Ri.push_back({rendezvouses[i], i});
+    }
+
+    // compute predecessors
+    vector<int> predecessor = largest_nonoverlap_delivery(launches, rendezvouses);
+
+    cout << "SORTED:" << endl;
+    sort(Ri.begin(), Ri.end());
+    for (auto it:Ri) {
+        cout << "del: " << it.second << " launch: " << launches[it.second ] << " rendezvous: " << rendezvouses[it.second ] << " profit: " << profits[it.second ] << " predecessor: " << predecessor[it.second] <<  endl;
+    }
+    return solution();
+}
+
+///
+
+//// Col-S
+solution algorithms::col_s() {
+    return solution();
+}
+
+///
+
