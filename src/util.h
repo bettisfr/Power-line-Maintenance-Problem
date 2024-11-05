@@ -12,6 +12,8 @@ public:
     static double get_distance(int, int, int, int);
 
     static bool check_intersection(vector<int>, vector<int>);
+
+    static vector<int> largest_nonoverlap_delivery(vector<int>, vector<int>);
 };
 
 

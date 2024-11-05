@@ -15,7 +15,7 @@ void print_parameters(const input &par) {
             {0, "ILP (OPT)"},
             {1, "Heuristic 1 (H1)"},
             {2, "Heuristic 2 (H2)"},
-            {3, "Bin_S (APX)"},
+            {3, "bin_s (APX)"},
             {4, "Knapsack (OPT)"},
             {5, "Col-s (APX)"}
     };

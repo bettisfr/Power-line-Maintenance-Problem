@@ -22,9 +22,7 @@ private:
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
             &algorithms::opt_ilp,
-            &algorithms::heuristic_1,
-            &algorithms::heuristic_2,
-            &algorithms::Bin_S,
+            &algorithms::bin_s,
             &algorithms::knapsack_opt,
             &algorithms::col_s,
     };
@@ -36,12 +34,11 @@ private:
     double compute_energy(const vector<int> &delivery_ids);
 
     tuple<int, int>compute_LR(const vector<int>&);
-    vector<int> largest_nonoverlap_delivery(vector<int>, vector<int>);
-    vector<int> weighted_interval(vector<int>, vector<int>, vector<int>,
+    vector<int> weighted_interval(const vector<int>&, const vector<int>&, const vector<int>&,
+                                        vector<int>, const vector<int>&);
+    int compute_opt(int, const vector<int>&, const vector<int>&, vector<int>,
                                         vector<int>, vector<int>);
-    int compute_opt(int, vector<int>, vector<int>, vector<int>,
-                                        vector<int>, vector<int>);
-    vector<int> find_solution(int, vector<int>, vector<int>, 
+    vector<int> find_solution(int, const vector<int>&, const vector<int>&,
                                       vector<int>, vector<int>,
                                       vector<int>, vector<int>);
 
@@ -54,13 +51,8 @@ public:
     solution knapsack_opt();
 
     ///APX
-    solution Bin_S();
+    solution bin_s();
     solution col_s();
-
-    /// Heuristics
-    solution heuristic_1();
-    solution heuristic_2();
-
 };
 
 #endif //ALGORITHMS_H

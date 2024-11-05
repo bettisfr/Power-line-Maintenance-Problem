@@ -25,7 +25,7 @@ struct input {
     // 0: opt_ilp,
     // 1: heuristic_1,
     // 2: heuristic_2,
-    // 3: Bin_S,
+    // 3: bin_s,
     // 4: knapsack,
     // 5: col-s,
     int algorithm = 4;
