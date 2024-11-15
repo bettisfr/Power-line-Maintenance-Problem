@@ -421,6 +421,7 @@ solution algorithms::bin_s() {
 }
 
 //// Knapsack
+<<<<<<< Updated upstream
 solution algorithms::knapsack_opt() {
     int n = dep->get_num_deliveries();
     vector<int> launches = dep->get_launches();
@@ -430,6 +431,9 @@ solution algorithms::knapsack_opt() {
     int B = dep->get_drone_battery();
     int L = dep->get_drone_load();
 
+=======
+solution algorithms::knapsack_opt(){
+>>>>>>> Stashed changes
     auto sets = compute_all_flights();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
@@ -445,6 +449,9 @@ solution algorithms::knapsack_opt() {
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
+    vector<int> launches;
+    vector<int> rendezvouses;
+    vector<int> profits;
 
     // sort according to rendezvouses_temp
     vector<pair<int, int> > Ri;
@@ -464,12 +471,16 @@ solution algorithms::knapsack_opt() {
         rendezvouses.push_back(rendezvouses_temp[it.second]);
     }
 
-    printf("CIAOOO");
+    printf("CIAOOO\n");
     for (int i = 0; i < launches.size(); i++) {
+<<<<<<< Updated upstream
         cout << "del: " << i << " launch: " << launches[i] << " rendezvous: " << rendezvouses[i] << " profit: "
              << profits[i] << endl;
+=======
+        cout << "del: " << i << " launch: " << launches[i] << " rendezvous: " << rendezvouses[i] << endl;
+>>>>>>> Stashed changes
     }
-    printf("CIAOOO");
+    printf("CIAOOO\n");
 
     for (const auto& flight: all_flights) {
         int profit = compute_profit(flight);
