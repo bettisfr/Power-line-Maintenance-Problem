@@ -410,12 +410,17 @@ solution algorithms::bin_s() {
     int opt_id = distance(reward.begin(), max_element(reward.begin(), reward.end()));
 
     vector<vector<int>> selected;
-    for (auto flight_id: bin_sol[opt_id]) {
-        selected.push_back(all_flights[flight_id]);
+    if (bin_sol.size() > 0) {
+        for (auto flight_id: bin_sol[opt_id]) {
+            selected.push_back(all_flights[flight_id]);
+        }
+
+        sol.total_energy_cost = cost[opt_id];
+        sol.total_profit = reward[opt_id];
     }
 
-    sol.total_energy_cost = cost[opt_id];
-    sol.total_profit = reward[opt_id];
+//    sol.total_energy_cost = cost[opt_id];
+//    sol.total_profit = reward[opt_id];
 
     return sol;
 }
