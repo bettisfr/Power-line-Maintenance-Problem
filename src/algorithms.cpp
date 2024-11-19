@@ -428,6 +428,82 @@ solution algorithms::bin_s() {
 //// Knapsack
 
 solution algorithms::knapsack_opt() {
+    // Variables
+    solution sol;
+    int B = dep->get_drone_battery();
+    // compute all flights and energy, then sort them
+    auto sets = compute_all_flights();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    vector<int> launches_temp;
+    vector<int> rendezvouses_temp;
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+    vector<int> profits;
+    vector<int> launches;
+    vector<int> rendezvouses;
+
+    vector<pair<int, int> > Ri;
+
+    vector<int> predecessors;
+
+    // Logic
+    for (const auto& flight: all_flights_temp) {
+        auto points = compute_LR(flight);
+        launches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+
+    // sort according to rendezvouses_temp
+    for (int i = 0; i < all_flights_temp.size(); i++) {
+        Ri.emplace_back(rendezvouses_temp[i], i);
+    }
+
+    sort(Ri.begin(), Ri.end());
+
+    for (auto it: Ri) {
+        all_flights.push_back(all_flights_temp[it.second]);
+        energy_costs.push_back(energy_costs_temp[it.second]);
+        launches.push_back(launches_temp[it.second]);
+        rendezvouses.push_back(rendezvouses_temp[it.second]);
+    }
+
+    for (const auto& flight: all_flights) {
+        int profit = compute_profit(flight);
+        profits.push_back(profit);
+    }
+
+    // compute predecessors
+    predecessors = util::largest_nonoverlap_delivery(launches, rendezvouses);
+
+    int numFlights = all_flights.size();
+    vector<vector<int>> opt_reward(numFlights + 1, vector<int>(B + 1, 0));
+    vector<vector<int>> opt_costs(numFlights + 1, vector<int>(B + 1, 0));
+    vector<vector<vector<int>>> opt_intervals(numFlights + 1, vector<vector<int>>(B + 1, vector<int>(1, 0)));
+
+    int i_reward = 0;
+    int i_cost = 0;
+
+    int pred_reward = 0;
+    int pred_cost = 0;
+
+    int row_reward = 0;
+    int row_cost = 0;
+
+    for (int i = 0; i <= numFlights; i++) {
+        for (int b = 0; b <= B; b++) {
+            if (energy_costs[i] <= b) {
+                // current item
+                i_reward = profits[i];
+                i_cost = energy_costs[i];
+                //last compatible item
+
+                //best at previous row
+            }
+        }
+    }
     return solution();
 }
 
