@@ -428,6 +428,7 @@ solution algorithms::bin_s() {
 //// Knapsack
 
 solution algorithms::knapsack_opt() {
+    cout << "knapsack" << endl;
     // Variables
     solution sol;
     int B = dep->get_drone_battery();
@@ -470,9 +471,14 @@ solution algorithms::knapsack_opt() {
         rendezvouses.push_back(rendezvouses_temp[it.second]);
     }
 
+
     for (const auto& flight: all_flights) {
         int profit = compute_profit(flight);
         profits.push_back(profit);
+    }
+
+    for (int i=0; i < all_flights.size(); i++) {
+        cout << "i: " << i << " profit: " << profits[i] << " cost: " << energy_costs[i] << " launch: " << launches[i] << " rendevouz: " << rendezvouses[i] << endl;
     }
 
     // compute predecessors
@@ -492,17 +498,43 @@ solution algorithms::knapsack_opt() {
     int row_reward = 0;
     int row_cost = 0;
 
-    for (int i = 0; i <= numFlights; i++) {
+    for (int i = 1; i <= numFlights; i++) {
         for (int b = 0; b <= B; b++) {
             if (energy_costs[i] <= b) {
                 // current item
-                i_reward = profits[i];
-                i_cost = energy_costs[i];
+                i_reward = profits[i - 1];
+                i_cost = energy_costs[i - 1];
                 //last compatible item
-
+                pred_reward = opt_reward[predecessors[i - 1] + 1][b - energy_costs[i-1]];
+                pred_cost = opt_costs[predecessors[i - 1] + 1][b - energy_costs[i-1]];
                 //best at previous row
+                row_reward = opt_reward[i-1][b];
+                row_cost = opt_costs[i-1][b];
+                if (i_reward + pred_reward > row_reward) {
+                    opt_reward[i][b] = i_reward + pred_reward;
+                    opt_costs[i][b] = i_cost + pred_cost;
+                    cout << i << " " << b << " " << i_reward + pred_reward << endl;
+                    opt_intervals[i][b] = opt_intervals[predecessors[i - 1] + 1][b - energy_costs[i - 1]];
+                    opt_intervals[i][b].push_back((i - 1));
+                }
+                else {
+                    opt_reward[i][b] = row_reward;
+                    opt_costs[i][b] = row_cost;
+                    opt_intervals[i][b] = opt_intervals[i-1][b];
+                }
+            }
+            else {
+                opt_reward[i][b] = row_reward;
+                opt_costs[i][b] = row_cost;
+                opt_intervals[i][b] = opt_intervals[i-1][b];
             }
         }
+    }
+
+    cout << " OPT reward = " << opt_reward[numFlights][B] << endl;
+    cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
+    for (int i = 1; i <= opt_intervals[numFlights][B].size(); i++) {
+        cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] << endl;
     }
     return solution();
 }
