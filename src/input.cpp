@@ -19,6 +19,7 @@ void print_parameters(const input &par) {
             {4, "Knapsack (OPT)"},
             {5, "Col-s (APX)"}
     };
+    /// change the list
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;
 

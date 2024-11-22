@@ -498,9 +498,12 @@ solution algorithms::knapsack_opt() {
     int row_reward = 0;
     int row_cost = 0;
 
-    for (int i = 1; i <= numFlights; i++) {
-        for (int b = 0; b <= B; b++) {
-            if (energy_costs[i] <= b) {
+    for (int i = 1; i <= numFlights; i++)
+    {
+        for (int b = 0; b <= B; b++)
+        {
+            if (energy_costs[i - 1] <= b)
+            {
                 // current item
                 i_reward = profits[i - 1];
                 i_cost = energy_costs[i - 1];
@@ -510,20 +513,23 @@ solution algorithms::knapsack_opt() {
                 //best at previous row
                 row_reward = opt_reward[i-1][b];
                 row_cost = opt_costs[i-1][b];
-                if (i_reward + pred_reward > row_reward) {
+                if (i_reward + pred_reward > row_reward)
+                {
                     opt_reward[i][b] = i_reward + pred_reward;
                     opt_costs[i][b] = i_cost + pred_cost;
                     cout << i << " " << b << " " << i_reward + pred_reward << endl;
                     opt_intervals[i][b] = opt_intervals[predecessors[i - 1] + 1][b - energy_costs[i - 1]];
                     opt_intervals[i][b].push_back((i - 1));
                 }
-                else {
+                else
+                {
                     opt_reward[i][b] = row_reward;
                     opt_costs[i][b] = row_cost;
                     opt_intervals[i][b] = opt_intervals[i-1][b];
                 }
             }
-            else {
+            else
+            {
                 opt_reward[i][b] = row_reward;
                 opt_costs[i][b] = row_cost;
                 opt_intervals[i][b] = opt_intervals[i-1][b];
@@ -533,7 +539,8 @@ solution algorithms::knapsack_opt() {
 
     cout << " OPT reward = " << opt_reward[numFlights][B] << endl;
     cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
-    for (int i = 1; i <= opt_intervals[numFlights][B].size(); i++) {
+    for (int i = 1; i <= opt_intervals[numFlights][B].size(); i++)
+    {
         cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] << endl;
     }
     return solution();
