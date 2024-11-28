@@ -27,12 +27,6 @@ private:
             &algorithms::col_s,
     };
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights();
-
-    int compute_profit(const vector<int>&);
-    int compute_load(const vector<int>&);
-    double compute_energy(const vector<int> &delivery_ids);
-
     tuple<int, int>compute_LR(const vector<int>&);
     vector<int> weighted_interval(const vector<int>&, const vector<int>&, const vector<int>&,
                                         vector<int>, const vector<int>&);

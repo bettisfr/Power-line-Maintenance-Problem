@@ -2,6 +2,7 @@
 #include <iostream>
 #include "deployment.h"
 #include "algorithms.h"
+#include "util.h"
 
 using namespace std;
 
@@ -61,6 +62,100 @@ deployment::deployment(const input &par) {
     cout << endl;
 }
 
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights() {
+    // For any launch L and rendezvous point R, compute the set of deliveries such that their
+    // launch and rendezvous point lies in [L, R]
+    vector<int> launches = this->get_launches();
+    vector<int> rendezvouses = this->get_rendezvouses();
+    int energy_per_flight = this->get_energy_per_flight();
+    int drone_battery = this->get_drone_battery();
+    vector<int> delivery_points = this->get_delivery_points();
+    int drone_load = this->get_drone_load();
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+
+    for (int i = 0; i < launches.size(); i++) {
+        int L = launches[i];
+        for (int j = 0; j < rendezvouses.size(); j++) {
+            int R = rendezvouses[j];
+            vector<int> flight;
+            if (R > L && rendezvouses[i] <= R && launches[j] >= L) {  // R >= L
+                if ((R - L) * energy_per_flight <= drone_battery) {
+                    for (int k = 0; k < delivery_points.size(); k++) {
+                        if (L <= launches[k] && launches[k] <= R && L <= rendezvouses[k] && rendezvouses[k] <= R) {
+                            flight.push_back(k);
+                        }
+
+                        if (flight.size() > drone_load) {
+                            flight.clear();
+                            break;
+                        }
+                    }
+                    if (!flight.empty() && flight.size() <= drone_load) {
+                        double energy = compute_energy(flight);
+                        if (energy <= drone_battery) {
+                            all_flights.push_back(flight);
+                            energy_costs.push_back(energy);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return {all_flights, energy_costs};
+}
+
+double deployment::compute_energy(const vector<int> &delivery_ids) {
+    vector<int> delivery_points = this->get_delivery_points();
+    vector<int> launches = this->get_launches();
+    vector<int> rendezvouses = this->get_rendezvouses();
+    int height = this->get_height();
+    int energy_per_flight = this->get_energy_per_flight();
+
+    vector<int> delivery_locations;
+    vector<int> launch_points;
+    vector<int> rendezvous_points;
+
+    for (auto id: delivery_ids) {
+        delivery_locations.push_back(delivery_points[id]);
+        launch_points.push_back(launches[id]);
+        rendezvous_points.push_back(rendezvouses[id]);
+    }
+
+    int L = *min_element(launch_points.begin(), launch_points.end());
+    int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
+
+    int L_delivery = *min_element(delivery_locations.begin(), delivery_locations.end());
+    int R_delivery = *max_element(delivery_locations.begin(), delivery_locations.end());
+
+    double a = util::get_distance(L, 0, L_delivery, height);
+    double b = R_delivery - L_delivery;
+    double c = util::get_distance(R_delivery, height, R, 0);
+
+    return (a + b + c) * energy_per_flight;
+}
+
+int deployment::compute_profit(const vector<int> &delivery_ids) {
+    int profit = 0;
+    vector<int> profits = this->get_profits();
+    for (auto id: delivery_ids) {
+        profit += profits[id];
+    }
+
+    return profit;
+}
+
+int deployment::compute_load(const vector<int> &delivery_ids) {
+    int load = 0;
+    vector<int> loads = this->get_loads();
+    for (auto id: delivery_ids) {
+        load += loads[id];
+    }
+
+    return load;
+}
+
 int deployment::get_num_deliveries() const {
     return num_deliveries;
 }
@@ -98,3 +193,5 @@ int deployment::get_height() const {
 int deployment::get_energy_per_flight() const {
     return energy_per_flight;
 }
+
+

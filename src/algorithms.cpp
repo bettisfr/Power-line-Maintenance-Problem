@@ -25,104 +25,8 @@ solution algorithms::run_experiment(int algorithm) {
     return out;
 }
 
-int algorithms::compute_profit(const vector<int> &delivery_ids) {
-    int profit = 0;
-    vector<int> profits = dep->get_profits();
-    for (auto id: delivery_ids) {
-        profit += profits[id];
-    }
-
-    return profit;
-}
-
-int algorithms::compute_load(const vector<int> &delivery_ids) {
-    int load = 0;
-    vector<int> loads = dep->get_loads();
-    for (auto id: delivery_ids) {
-        load += loads[id];
-    }
-
-    return load;
-}
-
-double algorithms::compute_energy(const vector<int> &delivery_ids) {
-    vector<int> delivery_points = dep->get_delivery_points();
-    vector<int> launches = dep->get_launches();
-    vector<int> rendezvouses = dep->get_rendezvouses();
-    int height = dep->get_height();
-    int energy_per_flight = dep->get_energy_per_flight();
-
-    vector<int> delivery_locations;
-    vector<int> launch_points;
-    vector<int> rendezvous_points;
-
-    for (auto id: delivery_ids) {
-        delivery_locations.push_back(delivery_points[id]);
-        launch_points.push_back(launches[id]);
-        rendezvous_points.push_back(rendezvouses[id]);
-    }
-
-    int L = *min_element(launch_points.begin(), launch_points.end());
-    int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
-
-    int L_delivery = *min_element(delivery_locations.begin(), delivery_locations.end());
-    int R_delivery = *max_element(delivery_locations.begin(), delivery_locations.end());
-
-    double a = util::get_distance(L, 0, L_delivery, height);
-    double b = R_delivery - L_delivery;
-    double c = util::get_distance(R_delivery, height, R, 0);
-
-    return (a + b + c) * energy_per_flight;
-}
-
-
-tuple<vector<vector<int>>, vector<double>> algorithms::compute_all_flights() {
-    // For any launch L and rendezvous point R, compute the set of deliveries such that their
-    // launch and rendezvous point lies in [L, R]
-    vector<int> launches = dep->get_launches();
-    vector<int> rendezvouses = dep->get_rendezvouses();
-    int energy_per_flight = dep->get_energy_per_flight();
-    int drone_battery = dep->get_drone_battery();
-    vector<int> delivery_points = dep->get_delivery_points();
-    int drone_load = dep->get_drone_load();
-
-    vector<vector<int>> all_flights;
-    vector<double> energy_costs;
-
-    for (int i = 0; i < launches.size(); i++) {
-        int L = launches[i];
-        for (int j = 0; j < rendezvouses.size(); j++) {
-            int R = rendezvouses[j];
-            vector<int> flight;
-            if (R > L && rendezvouses[i] <= R && launches[j] >= L) {  // R >= L
-                if ((R - L) * energy_per_flight <= drone_battery) {
-                    for (int k = 0; k < delivery_points.size(); k++) {
-                        if (L <= launches[k] && launches[k] <= R && L <= rendezvouses[k] && rendezvouses[k] <= R) {
-                            flight.push_back(k);
-                        }
-
-                        if (flight.size() > drone_load) {
-                            flight.clear();
-                            break;
-                        }
-                    }
-                    if (!flight.empty() && flight.size() <= drone_load) {
-                        double energy = compute_energy(flight);
-                        if (energy <= drone_battery) {
-                            all_flights.push_back(flight);
-                            energy_costs.push_back(energy);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return {all_flights, energy_costs};
-}
-
-
 solution algorithms::opt_ilp() {
-    auto sets = compute_all_flights();
+    auto sets = dep->compute_all_flights();
     vector<vector<int>> all_flights = get<0>(sets);
     vector<double> energy_costs = get<1>(sets);
 
@@ -135,10 +39,10 @@ solution algorithms::opt_ilp() {
     vector<int> flights_load;
     vector<int> flights_profit;
     for (const auto &f: all_flights) {
-        int load = compute_load(f);
+        int load = dep->compute_load(f);
         flights_load.push_back(load);
 
-        int profit = compute_profit(f);
+        int profit = dep->compute_profit(f);
         flights_profit.push_back(profit);
     }
 
@@ -304,7 +208,7 @@ solution algorithms::bin_s() {
 
     int B = dep->get_drone_battery();
     // compute all flights and energy, then sort them
-    auto sets = compute_all_flights();
+    auto sets = dep->compute_all_flights();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -339,7 +243,7 @@ solution algorithms::bin_s() {
     }
 
     for (const auto& flight: all_flights) {
-        int profit = compute_profit(flight);
+        int profit = dep->compute_profit(flight);
         profits.push_back(profit);
     }
 
@@ -437,7 +341,7 @@ solution algorithms::knapsack_opt() {
     solution sol;
     int B = dep->get_drone_battery();
     // compute all flights and energy, then sort them
-    auto sets = compute_all_flights();
+    auto sets = dep->compute_all_flights();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -477,7 +381,7 @@ solution algorithms::knapsack_opt() {
 
 
     for (const auto& flight: all_flights) {
-        int profit = compute_profit(flight);
+        int profit = dep->compute_profit(flight);
         profits.push_back(profit);
     }
 
@@ -593,7 +497,7 @@ solution algorithms::col_s() {
     solution sol;
     int B = dep->get_drone_battery();
     // compute all flights and energy, then sort them
-    auto sets = compute_all_flights();
+    auto sets = dep->compute_all_flights();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -633,7 +537,7 @@ solution algorithms::col_s() {
 
 
     for (const auto& flight: all_flights) {
-        int profit = compute_profit(flight);
+        int profit = dep->compute_profit(flight);
         profits.push_back(profit);
     }
 

@@ -41,6 +41,10 @@ public:
     int get_drone_load() const;
     int get_height() const;
     int get_energy_per_flight() const;
+    int compute_profit(const vector<int>&);
+    int compute_load(const vector<int>&);
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights();
+    double compute_energy(const vector<int> &delivery_ids);
 };
 
 #endif //DEPLOYMENT_H
