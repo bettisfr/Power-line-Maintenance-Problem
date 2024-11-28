@@ -428,8 +428,8 @@ solution algorithms::bin_s() {
 //// Knapsack
 
 solution algorithms::knapsack_opt() {
-    cout << "knapsack" << endl;
-
+    // cout << "knapsack" << endl;
+    cout << "Currently this function is not optimal due to rounding" << endl;
     std::clock_t start;
     double duration;
 
@@ -585,7 +585,163 @@ solution algorithms::knapsack_opt() {
 
 //// Col-S
 solution algorithms::col_s() {
-    return solution();
+    // cout << "MIGHIEEE" << endl;
+    std::clock_t start;
+    double duration;
+
+    // Variables
+    solution sol;
+    int B = dep->get_drone_battery();
+    // compute all flights and energy, then sort them
+    auto sets = compute_all_flights();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    vector<int> launches_temp;
+    vector<int> rendezvouses_temp;
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+    vector<int> profits;
+    vector<int> launches;
+    vector<int> rendezvouses;
+
+    vector<pair<int, int> > Ri;
+
+
+
+    // Logic
+    for (const auto& flight: all_flights_temp) {
+        auto points = compute_LR(flight);
+        launches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+
+    // sort according to rendezvouses_temp
+    for (int i = 0; i < all_flights_temp.size(); i++) {
+        Ri.emplace_back(rendezvouses_temp[i], i);
+    }
+
+    sort(Ri.begin(), Ri.end());
+
+    for (auto it: Ri) {
+        all_flights.push_back(all_flights_temp[it.second]);
+        energy_costs.push_back(energy_costs_temp[it.second]);
+        launches.push_back(launches_temp[it.second]);
+        rendezvouses.push_back(rendezvouses_temp[it.second]);
+    }
+
+
+    for (const auto& flight: all_flights) {
+        int profit = compute_profit(flight);
+        profits.push_back(profit);
+    }
+
+    // for (int i=0; i<rendezvouses.size(); i++) {
+    //     cout << "[" << launches[i] << "," << rendezvouses[i] << "]" << endl;
+    // }
+
+    vector<vector<vector<int>>> colors;
+    int n = rendezvouses.size();
+
+    // initialize the colors which is at most n, the number of intervals
+    for (int i = 0; i < n; i++) {
+        colors.push_back({});
+    }
+
+    vector<int> last_interval;
+    vector<int> current_interval;
+    bool compatible;
+    int index = 0;
+
+    start = std::clock();
+    for (int i = 0; i < n; i++) {
+        current_interval.clear();
+        current_interval.push_back(launches[i]);
+        current_interval.push_back(rendezvouses[i]);
+        //index
+        current_interval.push_back(i);
+
+        index = 0;
+        compatible = false;
+        while (not compatible) {
+            if (empty(colors[index])) {
+                colors[index].push_back(current_interval);
+                compatible = true;
+            }
+            else {
+                last_interval = colors[index].back();
+                int max_start = max(last_interval[0], current_interval[0]);
+                int min_end = min(current_interval[1], last_interval[1]);
+                if (max_start > min_end) {
+                    colors[index].push_back(current_interval);
+                    compatible = true;
+                }
+                index++;
+            }
+        }
+    }
+    // solve single colors by fractional knapsack
+
+    // compute ratios
+    vector<vector<double>> color_ratios;
+    vector<vector<int>> color = {{1}};
+    int max_profit = 0;
+    double max_cost = 0;
+    vector<int> max_selection;
+    int profit = 0;
+    double cost = 0;
+    vector<int> selection;
+    index = 0;
+    int curr_index = 0;
+
+    while (index <= colors.size()) {
+      color = colors[index];
+      if (color.empty()) {
+          break;
+      }
+      color_ratios.clear();
+      // cout << "#Color: " << index << endl;
+      for (double i = 0; i< color.size(); i++) {
+          // cout << "interval: " << color[i][2] <<" [" << color[i][0] << "," << color[i][1] << "] -> profit: " << profits[color[i][2]] << " cost: " << energy_costs[color[i][2]] << " ratio: " <<profits[color[i][2]]/energy_costs[color[i][2]] << endl;
+          color_ratios.push_back({(profits[color[i][2]]/energy_costs[color[i][2]]), static_cast<double>(color[i][2])});
+      }
+      cost = 0;
+      profit = 0;
+      selection.clear();
+      sort(color_ratios.begin(), color_ratios.end());
+      for (int i = color_ratios.size()-1; i >= 0; i--) {
+            curr_index = color_ratios[i][1];
+            if (cost + energy_costs[curr_index] <= B) {
+                cost += energy_costs[curr_index];
+                profit += profits[curr_index];
+                selection.push_back(curr_index);
+            }
+      }
+      // cout << "profit: " << profit << " cost: " << cost << endl;
+      if (profit > max_profit) {
+            max_profit = profit;
+            max_selection = selection;
+            max_cost = cost;
+      }
+      index++;
+    }
+    duration = (clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    vector<vector<int>> int_sol;
+    for (int i = 0; i < max_selection.size(); i++) {
+        int_sol.push_back({launches[max_selection[i]], rendezvouses[max_selection[i]]});
+    }
+    solution solution;
+
+
+
+    solution.total_profit = max_profit;
+    solution.total_energy_cost = max_cost;
+    solution.selected_intervals = int_sol;
+    solution.running_time = duration;
+    // cout << "max profit " << max_profit << endl;
+    return solution;
 }
 
 ///
