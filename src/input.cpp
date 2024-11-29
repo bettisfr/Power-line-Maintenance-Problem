@@ -100,9 +100,9 @@ input load_parameters(input &par) {
                 par.battery = stoi(value);
             } else if (key == "drone_load") {
                 par.load = stoi(value);
-            }else if (key == "height") {
+            } else if (key == "height") {
                 par.height = stoi(value);
-            }else if (key == "energy_per_flight") {
+            } else if (key == "energy_per_flight") {
                 par.energy_per_flight = stoi(value);
             }
         }
@@ -146,9 +146,9 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.battery = stoi(argv[i + 1]);
             } else if (arg == "-drone_load") {
                 par.load = stoi(argv[i + 1]);
-            }else if (arg == "-height") {
+            } else if (arg == "-height") {
                 par.height = stoi(argv[i + 1]);
-            }else if (arg == "-energy_per_flight") {
+            } else if (arg == "-energy_per_flight") {
                 par.energy_per_flight = stoi(argv[i + 1]);
             } else {
                 cerr << "Unknown option: " << arg << endl;

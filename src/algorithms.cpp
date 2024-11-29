@@ -131,7 +131,7 @@ solution algorithms::opt_ilp() {
             cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
         }
 
-    } catch (GRBException& e) {
+    } catch (GRBException &e) {
         cout << "Error code = " << e.getErrorCode() << endl;
         cout << e.getMessage() << endl;
     } catch (...) {
@@ -160,7 +160,7 @@ tuple<int, int> algorithms::compute_LR(const vector<int> &flight) {
     return {L, R};
 }
 
-int algorithms::compute_opt(int id, const vector<int>& launches, const vector<int>& rendezvouses,
+int algorithms::compute_opt(int id, const vector<int> &launches, const vector<int> &rendezvouses,
                             vector<int> profits, vector<int> opt,
                             vector<int> p) {
 
@@ -175,9 +175,9 @@ int algorithms::compute_opt(int id, const vector<int>& launches, const vector<in
 }
 
 
-vector<int> algorithms::weighted_interval(const vector<int>& launches, const vector<int>& rendezvouses,
-                                          const vector<int>& profits, vector<int> opt,
-                                          const vector<int>& p) {
+vector<int> algorithms::weighted_interval(const vector<int> &launches, const vector<int> &rendezvouses,
+                                          const vector<int> &profits, vector<int> opt,
+                                          const vector<int> &p) {
 
     for (int i = 0; i < launches.size(); i++) {
         int opt_i = compute_opt(i, launches, rendezvouses, profits, opt, p);
@@ -187,7 +187,7 @@ vector<int> algorithms::weighted_interval(const vector<int>& launches, const vec
     return opt;
 }
 
-vector<int> algorithms::find_solution(int j, const vector<int>& launches, const vector<int>& rendezvouses,
+vector<int> algorithms::find_solution(int j, const vector<int> &launches, const vector<int> &rendezvouses,
                                       vector<int> profits, vector<int> opt,
                                       vector<int> p, vector<int> O) {
 
@@ -215,7 +215,7 @@ solution algorithms::bin_s() {
     vector<int> launches_temp;
     vector<int> rendezvouses_temp;
 
-    for (const auto& flight: all_flights_temp) {
+    for (const auto &flight: all_flights_temp) {
         auto points = compute_LR(flight);
         launches_temp.push_back(get<0>(points));
         rendezvouses_temp.push_back(get<1>(points));
@@ -242,7 +242,7 @@ solution algorithms::bin_s() {
         rendezvouses.push_back(rendezvouses_temp[it.second]);
     }
 
-    for (const auto& flight: all_flights) {
+    for (const auto &flight: all_flights) {
         int profit = dep->compute_profit(flight);
         profits.push_back(profit);
     }
@@ -281,7 +281,7 @@ solution algorithms::bin_s() {
     }
 
     int bins = 1;
-    for (int k : opt_flights) {
+    for (int k: opt_flights) {
         bool assigned = false;
         for (int j = 0; j < bins; j++) {
             if (cost[j] + energy_costs[k] <= B && !assigned) {
@@ -314,7 +314,7 @@ solution algorithms::bin_s() {
     int opt_id = distance(reward.begin(), max_element(reward.begin(), reward.end()));
 
     vector<vector<int>> selected;
-    if (bin_sol.size() > 0) {
+    if (!bin_sol.empty()) {
         for (auto flight_id: bin_sol[opt_id]) {
             selected.push_back(all_flights[flight_id]);
         }
@@ -356,10 +356,8 @@ solution algorithms::knapsack_opt() {
 
     vector<pair<int, int> > Ri;
 
-
-
     // Logic
-    for (const auto& flight: all_flights_temp) {
+    for (const auto &flight: all_flights_temp) {
         auto points = compute_LR(flight);
         launches_temp.push_back(get<0>(points));
         rendezvouses_temp.push_back(get<1>(points));
@@ -379,8 +377,7 @@ solution algorithms::knapsack_opt() {
         rendezvouses.push_back(rendezvouses_temp[it.second]);
     }
 
-
-    for (const auto& flight: all_flights) {
+    for (const auto &flight: all_flights) {
         int profit = dep->compute_profit(flight);
         profits.push_back(profit);
     }
@@ -401,7 +398,7 @@ solution algorithms::knapsack_opt() {
     // for (int i = 0; i < predecessors.size(); i++) {
     //     cout << "element: " << i << " compatible with " << predecessors[i] << endl;
     // }
-    int numFlights = all_flights.size();
+    auto numFlights = all_flights.size();
     vector<vector<int>> opt_reward(numFlights + 1, vector<int>(B + 1, 0));
     vector<vector<int>> opt_costs(numFlights + 1, vector<int>(B + 1, 0));
     vector<vector<vector<int>>> opt_intervals(numFlights + 1, vector<vector<int>>(B + 1, vector<int>(1, 0)));
@@ -416,15 +413,12 @@ solution algorithms::knapsack_opt() {
     int row_cost = 0;
 
     start = std::clock();
-    for (int i = 1; i <= numFlights; i++)
-    {
-        for (int b = 0; b <= B; b++)
-        {
+    for (int i = 1; i <= numFlights; i++) {
+        for (int b = 0; b <= B; b++) {
             //best at previous row
-            row_reward = opt_reward[i-1][b];
-            row_cost = opt_costs[i-1][b];
-            if (energy_costs[i] <= b)
-            {
+            row_reward = opt_reward[i - 1][b];
+            row_cost = opt_costs[i - 1][b];
+            if (energy_costs[i] <= b) {
                 // current item
                 i_reward = profits[i];
                 i_cost = energy_costs[i];
@@ -432,22 +426,17 @@ solution algorithms::knapsack_opt() {
                 pred_reward = opt_reward[predecessors[i]][b - energy_costs[i]];
                 pred_cost = opt_costs[predecessors[i]][b - energy_costs[i]];
                 // cout << "previous solution: " << row_reward << " " << row_cost << endl;
-                if (i_reward + pred_reward > row_reward)
-                {
+                if (i_reward + pred_reward > row_reward) {
                     opt_reward[i][b] = i_reward + pred_reward;
                     opt_costs[i][b] = i_cost + pred_cost;
                     opt_intervals[i][b] = opt_intervals[predecessors[i]][b - energy_costs[i]];
                     opt_intervals[i][b].push_back((i));
-                }
-                else
-                {
+                } else {
                     opt_reward[i][b] = row_reward;
                     opt_costs[i][b] = row_cost;
                     opt_intervals[i][b] = opt_intervals[i - 1][b];
                 }
-            }
-            else
-            {
+            } else {
                 opt_reward[i][b] = row_reward;
                 opt_costs[i][b] = row_cost;
                 opt_intervals[i][b] = opt_intervals[i - 1][b];
@@ -458,9 +447,9 @@ solution algorithms::knapsack_opt() {
             // cout << "OPT[" << i << "][" << b << "] = {r: " << opt_reward[i][b] << ", c: " << opt_costs[i][b] << ", int: " << result.str().c_str() << endl;
         }
     }
-    duration = (clock() - start ) / (double) CLOCKS_PER_SEC;
-    solution solution;
 
+    duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+    solution solution;
 
     vector<vector<int>> int_sol;
     vector<int> interval;
@@ -469,19 +458,19 @@ solution algorithms::knapsack_opt() {
     // cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
 
     remove(opt_intervals[numFlights][B].begin(), opt_intervals[numFlights][B].end(), 0);
-    for (int i = 0; i < opt_intervals[numFlights][B].size(); i++)
-    {
+    for (int i : opt_intervals[numFlights][B]) {
         // cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] - 1 << endl;
         interval.clear();
-        interval.push_back(launches[opt_intervals[numFlights][B][i]]);
-        interval.push_back(rendezvouses[opt_intervals[numFlights][B][i]]);
+        interval.push_back(launches[i]);
+        interval.push_back(rendezvouses[i]);
         int_sol.push_back(interval);
     }
 
-    solution.total_profit= opt_reward[numFlights][B];
+    solution.total_profit = opt_reward[numFlights][B];
     solution.total_energy_cost = opt_costs[numFlights][B];
     solution.running_time = duration;
     solution.selected_intervals = int_sol;
+
     return solution;
 }
 
@@ -490,7 +479,7 @@ solution algorithms::knapsack_opt() {
 //// Col-S
 solution algorithms::col_s() {
     // cout << "MIGHIEEE" << endl;
-    std::clock_t start;
+    clock_t start;
     double duration;
 
     // Variables
@@ -512,10 +501,8 @@ solution algorithms::col_s() {
 
     vector<pair<int, int> > Ri;
 
-
-
     // Logic
-    for (const auto& flight: all_flights_temp) {
+    for (const auto &flight: all_flights_temp) {
         auto points = compute_LR(flight);
         launches_temp.push_back(get<0>(points));
         rendezvouses_temp.push_back(get<1>(points));
@@ -535,8 +522,7 @@ solution algorithms::col_s() {
         rendezvouses.push_back(rendezvouses_temp[it.second]);
     }
 
-
-    for (const auto& flight: all_flights) {
+    for (const auto &flight: all_flights) {
         int profit = dep->compute_profit(flight);
         profits.push_back(profit);
     }
@@ -546,11 +532,11 @@ solution algorithms::col_s() {
     // }
 
     vector<vector<vector<int>>> colors;
-    int n = rendezvouses.size();
+    auto n = rendezvouses.size();
 
     // initialize the colors which is at most n, the number of intervals
     for (int i = 0; i < n; i++) {
-        colors.push_back({});
+        colors.emplace_back();
     }
 
     vector<int> last_interval;
@@ -558,7 +544,7 @@ solution algorithms::col_s() {
     bool compatible;
     int index = 0;
 
-    start = std::clock();
+    start = clock();
     for (int i = 0; i < n; i++) {
         current_interval.clear();
         current_interval.push_back(launches[i]);
@@ -572,8 +558,7 @@ solution algorithms::col_s() {
             if (empty(colors[index])) {
                 colors[index].push_back(current_interval);
                 compatible = true;
-            }
-            else {
+            } else {
                 last_interval = colors[index].back();
                 int max_start = max(last_interval[0], current_interval[0]);
                 int min_end = min(current_interval[1], last_interval[1]);
@@ -600,44 +585,43 @@ solution algorithms::col_s() {
     int curr_index = 0;
 
     while (index <= colors.size()) {
-      color = colors[index];
-      if (color.empty()) {
-          break;
-      }
-      color_ratios.clear();
-      // cout << "#Color: " << index << endl;
-      for (double i = 0; i< color.size(); i++) {
-          // cout << "interval: " << color[i][2] <<" [" << color[i][0] << "," << color[i][1] << "] -> profit: " << profits[color[i][2]] << " cost: " << energy_costs[color[i][2]] << " ratio: " <<profits[color[i][2]]/energy_costs[color[i][2]] << endl;
-          color_ratios.push_back({(profits[color[i][2]]/energy_costs[color[i][2]]), static_cast<double>(color[i][2])});
-      }
-      cost = 0;
-      profit = 0;
-      selection.clear();
-      sort(color_ratios.begin(), color_ratios.end());
-      for (int i = color_ratios.size()-1; i >= 0; i--) {
-            curr_index = color_ratios[i][1];
+        color = colors[index];
+        if (color.empty()) {
+            break;
+        }
+        color_ratios.clear();
+        // cout << "#Color: " << index << endl;
+        for (auto & i : color) {
+            // cout << "interval: " << color[i][2] <<" [" << color[i][0] << "," << color[i][1] << "] -> profit: " << profits[color[i][2]] << " cost: " << energy_costs[color[i][2]] << " ratio: " <<profits[color[i][2]]/energy_costs[color[i][2]] << endl;
+            color_ratios.push_back({(profits[i[2]] / energy_costs[i[2]]), static_cast<double>(i[2])});
+        }
+        cost = 0;
+        profit = 0;
+        selection.clear();
+        sort(color_ratios.begin(), color_ratios.end());
+        for (auto i = color_ratios.size() - 1; i >= 0; i--) {
+            curr_index = static_cast<int>(color_ratios[i][1]);
             if (cost + energy_costs[curr_index] <= B) {
                 cost += energy_costs[curr_index];
                 profit += profits[curr_index];
                 selection.push_back(curr_index);
             }
-      }
-      // cout << "profit: " << profit << " cost: " << cost << endl;
-      if (profit > max_profit) {
+        }
+        // cout << "profit: " << profit << " cost: " << cost << endl;
+        if (profit > max_profit) {
             max_profit = profit;
             max_selection = selection;
             max_cost = cost;
-      }
-      index++;
+        }
+        index++;
     }
-    duration = (clock() - start ) / (double) CLOCKS_PER_SEC;
+    duration = (clock() - start) / (double) CLOCKS_PER_SEC;
 
     vector<vector<int>> int_sol;
-    for (int i = 0; i < max_selection.size(); i++) {
-        int_sol.push_back({launches[max_selection[i]], rendezvouses[max_selection[i]]});
+    for (int i : max_selection) {
+        int_sol.push_back({launches[i], rendezvouses[i]});
     }
     solution solution;
-
 
 
     solution.total_profit = max_profit;

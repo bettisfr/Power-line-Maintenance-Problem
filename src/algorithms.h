@@ -27,23 +27,26 @@ private:
             &algorithms::col_s,
     };
 
-    tuple<int, int>compute_LR(const vector<int>&);
-    vector<int> weighted_interval(const vector<int>&, const vector<int>&, const vector<int>&,
-                                        vector<int>, const vector<int>&);
-    int compute_opt(int, const vector<int>&, const vector<int>&, vector<int>,
-                                        vector<int>, vector<int>);
-    vector<int> find_solution(int, const vector<int>&, const vector<int>&,
-                                      vector<int>, vector<int>,
-                                      vector<int>, vector<int>);
+    tuple<int, int> compute_LR(const vector<int> &);
+
+    vector<int> weighted_interval(const vector<int> &, const vector<int> &, const vector<int> &,
+                                  vector<int>, const vector<int> &);
+
+    int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>,
+                    vector<int>, vector<int>);
+
+    vector<int> find_solution(int, const vector<int> &, const vector<int> &,
+                              vector<int>, vector<int>,
+                              vector<int>, vector<int>);
 
 public:
     explicit algorithms(deployment *);
+
     solution run_experiment(int);
 
     /// Opt
     solution opt_ilp();
     solution knapsack_opt();
-
     ///APX
     solution bin_s();
     solution col_s();

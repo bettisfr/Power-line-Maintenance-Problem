@@ -6,7 +6,7 @@
 
 using namespace std;
 
-double numpy(mt19937& g) {
+double numpy(mt19937 &g) {
     int a = g() >> 5;
     int b = g() >> 6;
     double value = (a * 67108864.0 + b) / 9007199254740992.0;
@@ -23,7 +23,7 @@ deployment::deployment(const input &par) {
     int max_interval_len = par.max_interval_len;
     int max_profit = par.max_profit;
     int max_load = par.max_load;
-    
+
     height = par.height;
     energy_per_flight = par.energy_per_flight;
 
@@ -65,13 +65,6 @@ deployment::deployment(const input &par) {
 tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights() {
     // For any launch L and rendezvous point R, compute the set of deliveries such that their
     // launch and rendezvous point lies in [L, R]
-    vector<int> launches = this->get_launches();
-    vector<int> rendezvouses = this->get_rendezvouses();
-    int energy_per_flight = this->get_energy_per_flight();
-    int drone_battery = this->get_drone_battery();
-    vector<int> delivery_points = this->get_delivery_points();
-    int drone_load = this->get_drone_load();
-
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
 
@@ -107,12 +100,6 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights() {
 }
 
 double deployment::compute_energy(const vector<int> &delivery_ids) {
-    vector<int> delivery_points = this->get_delivery_points();
-    vector<int> launches = this->get_launches();
-    vector<int> rendezvouses = this->get_rendezvouses();
-    int height = this->get_height();
-    int energy_per_flight = this->get_energy_per_flight();
-
     vector<int> delivery_locations;
     vector<int> launch_points;
     vector<int> rendezvous_points;
@@ -138,7 +125,6 @@ double deployment::compute_energy(const vector<int> &delivery_ids) {
 
 int deployment::compute_profit(const vector<int> &delivery_ids) {
     int profit = 0;
-    vector<int> profits = this->get_profits();
     for (auto id: delivery_ids) {
         profit += profits[id];
     }
@@ -148,7 +134,6 @@ int deployment::compute_profit(const vector<int> &delivery_ids) {
 
 int deployment::compute_load(const vector<int> &delivery_ids) {
     int load = 0;
-    vector<int> loads = this->get_loads();
     for (auto id: delivery_ids) {
         load += loads[id];
     }
@@ -175,9 +160,11 @@ const vector<int> &deployment::get_profits() const {
 const vector<int> &deployment::get_loads() const {
     return loads;
 }
+
 const vector<int> &deployment::get_delivery_points() const {
     return delivery_points;
 }
+
 int deployment::get_drone_battery() const {
     return drone_battery;
 }

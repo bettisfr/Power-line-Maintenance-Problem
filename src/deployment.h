@@ -31,19 +31,33 @@ private:
 
 public:
     explicit deployment(const input &);
+
     int get_num_deliveries() const;
+
     const vector<int> &get_launches() const;
+
     const vector<int> &get_rendezvouses() const;
+
     const vector<int> &get_profits() const;
+
     const vector<int> &get_loads() const;
+
     const vector<int> &get_delivery_points() const;
+
     int get_drone_battery() const;
+
     int get_drone_load() const;
+
     int get_height() const;
+
     int get_energy_per_flight() const;
-    int compute_profit(const vector<int>&);
-    int compute_load(const vector<int>&);
+
+    int compute_profit(const vector<int> &);
+
+    int compute_load(const vector<int> &);
+
     tuple<vector<vector<int>>, vector<double>> compute_all_flights();
+
     double compute_energy(const vector<int> &delivery_ids);
 };
 
