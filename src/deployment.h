@@ -5,6 +5,7 @@
 #include <vector>
 #include <random>
 #include <numeric>
+#include <algorithm>
 
 #include "input.h"
 #include "definitions.h"
