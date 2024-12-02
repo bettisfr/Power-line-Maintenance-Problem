@@ -14,10 +14,10 @@ void print_parameters(const input &par) {
     map<int, string> algorithm_str = {
             {0, "ILP (OPT-unit-load)"},
             {1, "ILP (OPT-arbitrary-load)"},
-            {2, "Heuristic 2 (H2)"},
-            {3, "bin_s (APX)"},
-            {4, "Knapsack (OPT)"},
-            {5, "Col-s (APX)"}
+            {2, "bin_s (APX)"},
+            {3, "Knapsack (OPT)"},
+            {4, "Col-s (APX)"},
+            {5, "greedy_reward_selection_unit_load (HEU)"},
     };
     /// change the list
 

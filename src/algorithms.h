@@ -26,6 +26,7 @@ private:
             &algorithms::bin_s,
             &algorithms::knapsack_opt,
             &algorithms::col_s,
+            &algorithms::greedy_reward_selection_unit_load
     };
 
     tuple<int, int> compute_LR(const vector<int> &);
@@ -42,13 +43,14 @@ private:
 
     solution opt_ilp_helper(vector<vector<int>>&, vector<double>&);
 
+    bool getOverlap(int, int, int, int);
+
+    bool check_correct_interval(vector<vector<int>>, vector<int>, vector<int>, int, int);
+
 public:
     explicit algorithms(deployment *);
 
-    solution run_experiment(int);
-
-    
-
+    solution run_experiment(int);    
     /// Opt
     solution opt_ilp_unit_load();
     solution opt_ilp_arbitrary_load();
@@ -56,6 +58,8 @@ public:
     ///APX
     solution bin_s();
     solution col_s();
+    //heuristics
+    solution greedy_reward_selection_unit_load();
 };
 
 #endif //ALGORITHMS_H

@@ -26,11 +26,6 @@ solution algorithms::run_experiment(int algorithm) {
 }
 
 
-
-
-
-
-
 solution algorithms::opt_ilp_helper(vector<vector<int>>& all_flights, vector<double>& energy_costs){
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep->get_num_deliveries();
@@ -617,7 +612,6 @@ solution algorithms::col_s() {
     }
     solution solution;
 
-
     solution.total_profit = max_profit;
     solution.total_energy_cost = max_cost;
     solution.selected_intervals = int_sol;
@@ -626,5 +620,101 @@ solution algorithms::col_s() {
     return solution;
 }
 
-///
+// Heuristics
+
+bool algorithms::check_correct_interval(vector<vector<int>> flights, vector<int> launches_flights, vector<int> rendezvouses_flights, int L, int R){
+    for (int i=0; i < flights.size(); i++){
+        if ( (launches_flights[i] <= L && L <= rendezvouses_flights[i]) || (launches_flights[i] <= R && R <= rendezvouses_flights[i]) ){
+            return false;
+        }  
+    }
+    return true;
+}
+
+solution algorithms::greedy_reward_selection_unit_load(){
+    auto sets = dep->compute_all_flights_equal_load();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    int total_reward = 0;
+    double cost = 0.0;
+    int B = dep->get_drone_battery();
+
+    vector<int> launches_temp;
+    vector<int> rendezvouses_temp;
+    vector<int> profits_temp;
+
+    for (const auto &flight: all_flights_temp) {
+        auto points = compute_LR(flight);
+        launches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+
+    for (const auto &flight: all_flights_temp) {
+        int profit = dep->compute_profit(flight);
+        profits_temp.push_back(profit);
+    }
+
+    vector<vector<int>> all_flights_copy;
+    vector<double> energy_costs_copy;
+    vector<int> profits_copy;
+    vector<int> launches_copy;
+    vector<int> rendezvouses_copy;
+
+    // sort according to profits_temp (decreasing order)
+    vector<pair<int, int> > Ri;
+    for (int i = 0; i < all_flights_temp.size(); i++) {
+        Ri.emplace_back(profits_temp[i], i);
+    }
+
+    sort(Ri.begin(), Ri.end());
+    reverse(Ri.begin(), Ri.end());
+
+    for (auto it: Ri) {
+        all_flights_copy.push_back(all_flights_temp[it.second]);
+        energy_costs_copy.push_back(energy_costs_temp[it.second]);
+        profits_copy.push_back(profits_temp[it.second]);
+        launches_copy.push_back(launches_temp[it.second]);
+        rendezvouses_copy.push_back(rendezvouses_temp[it.second]);
+    }
+
+    vector<vector<int>> result;
+    vector<int> launches_result;
+    vector<int> rendezvouses_result;
+
+    while (all_flights_copy.size() != 0 && B != 0){
+        vector<int>task = all_flights_copy[0];
+
+        if (result.size() == 0){
+            if (energy_costs_copy[0] <= B){
+                result.push_back(task);
+                launches_result.push_back(launches_copy[0]);
+                rendezvouses_result.push_back(rendezvouses_copy[0]);
+                total_reward = total_reward + profits_copy[0];
+                B = B - energy_costs_copy[0];
+                cost = cost + energy_costs_copy[0];
+            } 
+        } else {
+            if (energy_costs_copy[0] <= B && check_correct_interval(result, launches_result, rendezvouses_result, launches_copy[0], rendezvouses_copy[0])){
+                result.push_back(task);
+                total_reward = total_reward + profits_copy[0];
+                B = B - energy_costs_copy[0];
+                cost = cost + energy_costs_copy[0];
+            }       
+        }
+        // remove task
+        all_flights_copy.erase(find(all_flights_copy.begin(), all_flights_copy.end(), all_flights_copy[0]));
+        energy_costs_copy.erase(find(energy_costs_copy.begin(), energy_costs_copy.end(), energy_costs_copy[0]));
+        profits_copy.erase(find(profits_copy.begin(), profits_copy.end(), profits_copy[0]));
+        launches_copy.erase(find(launches_copy.begin(), launches_copy.end(), launches_copy[0]));
+        rendezvouses_copy.erase(find(rendezvouses_copy.begin(), rendezvouses_copy.end(), rendezvouses_copy[0]));
+    }
+
+    solution sol;
+    sol.total_profit = total_reward;
+    sol.total_energy_cost = cost;
+    sol.selected_intervals = result;
+  
+    return sol;
+}
 
