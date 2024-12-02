@@ -25,35 +25,26 @@ solution algorithms::run_experiment(int algorithm) {
     return out;
 }
 
-solution algorithms::opt_ilp() {
-    auto sets = dep->compute_all_flights();
-    vector<vector<int>> all_flights = get<0>(sets);
-    vector<double> energy_costs = get<1>(sets);
 
+
+
+
+
+
+solution algorithms::opt_ilp_helper(vector<vector<int>>& all_flights, vector<double>& energy_costs){
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep->get_num_deliveries();
-//    int drone_load = dep->get_drone_load();
-
     int B = dep->get_drone_battery();
+    // vector<int> flights_load;
 
-    vector<int> flights_load;
     vector<int> flights_profit;
     for (const auto &f: all_flights) {
-        int load = dep->compute_load(f);
-        flights_load.push_back(load);
-
+        // int load = dep->compute_load(f);
+        // flights_load.push_back(load);
         int profit = dep->compute_profit(f);
         flights_profit.push_back(profit);
     }
-
-    // for (int i=0;i<all_flights.size(); i++){
-    //     for (auto j:all_flights[i]){
-    //         cout << j << ", ";
-    //     }
-    //     cout << " load: " << flights_load[i] << " Energy: " << energy_costs[i] 
-    //                       << " p: "<< flights_profit[i]<< endl;
-    // }                    
-
+                   
     solution sol;
 
     try {
@@ -80,7 +71,7 @@ solution algorithms::opt_ilp() {
 
         model.update();
 
-        // (3) in the paper
+        // constr (3)
         GRBLinExpr sum_y;
         for (int j = 0; j < num_deliveries; j++) {
             sum_y = 0;
@@ -92,7 +83,7 @@ solution algorithms::opt_ilp() {
             model.addConstr(sum_y <= 1);
         }
 
-        // (4)
+        // constr (4)
         for (int i = 0; i < X; i++) {
             for (int k = 0; k < X; k++) {
                 if (i != k) {
@@ -103,19 +94,19 @@ solution algorithms::opt_ilp() {
             }
         }
 
-        // (5), this is already satisfied
+        // constr (5), this is already satisfied
         // for (int i = 0; i < X; i++){
         //     model.addConstr(flights_load[i] * x[i] <= drone_load);
         // }
 
-        // (6)
+        // constr (6)
         GRBLinExpr sum_energy = 0;
         for (int i = 0; i < X; i++) {
             sum_energy += energy_costs[i] * x[i];
         }
         model.addConstr(sum_energy <= B);
 
-        // (1)
+        // for obj function (1)
         GRBLinExpr sum_profit = 0;
         for (int i = 0; i < X; i++) {
             sum_profit += flights_profit[i] * x[i];
@@ -127,9 +118,18 @@ solution algorithms::opt_ilp() {
 
         cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
+        double total_cost = 0.0;
+        double total_profit = 0.0;
         for (int i = 0; i < X; i++) {
-            cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
+            // cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
+            if (x[i].get(GRB_DoubleAttr_X) > 0){
+                sol.selected_intervals.push_back(all_flights[i]);
+                total_cost = total_cost + energy_costs[i];
+                total_profit = total_profit + flights_profit[i];
+            }
         }
+        sol.total_energy_cost = total_cost;
+        sol.total_profit = total_profit;
 
     } catch (GRBException &e) {
         cout << "Error code = " << e.getErrorCode() << endl;
@@ -140,6 +140,26 @@ solution algorithms::opt_ilp() {
 
     return sol;
 }
+
+
+solution algorithms::opt_ilp_unit_load() {
+    auto sets = dep->compute_all_flights_equal_load();
+    vector<vector<int>> all_flights = get<0>(sets);
+    vector<double> energy_costs = get<1>(sets);
+
+    return opt_ilp_helper(all_flights, energy_costs);
+}
+
+solution algorithms::opt_ilp_arbitrary_load() {
+    solution sol;
+    auto sets = dep->compute_all_flights_arbitrary_load();
+    vector<vector<int>> all_flights = get<0>(sets);
+    vector<double> energy_costs = get<1>(sets);
+
+    return opt_ilp_helper(all_flights, energy_costs);
+}
+
+
 
 /////////// bin_s /////////
 tuple<int, int> algorithms::compute_LR(const vector<int> &flight) {
@@ -208,7 +228,7 @@ solution algorithms::bin_s() {
 
     int B = dep->get_drone_battery();
     // compute all flights and energy, then sort them
-    auto sets = dep->compute_all_flights();
+    auto sets = dep->compute_all_flights_equal_load();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -248,14 +268,7 @@ solution algorithms::bin_s() {
     }
 
     // compute p
-    vector<int> p = util::largest_nonoverlap_delivery(launches, rendezvouses);
-
-    // for (int i=0;i<all_flights.size(); i++){
-    //     for (auto j:all_flights[i]){
-    //         cout << j << ", ";
-    //     }
-    //     cout << " L: " << launches[i] << " R: " << rendezvouses[i] << " p: " << p[i] << endl;
-    // }    
+    vector<int> p = util::largest_nonoverlap_delivery(launches, rendezvouses); 
 
     vector<int> opt; // profits
     vector<int> pp = weighted_interval(launches, rendezvouses, profits, opt, p);
@@ -265,16 +278,10 @@ solution algorithms::bin_s() {
     opt_flights = find_solution(static_cast<int>(launches.size() - 1), launches, rendezvouses, profits, pp, p, O);
     reverse(opt_flights.begin(), opt_flights.end());
 
-    // cout << "opt_flights: ";
-    // for (auto f:opt_flights){
-    //     cout << f << " , ";
-    // }
-    // cout << endl;
-
     // bin packing
     vector<vector<int>> bin_sol;
     vector<int> reward(opt_flights.size(), 0);
-    vector<int> cost(opt_flights.size(), 0);
+    vector<double> cost(opt_flights.size(), 0.0);
 
     for (int i = 0; i < opt_flights.size(); i++) {
         bin_sol.emplace_back();
@@ -288,7 +295,7 @@ solution algorithms::bin_s() {
                 assigned = true;
                 bin_sol[j].push_back(k);
                 reward[j] = reward[j] + profits[k];
-                cost[j] += energy_costs[k]; // FIXME: cost is "int", "energy_cost" is double...
+                cost[j] += energy_costs[k];
             }
         }
 
@@ -304,33 +311,21 @@ solution algorithms::bin_s() {
         }
     }
 
-    // for (int i = 0; i < bin_sol.size(); i++){
-    //     for (auto j:bin_sol[i]){
-    //         cout << j << " , ";
-    //     }
-    //     cout << " reward: " << reward[i] << " cost: " << cost[i] << endl;
-    // }
-
     int opt_id = distance(reward.begin(), max_element(reward.begin(), reward.end()));
 
-    vector<vector<int>> selected;
     if (!bin_sol.empty()) {
         for (auto flight_id: bin_sol[opt_id]) {
-            selected.push_back(all_flights[flight_id]);
+            sol.selected_intervals.push_back(all_flights[flight_id]);
         }
 
         sol.total_energy_cost = cost[opt_id];
         sol.total_profit = reward[opt_id];
     }
 
-//    sol.total_energy_cost = cost[opt_id];
-//    sol.total_profit = reward[opt_id];
-
     return sol;
 }
 
 //// Knapsack
-
 solution algorithms::knapsack_opt() {
     // cout << "knapsack" << endl;
     cout << "Currently this function is not optimal due to rounding" << endl;
@@ -341,7 +336,7 @@ solution algorithms::knapsack_opt() {
     solution sol;
     int B = dep->get_drone_battery();
     // compute all flights and energy, then sort them
-    auto sets = dep->compute_all_flights();
+    auto sets = dep->compute_all_flights_equal_load();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -474,7 +469,6 @@ solution algorithms::knapsack_opt() {
     return solution;
 }
 
-///
 
 //// Col-S
 solution algorithms::col_s() {
@@ -486,7 +480,7 @@ solution algorithms::col_s() {
     solution sol;
     int B = dep->get_drone_battery();
     // compute all flights and energy, then sort them
-    auto sets = dep->compute_all_flights();
+    auto sets = dep->compute_all_flights_equal_load();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 

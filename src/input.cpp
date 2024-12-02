@@ -12,8 +12,8 @@ void print_parameters(const input &par) {
     };
 
     map<int, string> algorithm_str = {
-            {0, "ILP (OPT)"},
-            {1, "Heuristic 1 (H1)"},
+            {0, "ILP (OPT-unit-load)"},
+            {1, "ILP (OPT-arbitrary-load)"},
             {2, "Heuristic 2 (H2)"},
             {3, "bin_s (APX)"},
             {4, "Knapsack (OPT)"},

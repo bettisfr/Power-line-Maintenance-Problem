@@ -1,5 +1,6 @@
 #include <random>
 #include <iostream>
+#include <set>
 #include "deployment.h"
 #include "algorithms.h"
 #include "util.h"
@@ -62,7 +63,61 @@ deployment::deployment(const input &par) {
     cout << endl;
 }
 
-tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights() {
+// to find all unique subsets
+void deployment::findSubsets(vector<int>& v, int idx, vector<int>& subset, set<vector<int>>& result){
+    if (!subset.empty())
+        result.insert(subset);
+
+    for (int j = idx; j < v.size(); j++) {
+        subset.push_back(v[j]);
+        findSubsets(v, j + 1, subset, result);
+
+        // Backtrack to drop the element
+        subset.pop_back();
+    }
+}
+
+
+// return all unique subsets
+vector<vector<int> > deployment::compute_all_subsets(vector<int>& v){
+    set<vector<int> > result;
+    vector<int> subset;
+
+    findSubsets(v, 0, subset, result);
+
+    vector<vector<int> > res;
+    for (auto v : result)
+        res.push_back(v);
+
+    return res;
+}
+
+
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_load() {
+    // consider all deliveries and compute all possible flights
+    vector<int>ids;
+    for (int i = 0; i < launches.size(); i++){
+        ids.push_back(i);
+    }
+    
+    vector<vector<int> > all_subsets = compute_all_subsets(ids);
+    // for each subset in all_subsets, check load and energy
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+
+    for(auto flight:all_subsets){
+        double energy = compute_energy(flight);
+        int load = compute_load(flight);
+        if (energy <= drone_battery && load <= drone_load){
+            all_flights.push_back(flight);
+            energy_costs.push_back(energy);
+        }
+    }
+    
+    return {all_flights, energy_costs};
+}
+
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_equal_load() {
     // For any launch L and rendezvous point R, compute the set of deliveries such that their
     // launch and rendezvous point lies in [L, R]
     vector<vector<int>> all_flights;

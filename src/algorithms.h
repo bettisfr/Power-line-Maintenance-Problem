@@ -21,7 +21,8 @@ private:
     deployment *dep;
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
-            &algorithms::opt_ilp,
+            &algorithms::opt_ilp_unit_load,
+            &algorithms::opt_ilp_arbitrary_load,
             &algorithms::bin_s,
             &algorithms::knapsack_opt,
             &algorithms::col_s,
@@ -39,13 +40,18 @@ private:
                               vector<int>, vector<int>,
                               vector<int>, vector<int>);
 
+    solution opt_ilp_helper(vector<vector<int>>&, vector<double>&);
+
 public:
     explicit algorithms(deployment *);
 
     solution run_experiment(int);
 
+    
+
     /// Opt
-    solution opt_ilp();
+    solution opt_ilp_unit_load();
+    solution opt_ilp_arbitrary_load();
     solution knapsack_opt();
     ///APX
     solution bin_s();
