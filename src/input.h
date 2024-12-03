@@ -28,7 +28,8 @@ struct input {
     // 3: knapsack,
     // 4: col-s,
     // 5: greedy_reward_selection_unit_load
-    int algorithm = 5;
+    // 6: greedy_reward_selection_arbitrary_load
+    int algorithm = 6;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -37,7 +38,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 15;
+    int num_deliveries = 6;
 
     // Maximum length of the road
     int max_len_road = 1000;
@@ -52,7 +53,7 @@ struct input {
     int max_load = 1;
 
     // Drone's energy drone_battery
-    int battery = 40000;
+    int battery = 20000;
 
     // Drone's drone_load capacity
     int load = 4;

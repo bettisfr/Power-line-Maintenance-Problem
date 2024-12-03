@@ -26,7 +26,8 @@ private:
             &algorithms::bin_s,
             &algorithms::knapsack_opt,
             &algorithms::col_s,
-            &algorithms::greedy_reward_selection_unit_load
+            &algorithms::greedy_reward_selection_unit_load,
+            &algorithms::greedy_reward_selection_arbitrary_load
     };
 
     tuple<int, int> compute_LR(const vector<int> &);
@@ -47,6 +48,8 @@ private:
 
     bool check_correct_interval(vector<vector<int>>, vector<int>, vector<int>, int, int);
 
+    solution greedy_reward_selection_helper(vector<vector<int>>, vector<double>);
+
 public:
     explicit algorithms(deployment *);
 
@@ -60,6 +63,7 @@ public:
     solution col_s();
     //heuristics
     solution greedy_reward_selection_unit_load();
+    solution greedy_reward_selection_arbitrary_load();
 };
 
 #endif //ALGORITHMS_H

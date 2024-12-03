@@ -18,6 +18,7 @@ void print_parameters(const input &par) {
             {3, "Knapsack (OPT)"},
             {4, "Col-s (APX)"},
             {5, "greedy_reward_selection_unit_load (HEU)"},
+            {6, "greedy_reward_selection_arbitrary_load (HEU)"},
     };
     /// change the list
 
