@@ -29,7 +29,9 @@ struct input {
     // 4: col-s,
     // 5: greedy_reward_selection_unit_load
     // 6: greedy_reward_selection_arbitrary_load
-    int algorithm = 6;
+    // 7: greedy_energy_selection_unit_load
+    // 8: greedy_energy_selection_arbitrary_load
+    int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;

@@ -27,7 +27,9 @@ private:
             &algorithms::knapsack_opt,
             &algorithms::col_s,
             &algorithms::greedy_reward_selection_unit_load,
-            &algorithms::greedy_reward_selection_arbitrary_load
+            &algorithms::greedy_reward_selection_arbitrary_load,
+            &algorithms::greedy_energy_selection_unit_load,
+            &algorithms::greedy_energy_selection_arbitrary_load,
     };
 
     tuple<int, int> compute_LR(const vector<int> &);
@@ -50,6 +52,12 @@ private:
 
     solution greedy_reward_selection_helper(vector<vector<int>>, vector<double>);
 
+    solution greedy_energy_selection_helper(vector<vector<int>>, vector<double>);
+
+    solution flight_selectin_in_heu(vector<vector<int>>,vector<double>,
+                                            vector<int>, vector<int>, vector<int>);
+
+
 public:
     explicit algorithms(deployment *);
 
@@ -64,6 +72,8 @@ public:
     //heuristics
     solution greedy_reward_selection_unit_load();
     solution greedy_reward_selection_arbitrary_load();
+    solution greedy_energy_selection_unit_load();
+    solution greedy_energy_selection_arbitrary_load();
 };
 
 #endif //ALGORITHMS_H
