@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <iomanip>
+
 
 #include "gurobi_c++.h"
 #include "util.h"
@@ -16,7 +18,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 8) {
+    if (index >= 0 && index <= 9) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -796,4 +798,72 @@ solution algorithms::greedy_energy_selection_arbitrary_load(){
     vector<double> energy_costs_temp = get<1>(sets);
 
     return greedy_energy_selection_helper(all_flights_temp, energy_costs_temp);  
+}
+
+solution algorithms::greedy_reward_energy_selection_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp){
+    vector<int> launches_temp;
+    vector<int> rendezvouses_temp;
+    vector<int> profits_temp;
+
+    for (const auto &flight: all_flights_temp) {
+        auto points = compute_LR(flight);
+        launches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+
+    for (const auto &flight: all_flights_temp) {
+        int profit = dep->compute_profit(flight);
+        profits_temp.push_back(profit);
+    }
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+    vector<int> profits;
+    vector<int> launches;
+    vector<int> rendezvouses;
+
+    double a = 100.0/187798.0;
+    cout << " rrrrrrr: " << a << endl;
+
+    vector<double> reward_energy;
+    for (int i = 0; i < all_flights_temp.size(); i++){
+        // cout << profits_temp[i] << " " << energy_costs_temp[i] << endl;
+        double ratio = (double) profits_temp[i]/energy_costs_temp[i];
+        //cout << ratio << endl;
+        reward_energy.push_back(ratio);
+    }
+
+    // for (auto i:reward_energy){
+    //     cout << i << endl;
+    // }
+    
+
+    // sort according to reward/energy
+    vector<pair<int, int> > Ri;
+    for (int i = 0; i < all_flights_temp.size(); i++) {
+        Ri.emplace_back(reward_energy[i], i);
+    }
+
+
+
+    sort(Ri.begin(), Ri.end());
+    reverse(Ri.begin(), Ri.end());
+
+    for (auto it: Ri) {
+        all_flights.push_back(all_flights_temp[it.second]);
+        energy_costs.push_back(energy_costs_temp[it.second]);
+        profits.push_back(profits_temp[it.second]);
+        launches.push_back(launches_temp[it.second]);
+        rendezvouses.push_back(rendezvouses_temp[it.second]);
+    }
+
+    return flight_selectin_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
+}
+
+solution algorithms::greedy_reward_energy_selection_unit_load(){
+    auto sets = dep->compute_all_flights_equal_load();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    return greedy_reward_energy_selection_helper(all_flights_temp, energy_costs_temp);  
 }

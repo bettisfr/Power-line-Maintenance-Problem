@@ -30,6 +30,7 @@ private:
             &algorithms::greedy_reward_selection_arbitrary_load,
             &algorithms::greedy_energy_selection_unit_load,
             &algorithms::greedy_energy_selection_arbitrary_load,
+            &algorithms::greedy_reward_energy_selection_unit_load,
     };
 
     tuple<int, int> compute_LR(const vector<int> &);
@@ -56,7 +57,8 @@ private:
 
     solution flight_selectin_in_heu(vector<vector<int>>,vector<double>,
                                             vector<int>, vector<int>, vector<int>);
-
+    
+    solution greedy_reward_energy_selection_helper(vector<vector<int>>, vector<double>);
 
 public:
     explicit algorithms(deployment *);
@@ -74,6 +76,7 @@ public:
     solution greedy_reward_selection_arbitrary_load();
     solution greedy_energy_selection_unit_load();
     solution greedy_energy_selection_arbitrary_load();
+    solution greedy_reward_energy_selection_unit_load();
 };
 
 #endif //ALGORITHMS_H
