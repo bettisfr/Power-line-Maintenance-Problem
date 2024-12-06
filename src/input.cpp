@@ -22,6 +22,7 @@ void print_parameters(const input &par) {
             {7, "greedy_energy_selection_unit_load (HEU)"},
             {8, "greedy_energy_selection_arbitrary_load (HEU)"},
             {9, "greedy_reward_energy_selection_unit_load (HEU)"}, 
+            {10, "greedy_reward_energy_selection_arbitrary_load (HEU)"}, 
     };
     /// change the list
 

@@ -18,7 +18,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 9) {
+    if (index >= 0 && index <= 10) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -800,6 +800,8 @@ solution algorithms::greedy_energy_selection_arbitrary_load(){
     return greedy_energy_selection_helper(all_flights_temp, energy_costs_temp);  
 }
 
+
+//// TODO
 solution algorithms::greedy_reward_energy_selection_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp){
     vector<int> launches_temp;
     vector<int> rendezvouses_temp;
@@ -822,29 +824,17 @@ solution algorithms::greedy_reward_energy_selection_helper(vector<vector<int>> a
     vector<int> launches;
     vector<int> rendezvouses;
 
-    double a = 100.0/187798.0;
-    cout << " rrrrrrr: " << a << endl;
-
     vector<double> reward_energy;
     for (int i = 0; i < all_flights_temp.size(); i++){
-        // cout << profits_temp[i] << " " << energy_costs_temp[i] << endl;
         double ratio = (double) profits_temp[i]/energy_costs_temp[i];
-        //cout << ratio << endl;
         reward_energy.push_back(ratio);
     }
 
-    // for (auto i:reward_energy){
-    //     cout << i << endl;
-    // }
-    
-
     // sort according to reward/energy
-    vector<pair<int, int> > Ri;
+    vector<pair<double, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
         Ri.emplace_back(reward_energy[i], i);
     }
-
-
 
     sort(Ri.begin(), Ri.end());
     reverse(Ri.begin(), Ri.end());
@@ -861,6 +851,14 @@ solution algorithms::greedy_reward_energy_selection_helper(vector<vector<int>> a
 }
 
 solution algorithms::greedy_reward_energy_selection_unit_load(){
+    auto sets = dep->compute_all_flights_equal_load();
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    return greedy_reward_energy_selection_helper(all_flights_temp, energy_costs_temp);  
+}
+
+solution algorithms::greedy_reward_energy_selection_arbitrary_load(){
     auto sets = dep->compute_all_flights_equal_load();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
