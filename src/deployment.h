@@ -58,7 +58,7 @@ public:
 
     int compute_load(const vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_equal_load();
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_equal_load(const vector<int> &, const int &);
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_load();
 
@@ -67,6 +67,9 @@ public:
     void findSubsets(vector<int>&, int, vector<int>&, set<vector<int>>&);
 
     vector<vector<int>> compute_all_subsets(vector<int>&);
+
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_load_limited();
+
 };
 
 #endif //DEPLOYMENT_H
