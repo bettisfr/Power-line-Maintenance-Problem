@@ -24,16 +24,22 @@ struct input {
 
     // 0: opt_ilp_unit_load,
     // 1: opt_ilp_arbitrary_load,
-    // 2: bin_s,
-    // 3: knapsack,
-    // 4: col-s,
-    // 5: greedy_reward_selection_unit_load
-    // 6: greedy_reward_selection_arbitrary_load
-    // 7: greedy_energy_selection_unit_load
-    // 8: greedy_energy_selection_arbitrary_load
-    // 9: greedy_reward_energy_selection_unit_load
-    // 10: greedy_reward_energy_selection_arbitrary_load
-    int algorithm = 9;
+    // 2: bin_s_unit_load,
+    // 3: bin_s_arbitrary_load,
+    // 4: knapsack_opt_unit_load,
+    // 5: knapsack_heu_arbitrary_load,
+    // 6: col_s,
+    // 6: col_s_unit_load,
+    // 7: col_s_arbitrary_load,
+    // 8: greedy_reward_selection_unit_load
+    // 9: greedy_reward_selection_arbitrary_load
+    // 10: greedy_energy_selection_unit_load
+    // 11: greedy_energy_selection_arbitrary_load
+    // 12: greedy_reward_energy_selection_unit_load
+    // 13: greedy_reward_energy_selection_arbitrary_load
+    // 14: greedy_reward_load_selection_unit_load
+    // 15: greedy_reward_load_selection_arbitrary_load
+    int algorithm = 6;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -54,7 +60,7 @@ struct input {
     int max_profit = 15;
 
     // Maximum drone_load for a delivery
-    int max_load = 3;
+    int max_load = 1;
 
     // Drone's energy drone_battery
     int battery = 30000;

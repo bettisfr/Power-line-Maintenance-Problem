@@ -23,9 +23,13 @@ private:
     vector<function<solution(algorithms &)>> algorithm_functions = {
             &algorithms::opt_ilp_unit_load,
             &algorithms::opt_ilp_arbitrary_load,
-            &algorithms::bin_s,
-            &algorithms::knapsack_opt,
+            &algorithms::bin_s_unit_load,
+            &algorithms::bin_s_arbitrary_load,
+            &algorithms::knapsack_opt_unit_load,
+            &algorithms::knapsack_heu_arbitrary_load,
             &algorithms::col_s,
+            //&algorithms::col_s_unit_load,
+            //&algorithms::col_s_arbitrary_load,
             &algorithms::greedy_reward_selection_unit_load,
             &algorithms::greedy_reward_selection_arbitrary_load,
             &algorithms::greedy_energy_selection_unit_load,
@@ -65,6 +69,14 @@ private:
 
     solution greedy_reward_load_selection_helper(vector<vector<int>>, vector<double>);
 
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx(string);
+
+    solution bin_s_helper(string);
+
+    solution knapsack_opt_helper(string);
+
+    solution col_s_helper(string);
+
 public:
     explicit algorithms(deployment *);
 
@@ -72,11 +84,15 @@ public:
     /// Opt
     solution opt_ilp_unit_load();
     solution opt_ilp_arbitrary_load();
-    solution knapsack_opt();
+    solution knapsack_opt_unit_load();
     ///APX
-    solution bin_s();
+    solution bin_s_unit_load();
+    solution bin_s_arbitrary_load(); 
     solution col_s();
+    //solution col_s_unit_load();
     //heuristics
+    solution knapsack_heu_arbitrary_load();
+    //solution col_s_arbitrary_load();
     solution greedy_reward_selection_unit_load();
     solution greedy_reward_selection_arbitrary_load();
     solution greedy_energy_selection_unit_load();
