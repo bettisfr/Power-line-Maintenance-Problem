@@ -30,8 +30,13 @@ private:
 
     int height;
     int energy_per_flight;
+    bool is_load_unit;
 
 public:
+    bool isLoadUnit() const;
+
+    void setIsLoadUnit(bool isLoadUnit);
+
     explicit deployment(const input &);
 
     int get_num_deliveries() const;

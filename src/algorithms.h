@@ -21,28 +21,13 @@ private:
     deployment *dep;
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
-            &algorithms::opt_ilp_ul, // ul = unit load
-            &algorithms::opt_ilp,    // arbitrary load
-
-            &algorithms::bin_s_ul,
-            &algorithms::bin_s,
-
-            &algorithms::knapsack_opt_ul,
-            &algorithms::knapsack_heu,
-
-            //&algorithms::col_s_ul,
-            &algorithms::col_s,
-
-            &algorithms::greedy_reward_ul,
+            &algorithms::opt_ilp,
+            &algorithms::bin_packing,
+            &algorithms::knapsack,
+            &algorithms::coloring, // TODO
             &algorithms::greedy_reward,
-
-            &algorithms::greedy_energy_ul,
             &algorithms::greedy_energy,
-
-            &algorithms::greedy_reward_energy_ul,
             &algorithms::greedy_reward_energy,
-
-            &algorithms::greedy_reward_load_ul,
             &algorithms::greedy_reward_load,
     };
 
@@ -59,54 +44,57 @@ private:
                               vector<int>, vector<int>);
 
     solution opt_ilp_helper(vector<vector<int>>&, vector<double>&);
+    solution opt_ilp_ul();
+    solution opt_ilp_al();
 
     bool get_overlap(int, int, int, int);
 
     static bool check_correct_interval(const vector<vector<int>>&, vector<int>, vector<int>, int, int);
 
     solution greedy_reward_helper(vector<vector<int>>, vector<double>);
+    solution greedy_reward_ul();
+    solution greedy_reward_al();
 
     solution greedy_energy_helper(vector<vector<int>>, vector<double>);
+    solution greedy_energy_ul();
+    solution greedy_energy_al();
 
-    solution flight_selection_in_heu(vector<vector<int>>,vector<double>,
-                                            vector<int>, vector<int>, vector<int>);
+    solution flight_selection_in_heu(vector<vector<int>>,vector<double>, vector<int>, vector<int>, vector<int>);
     
     solution greedy_reward_energy_helper(vector<vector<int>>, vector<double>);
+    solution greedy_reward_energy_ul();
+    solution greedy_reward_energy_al();
 
     solution greedy_reward_load_helper(vector<vector<int>>, vector<double>);
+    solution greedy_reward_load_ul();
+    solution greedy_reward_load_al();
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx(const string&);
 
-    solution bin_s_helper(const string&);
+    solution bin_packing_helper(const string&);
+    solution bin_packing_ul();
+    solution bin_packing_al();
 
     solution knapsack_opt_helper(const string&);
+    solution knapsack_opt_ul();
+    solution knapsack_heu_al();
 
-    solution col_s_helper(const string&);
+    solution coloring_helper(const string&);
 
 public:
     explicit algorithms(deployment *);
 
-    solution run_experiment(int);    
-    /// Opt
-    solution opt_ilp_ul();
+    solution run_experiment(int);
+
     solution opt_ilp();
-    solution knapsack_opt_ul();
-    ///APX
-    solution bin_s_ul();
-    solution bin_s();
-    solution col_s();
-    //solution col_s_ul();
-    //heuristics
-    solution knapsack_heu();
-    //solution col_s();
-    solution greedy_reward_ul();
+    solution bin_packing();
+    solution knapsack();
     solution greedy_reward();
-    solution greedy_energy_ul();
     solution greedy_energy();
-    solution greedy_reward_energy_ul();
     solution greedy_reward_energy();
-    solution greedy_reward_load_ul();
     solution greedy_reward_load();
+
+    solution coloring();
 };
 
 #endif //ALGORITHMS_H

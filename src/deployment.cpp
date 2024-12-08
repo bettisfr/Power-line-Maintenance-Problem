@@ -24,6 +24,8 @@ deployment::deployment(const input &par) {
     int max_profit = par.max_profit;
     int max_load = par.max_load;
 
+    is_load_unit = (max_load == 1);
+
     height = par.height;
     energy_per_flight = par.energy_per_flight;
 
@@ -287,4 +289,6 @@ int deployment::get_energy_per_flight() const {
     return energy_per_flight;
 }
 
-
+bool deployment::isLoadUnit() const {
+    return is_load_unit;
+}
