@@ -33,15 +33,11 @@ private:
 
     tuple<int, int> compute_LR(const vector<int> &);
 
-    vector<int> weighted_interval(const vector<int> &, const vector<int> &, const vector<int> &,
-                                  vector<int>, const vector<int> &);
+    vector<int> weighted_interval(const vector<int> &, const vector<int> &, const vector<int> &, vector<int>, const vector<int> &);
 
-    int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>,
-                    vector<int>, vector<int>);
+    int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>);
 
-    vector<int> find_solution(int, const vector<int> &, const vector<int> &,
-                              vector<int>, vector<int>,
-                              vector<int>, vector<int>);
+    vector<int> find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
     solution opt_ilp_helper(vector<vector<int>>&, vector<double>&);
     solution opt_ilp_ul();
@@ -69,17 +65,18 @@ private:
     solution greedy_reward_load_ul();
     solution greedy_reward_load_al();
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx(const string&);
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>>
+    sorting_with_rendezvouses_in_apx();
 
-    solution bin_packing_helper(const string&);
+    solution bin_packing_helper();
     solution bin_packing_ul();
     solution bin_packing_al();
 
-    solution knapsack_opt_helper(const string&);
+    solution knapsack_opt_helper();
     solution knapsack_opt_ul();
     solution knapsack_heu_al();
 
-    solution coloring_helper(const string&);
+    solution coloring_helper();
 
 public:
     explicit algorithms(deployment *);

@@ -137,7 +137,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     for (const auto& f:load_flight){
         int total_load = floor(drone_load / f.first);
 
-        auto fights_energies = compute_all_flights_equal_load(f.second, total_load);
+        auto fights_energies = compute_all_flights_unitary_load(f.second, total_load);
 
         vector<vector<int>> all_flights_f = get<0>(fights_energies);
         vector<double> energy_costs_f = get<1>(fights_energies);
@@ -153,7 +153,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
 
 
 
-tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_equal_load(const vector<int> &deliveries_id, const int &total_load) {
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unitary_load(const vector<int> &deliveries_id, const int &total_load) {
     // For any launch L and rendezvous point R, compute the all set of deliveries such that their
     // launch and rendezvous point lies in [L, R]
 

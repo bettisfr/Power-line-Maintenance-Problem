@@ -63,7 +63,7 @@ public:
 
     int compute_load(const vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_equal_load(const vector<int> &, const int &);
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_load(const vector<int> &, const int &);
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_load();
 
