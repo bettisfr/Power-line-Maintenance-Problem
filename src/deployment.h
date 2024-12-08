@@ -64,7 +64,7 @@ public:
 
     double compute_energy(const vector<int> &delivery_ids);
 
-    void findSubsets(vector<int>&, int, vector<int>&, set<vector<int>>&);
+    void find_subsets(vector<int> &v, int idx, vector<int> &subset, set<vector<int>> &result);
 
     vector<vector<int>> compute_all_subsets(vector<int>&);
 

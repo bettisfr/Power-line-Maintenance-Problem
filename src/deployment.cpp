@@ -2,7 +2,6 @@
 #include <iostream>
 #include <set>
 #include "deployment.h"
-#include "algorithms.h"
 #include "util.h"
 
 using namespace std;
@@ -64,13 +63,13 @@ deployment::deployment(const input &par) {
 }
 
 // to find all unique subsets
-void deployment::findSubsets(vector<int>& v, int idx, vector<int>& subset, set<vector<int>>& result){
+void deployment::find_subsets(vector<int>& v, int idx, vector<int>& subset, set<vector<int>>& result){
     if (!subset.empty())
         result.insert(subset);
 
     for (int j = idx; j < v.size(); j++) {
         subset.push_back(v[j]);
-        findSubsets(v, j + 1, subset, result);
+        find_subsets(v, j + 1, subset, result);
         // Backtrack to drop the element
         subset.pop_back();
     }
@@ -81,10 +80,10 @@ void deployment::findSubsets(vector<int>& v, int idx, vector<int>& subset, set<v
 vector<vector<int> > deployment::compute_all_subsets(vector<int>& v){
     set<vector<int> > result;
     vector<int> subset;
-    findSubsets(v, 0, subset, result);
+    find_subsets(v, 0, subset, result);
     vector<vector<int> > res;
-    for (auto v : result)
-        res.push_back(v);
+    for (const auto& tmp: result)
+        res.push_back(tmp);
 
     return res;
 }
@@ -102,7 +101,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
 
-    for(auto flight:all_subsets){
+    for(const auto& flight:all_subsets){
         double energy = compute_energy(flight);
         int load = compute_load(flight);
         if (energy <= drone_battery && load <= drone_load){
@@ -133,7 +132,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
 
-    for (auto f:load_flight){
+    for (const auto& f:load_flight){
         int total_load = floor(drone_load / f.first);
 
         auto fights_energies = compute_all_flights_equal_load(f.second, total_load);
@@ -159,7 +158,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_equal
 
     vector<pair<int, int>> profit_id;
     for (int i:deliveries_id){
-        profit_id.push_back(make_pair(profits[i], i));
+        profit_id.emplace_back(profits[i], i);
     }
 
     sort(profit_id.begin(), profit_id.end()); 

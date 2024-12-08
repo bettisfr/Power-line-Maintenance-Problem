@@ -16,28 +16,34 @@ using namespace std;
 class algorithms {
 
 private:
-    constexpr static const double epsilon = 0.01;
+//    constexpr static const double epsilon = 0.01;
 
     deployment *dep;
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
-            &algorithms::opt_ilp_unit_load,
-            &algorithms::opt_ilp_arbitrary_load,
-            &algorithms::bin_s_unit_load,
-            &algorithms::bin_s_arbitrary_load,
-            &algorithms::knapsack_opt_unit_load,
-            &algorithms::knapsack_heu_arbitrary_load,
+            &algorithms::opt_ilp_ul, // ul = unit load
+            &algorithms::opt_ilp,    // arbitrary load
+
+            &algorithms::bin_s_ul,
+            &algorithms::bin_s,
+
+            &algorithms::knapsack_opt_ul,
+            &algorithms::knapsack_heu,
+
+            //&algorithms::col_s_ul,
             &algorithms::col_s,
-            //&algorithms::col_s_unit_load,
-            //&algorithms::col_s_arbitrary_load,
-            &algorithms::greedy_reward_selection_unit_load,
-            &algorithms::greedy_reward_selection_arbitrary_load,
-            &algorithms::greedy_energy_selection_unit_load,
-            &algorithms::greedy_energy_selection_arbitrary_load,
-            &algorithms::greedy_reward_energy_selection_unit_load,
-            &algorithms::greedy_reward_energy_selection_arbitrary_load,
-            &algorithms::greedy_reward_load_selection_unit_load,
-            &algorithms::greedy_reward_load_selection_arbitrary_load,
+
+            &algorithms::greedy_reward_ul,
+            &algorithms::greedy_reward,
+
+            &algorithms::greedy_energy_ul,
+            &algorithms::greedy_energy,
+
+            &algorithms::greedy_reward_energy_ul,
+            &algorithms::greedy_reward_energy,
+
+            &algorithms::greedy_reward_load_ul,
+            &algorithms::greedy_reward_load,
     };
 
     tuple<int, int> compute_LR(const vector<int> &);
@@ -54,53 +60,53 @@ private:
 
     solution opt_ilp_helper(vector<vector<int>>&, vector<double>&);
 
-    bool getOverlap(int, int, int, int);
+    bool get_overlap(int, int, int, int);
 
-    bool check_correct_interval(vector<vector<int>>, vector<int>, vector<int>, int, int);
+    static bool check_correct_interval(const vector<vector<int>>&, vector<int>, vector<int>, int, int);
 
-    solution greedy_reward_selection_helper(vector<vector<int>>, vector<double>);
+    solution greedy_reward_helper(vector<vector<int>>, vector<double>);
 
-    solution greedy_energy_selection_helper(vector<vector<int>>, vector<double>);
+    solution greedy_energy_helper(vector<vector<int>>, vector<double>);
 
-    solution flight_selectin_in_heu(vector<vector<int>>,vector<double>,
+    solution flight_selection_in_heu(vector<vector<int>>,vector<double>,
                                             vector<int>, vector<int>, vector<int>);
     
-    solution greedy_reward_energy_selection_helper(vector<vector<int>>, vector<double>);
+    solution greedy_reward_energy_helper(vector<vector<int>>, vector<double>);
 
-    solution greedy_reward_load_selection_helper(vector<vector<int>>, vector<double>);
+    solution greedy_reward_load_helper(vector<vector<int>>, vector<double>);
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx(string);
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx(const string&);
 
-    solution bin_s_helper(string);
+    solution bin_s_helper(const string&);
 
-    solution knapsack_opt_helper(string);
+    solution knapsack_opt_helper(const string&);
 
-    solution col_s_helper(string);
+    solution col_s_helper(const string&);
 
 public:
     explicit algorithms(deployment *);
 
     solution run_experiment(int);    
     /// Opt
-    solution opt_ilp_unit_load();
-    solution opt_ilp_arbitrary_load();
-    solution knapsack_opt_unit_load();
+    solution opt_ilp_ul();
+    solution opt_ilp();
+    solution knapsack_opt_ul();
     ///APX
-    solution bin_s_unit_load();
-    solution bin_s_arbitrary_load(); 
+    solution bin_s_ul();
+    solution bin_s();
     solution col_s();
-    //solution col_s_unit_load();
+    //solution col_s_ul();
     //heuristics
-    solution knapsack_heu_arbitrary_load();
-    //solution col_s_arbitrary_load();
-    solution greedy_reward_selection_unit_load();
-    solution greedy_reward_selection_arbitrary_load();
-    solution greedy_energy_selection_unit_load();
-    solution greedy_energy_selection_arbitrary_load();
-    solution greedy_reward_energy_selection_unit_load();
-    solution greedy_reward_energy_selection_arbitrary_load();
-    solution greedy_reward_load_selection_unit_load();
-    solution greedy_reward_load_selection_arbitrary_load();
+    solution knapsack_heu();
+    //solution col_s();
+    solution greedy_reward_ul();
+    solution greedy_reward();
+    solution greedy_energy_ul();
+    solution greedy_energy();
+    solution greedy_reward_energy_ul();
+    solution greedy_reward_energy();
+    solution greedy_reward_load_ul();
+    solution greedy_reward_load();
 };
 
 #endif //ALGORITHMS_H

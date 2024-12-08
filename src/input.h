@@ -22,23 +22,23 @@ struct input {
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
 
-    // 0: opt_ilp_unit_load,
-    // 1: opt_ilp_arbitrary_load,
-    // 2: bin_s_unit_load,
-    // 3: bin_s_arbitrary_load,
-    // 4: knapsack_opt_unit_load,
-    // 5: knapsack_heu_arbitrary_load,
+    // 0: opt_ilp_ul,
+    // 1: opt_ilp,
+    // 2: bin_s_ul,
+    // 3: bin_s,
+    // 4: knapsack_opt_ul,
+    // 5: knapsack_heu,
     // 6: col_s,
     // 6: col_s_unit_load,
     // 7: col_s_arbitrary_load,
-    // 8: greedy_reward_selection_unit_load
-    // 9: greedy_reward_selection_arbitrary_load
-    // 10: greedy_energy_selection_unit_load
-    // 11: greedy_energy_selection_arbitrary_load
-    // 12: greedy_reward_energy_selection_unit_load
-    // 13: greedy_reward_energy_selection_arbitrary_load
-    // 14: greedy_reward_load_selection_unit_load
-    // 15: greedy_reward_load_selection_arbitrary_load
+    // 8: greedy_reward_ul
+    // 9: greedy_reward
+    // 10: greedy_energy_ul
+    // 11: greedy_energy
+    // 12: greedy_reward_energy_ul
+    // 13: greedy_reward_energy
+    // 14: greedy_reward_load_ul
+    // 15: greedy_reward_load
     int algorithm = 6;
 
     // Number or random instances to be performed (when doing plots)
