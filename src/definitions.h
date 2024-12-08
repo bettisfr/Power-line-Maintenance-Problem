@@ -20,8 +20,8 @@ struct solution {
         os << "Total profit: " << out.total_profit << endl;
         os << "Total energy costs: " << out.total_energy_cost << endl;
         os << "Selected intervals: " << endl;
-        for (const auto& s : out.selected_intervals) {
-            for (auto e : s) {
+        for (const auto &s: out.selected_intervals) {
+            for (auto e: s) {
                 os << e << ", ";
             }
             os << endl;

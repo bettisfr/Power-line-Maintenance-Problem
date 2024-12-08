@@ -71,7 +71,7 @@ public:
 
     void find_subsets(vector<int> &v, int idx, vector<int> &subset, set<vector<int>> &result);
 
-    vector<vector<int>> compute_all_subsets(vector<int>&);
+    vector<vector<int>> compute_all_subsets(vector<int> &);
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_load_limited();
 

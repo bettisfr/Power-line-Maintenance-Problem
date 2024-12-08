@@ -12,23 +12,14 @@ void print_parameters(const input &par) {
     };
 
     map<int, string> algorithm_str = {
-            {0, "ILP (OPT-unit-load)"},
-            {1, "ILP (OPT-arbitrary-load)"},
-            {2, "bin_s_ul (APX)"},
-            {3, "bin_s_al (HEU)"},
-            {4, "knapsack_opt_ul"},
-            {5, "knapsack_heu_al (HEU)"},
-            {6, "coloring (OPT)"},
-            // {6, "col_s_unit_load (OPT)"},
-            // {7, "col_s_arbitrary_load (HEU)"},
-            {8, "greedy_reward_ul (HEU)"},
-            {9, "greedy_reward_al (HEU)"},
-            {10, "greedy_energy_ul (HEU)"},
-            {11, "greedy_energy_al (HEU)"},
-            {12, "greedy_reward_energy_ul (HEU)"},
-            {13, "greedy_reward_energy_al (HEU)"},
-            {14, "greedy_reward_load_ul (HEU)"},
-            {15, "greedy_reward_load_al (HEU)"},
+            {0,  "OPT (ILP)"},
+            {1,  "bin_packing"},
+            {2,  "knapsack"},
+            {3,  "coloring"},
+            {4,  "greedy_reward"},
+            {5,  "greedy_energy"},
+            {6,  "greedy_reward_energy"},
+            {7,  "greedy_reward_load"},
     };
     /// change the list
 
