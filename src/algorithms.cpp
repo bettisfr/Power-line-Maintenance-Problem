@@ -494,47 +494,12 @@ solution algorithms::coloring_helper() {
     // Variables
     int B = dep->get_drone_battery();
 
-    // compute all flights and energy, then sort them
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-    auto sets = dep->compute_all_flights_unitary_load(deliveries_id, dep->get_drone_load());
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    vector<int> launches_temp;
-    vector<int> rendezvouses_temp;
-
-    // Logic
-    for (const auto &flight: all_flights_temp) {
-        auto points = compute_LR(flight);
-        launches_temp.push_back(get<0>(points));
-        rendezvouses_temp.push_back(get<1>(points));
-    }
-
-    vector<pair<int, int> > Ri;
-    // sort according to rendezvouses_temp
-    for (int i = 0; i < all_flights_temp.size(); i++) {
-        Ri.emplace_back(rendezvouses_temp[i], i);
-    }
-
-    sort(Ri.begin(), Ri.end());
-
-    vector<vector<int>> all_flights;
-    vector<double> energy_costs;
-    vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
-
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        launches.push_back(launches_temp[it.second]);
-        rendezvouses.push_back(rendezvouses_temp[it.second]);
-        profits.push_back(dep->compute_profit(all_flights_temp[it.second]));
-    }
+    auto parameters = sorting_with_rendezvouses_in_apx();
+    vector<vector<int>> all_flights = get<0>(parameters);
+    vector<double> energy_costs = get<1>(parameters);
+    vector<int> profits = get<2>(parameters);
+    vector<int> launches = get<3>(parameters);
+    vector<int> rendezvouses = get<4>(parameters);
 
     // for (int i=0; i<rendezvouses.size(); i++) {
     //     cout << "[" << launches[i] << "," << rendezvouses[i] << "]" << endl;
