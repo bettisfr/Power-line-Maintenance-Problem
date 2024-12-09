@@ -607,7 +607,7 @@ solution algorithms::coloring_helper() {
         profit = 0;
         selection.clear();
         sort(color_ratios.begin(), color_ratios.end());
-        for (auto i = color_ratios.size() - 1; i >= 0; i--) {
+        for (int i = static_cast<int>(color_ratios.size()) - 1; i >= 0; i--) {
             curr_index = static_cast<int>(color_ratios[i][1]);
             if (cost + energy_costs[curr_index] <= B) {
                 cost += energy_costs[curr_index];
