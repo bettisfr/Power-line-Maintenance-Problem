@@ -38,8 +38,7 @@ private:
 
     int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>);
 
-    vector<int>
-    find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
+    vector<int> find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
     solution opt_ilp_helper(vector<vector<int>> &, vector<double> &);
 
@@ -77,8 +76,7 @@ private:
 
     solution greedy_reward_load_al();
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>>
-    sorting_with_rendezvouses_in_apx();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx();
 
     solution bin_packing_helper();
 

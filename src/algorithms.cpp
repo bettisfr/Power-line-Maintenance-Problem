@@ -809,7 +809,7 @@ solution algorithms::greedy_reward_energy_helper(vector<vector<int>> all_flights
 
     vector<double> reward_energy;
     for (int i = 0; i < all_flights_temp.size(); i++) {
-        double ratio = (double) profits_temp[i] / energy_costs_temp[i];
+        double ratio =  static_cast<double>(profits_temp[i]) / energy_costs_temp[i];
         reward_energy.push_back(ratio);
     }
 
