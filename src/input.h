@@ -30,7 +30,7 @@ struct input {
     // greedy_energy 5
     // greedy_reward_energy 6
     // greedy_reward_load 7
-    int algorithm = 0;
+    int algorithm = 7;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -48,7 +48,7 @@ struct input {
     int max_interval_len = 100;
 
     // Maximum value for a delivery
-    int max_profit = 50;
+    int max_profit = 15;
 
     // Maximum drone_load for a delivery
     int max_load = 1;
