@@ -624,12 +624,29 @@ solution algorithms::coloring_al() {
 /////////////   Heuristics   ////////////////
 bool algorithms::check_correct_interval(const vector<vector<int>> &flights, vector<int> launches_flights,
                                         vector<int> rendezvouses_flights, int L, int R) {
+    // for (int i = 0; i < flights.size(); i++) {
+    //     if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) ||
+    //         (launches_flights[i] <= R && R <= rendezvouses_flights[i])) {
+    //         return false;
+    //     }
+    // }
+    // return true;
+
+    // no intersection true
     for (int i = 0; i < flights.size(); i++) {
-        if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) ||
-            (launches_flights[i] <= R && R <= rendezvouses_flights[i])) {
+        if (L <= launches_flights[i] && launches_flights[i] <= R){
+            return false;
+        }
+
+        if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) || (launches_flights[i] <= R && R <= rendezvouses_flights[i])){
+            return false;
+        }
+
+        if (L <= rendezvouses_flights[i] && rendezvouses_flights[i] <= R){
             return false;
         }
     }
+
     return true;
 }
 
@@ -658,6 +675,14 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
         } else {
             if (energy_costs[0] <= B &&
                 check_correct_interval(result, launches_result, rendezvouses_result, launches[0], rendezvouses[0])) {
+                    
+                    // for (int i = 0; i < result.size(); i++){
+                    //     cout << launches_result[i] << " , " <<  rendezvouses_result[i] << endl;
+                    // }
+
+                    // cout << "l: " << launches[0] << " r: " << rendezvouses[0] << endl;
+                    
+                
                 result.push_back(task);
                 total_reward += profits[0];
                 B -= static_cast<int>(energy_costs[0]);
@@ -935,7 +960,7 @@ solution algorithms::greedy_reward_load_ul() {
 }
 
 solution algorithms::greedy_reward_load_al() {
-    auto sets = dep->compute_all_flights_arbitrary_load_limited();   //////////????????
+    auto sets = dep->compute_all_flights_arbitrary_load_limited(); 
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
