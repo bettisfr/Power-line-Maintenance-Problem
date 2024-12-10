@@ -18,7 +18,7 @@ double util::get_distance(int x1, int y1, int x2, int y2) {
 
 bool util::check_intersection(vector<int> flight1, vector<int> flight2) {   
     for (int i:flight1){
-        if (  find(flight2.begin(), flight2.end(), i) != flight2.end()  ){ // intersect false
+        if (find(flight2.begin(), flight2.end(), i) != flight2.end()){ // if intersection
             return true;
         }
     }
