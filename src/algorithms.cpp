@@ -118,7 +118,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         for (int i = 0; i < X; i++) {
             // cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
             if (x[i].get(GRB_DoubleAttr_X) > 0) {
-                sol.selected_intervals.push_back(all_flights[i]);
+                sol.intervals.push_back(all_flights[i]);
                 total_cost = total_cost + energy_costs[i];
                 total_profit = total_profit + flights_profit[i];
             }
@@ -339,7 +339,7 @@ solution algorithms::bin_packing_helper() {
 
     if (!bin_sol.empty()) {
         for (auto flight_id: bin_sol[opt_id]) {
-            sol.selected_intervals.push_back(all_flights[flight_id]);
+            sol.intervals.push_back(all_flights[flight_id]);
         }
 
         sol.total_energy_cost = cost[opt_id];
@@ -444,8 +444,10 @@ solution algorithms::knapsack_opt_helper() {
 
     solution solution;
 
-    vector<vector<int>> int_sol;
-    vector<int> interval;
+    vector<vector<int>> selected_intervals;
+    vector<int> sel_int_profits;
+    vector<double> sel_int_energies;
+    vector<int> sel_int_loads;
 
     // cout << " OPT reward = " << opt_reward[numFlights][B] << endl;
     // cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
@@ -454,18 +456,28 @@ solution algorithms::knapsack_opt_helper() {
             remove(opt_intervals[numFlights][B].begin(), opt_intervals[numFlights][B].end(), 0),
             opt_intervals[numFlights][B].end()
     );
-    for (int i: opt_intervals[numFlights][B]) {
-//         cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] - 1 << endl;
-//        interval.clear();
-//        interval.push_back(launches[i]);
-//        interval.push_back(rendezvouses[i]);
-//        int_sol.push_back(interval);
-        int_sol.push_back(all_flights[i-1]);
+    for (int i : opt_intervals[numFlights][B]) {
+        selected_intervals.push_back(all_flights[i - 1]);
+
+        int tmp_profit = 0;
+        double tmp_energy_cost = 0;
+        int tmp_load = 0;
+        for (int j : all_flights[i - 1]) {
+            tmp_profit += dep->get_profits()[j];
+            tmp_load += dep->get_loads()[j];
+        }
+
+        sel_int_profits.push_back(tmp_profit);
+        sel_int_loads.push_back(tmp_load);
+        sel_int_energies.push_back(-1.); // TODO
     }
 
     solution.total_profit = opt_reward[numFlights][B];
     solution.total_energy_cost = opt_costs[numFlights][B];
-    solution.selected_intervals = int_sol;
+    solution.intervals = selected_intervals;
+    solution.profits = sel_int_profits;
+    solution.loads = sel_int_loads;
+    solution.energies = sel_int_energies;
 
     return solution;
 }
@@ -602,7 +614,7 @@ solution algorithms::coloring_helper() {
 
     solution.total_profit = max_profit;
     solution.total_energy_cost = max_cost;
-    solution.selected_intervals = int_sol;
+    solution.intervals = int_sol;
     // cout << "max profit " << max_profit << endl;
     return solution;
 }
@@ -694,7 +706,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     solution sol;
     sol.total_profit = total_reward;
     sol.total_energy_cost = cost;
-    sol.selected_intervals = result;
+    sol.intervals = result;
 
     return sol;
 }
