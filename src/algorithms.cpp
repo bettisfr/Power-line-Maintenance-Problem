@@ -457,6 +457,7 @@ solution algorithms::knapsack_opt_helper() {
 //    remove(opt_intervals[numFlights][B].begin(), opt_intervals[numFlights][B].end(), 0);
     for (int i: opt_intervals[numFlights][B]) {
         // cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] - 1 << endl;
+        cout << " OPT Intervals = " << i << endl;
         interval.clear();
         interval.push_back(launches[i]);
         interval.push_back(rendezvouses[i]);
