@@ -415,7 +415,7 @@ solution algorithms::knapsack_opt_helper() {
             if (energy_costs[i] <= b) {
                 // current item
                 i_reward = profits[i];
-                i_cost = static_cast<int>(energy_costs[i]);
+                i_cost = static_cast<int>(energy_costs[i]) + 1;
                 //last compatible item
                 pred_reward = opt_reward[predecessors[i]][b - i_cost];
                 pred_cost = opt_costs[predecessors[i]][b - i_cost];
@@ -590,9 +590,14 @@ solution algorithms::coloring_helper() {
     }
 
     vector<vector<int>> int_sol;
+    // for (int i: max_selection) {
+    //     int_sol.push_back({launches[i], rendezvouses[i]});
+    // }
+
     for (int i: max_selection) {
-        int_sol.push_back({launches[i], rendezvouses[i]});
+        int_sol.push_back(all_flights[i]);
     }
+
     solution solution;
 
     solution.total_profit = max_profit;
@@ -652,31 +657,37 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
 
     while (!all_flights.empty() && B != 0) {
         vector<int> task = all_flights[0];
+        int L = launches[0];
+        int R = rendezvouses[0];
 
         if (result.empty()) {
             if (energy_costs[0] <= B) {
                 result.push_back(task);
-                launches_result.push_back(launches[0]);
-                rendezvouses_result.push_back(rendezvouses[0]);
+                launches_result.push_back(L);
+                rendezvouses_result.push_back(R);
                 total_reward += profits[0];
-                B -= static_cast<int>(energy_costs[0]);
+                // B -= static_cast<int>(energy_costs[0]);
+                B -= energy_costs[0];
                 cost += energy_costs[0];
             }
         } else {
             if (energy_costs[0] <= B &&
-                check_correct_interval(result, launches_result, rendezvouses_result, launches[0], rendezvouses[0])) {
+                check_correct_interval(result, launches_result, rendezvouses_result, L, R)) {
                 result.push_back(task);
                 total_reward += profits[0];
-                B -= static_cast<int>(energy_costs[0]);
+                launches_result.push_back(L);
+                rendezvouses_result.push_back(R);
+                // B -= static_cast<int>(energy_costs[0]);
+                B -= energy_costs[0];
                 cost += energy_costs[0];
             }
         }
         // remove task
-        all_flights.erase(find(all_flights.begin(), all_flights.end(), all_flights[0]));
-        energy_costs.erase(find(energy_costs.begin(), energy_costs.end(), energy_costs[0]));
-        profits.erase(find(profits.begin(), profits.end(), profits[0]));
-        launches.erase(find(launches.begin(), launches.end(), launches[0]));
-        rendezvouses.erase(find(rendezvouses.begin(), rendezvouses.end(), rendezvouses[0]));
+        all_flights.erase(all_flights.begin());
+        energy_costs.erase(energy_costs.begin());
+        profits.erase(profits.begin());
+        launches.erase(launches.begin());
+        rendezvouses.erase(rendezvouses.begin());
     }
 
     cout << total_reward << endl;
