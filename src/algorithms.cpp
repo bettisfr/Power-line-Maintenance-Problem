@@ -457,7 +457,6 @@ solution algorithms::knapsack_opt_helper() {
 //    remove(opt_intervals[numFlights][B].begin(), opt_intervals[numFlights][B].end(), 0);
     for (int i: opt_intervals[numFlights][B]) {
         // cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] - 1 << endl;
-        cout << " OPT Intervals = " << i << endl;
         interval.clear();
         interval.push_back(launches[i]);
         interval.push_back(rendezvouses[i]);
@@ -603,7 +602,6 @@ solution algorithms::coloring_helper() {
     return solution;
 }
 
-//////////// CHECK
 //// Col-S
 solution algorithms::coloring() {
     if (dep->isLoadUnit()) {
@@ -624,14 +622,6 @@ solution algorithms::coloring_al() {
 /////////////   Heuristics   ////////////////
 bool algorithms::check_correct_interval(const vector<vector<int>> &flights, vector<int> launches_flights,
                                         vector<int> rendezvouses_flights, int L, int R) {
-    // for (int i = 0; i < flights.size(); i++) {
-    //     if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) ||
-    //         (launches_flights[i] <= R && R <= rendezvouses_flights[i])) {
-    //         return false;
-    //     }
-    // }
-    // return true;
-
     // no intersection true
     for (int i = 0; i < flights.size(); i++) {
         if (L <= launches_flights[i] && launches_flights[i] <= R){
@@ -675,14 +665,6 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
         } else {
             if (energy_costs[0] <= B &&
                 check_correct_interval(result, launches_result, rendezvouses_result, launches[0], rendezvouses[0])) {
-                    
-                    // for (int i = 0; i < result.size(); i++){
-                    //     cout << launches_result[i] << " , " <<  rendezvouses_result[i] << endl;
-                    // }
-
-                    // cout << "l: " << launches[0] << " r: " << rendezvouses[0] << endl;
-                    
-                
                 result.push_back(task);
                 total_reward += profits[0];
                 B -= static_cast<int>(energy_costs[0]);
