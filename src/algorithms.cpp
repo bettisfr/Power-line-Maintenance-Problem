@@ -454,13 +454,13 @@ solution algorithms::knapsack_opt_helper() {
             remove(opt_intervals[numFlights][B].begin(), opt_intervals[numFlights][B].end(), 0),
             opt_intervals[numFlights][B].end()
     );
-//    remove(opt_intervals[numFlights][B].begin(), opt_intervals[numFlights][B].end(), 0);
     for (int i: opt_intervals[numFlights][B]) {
-        // cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] - 1 << endl;
-        interval.clear();
-        interval.push_back(launches[i]);
-        interval.push_back(rendezvouses[i]);
-        int_sol.push_back(interval);
+//         cout << " OPT Intervals = " << opt_intervals[numFlights][B][i] - 1 << endl;
+//        interval.clear();
+//        interval.push_back(launches[i]);
+//        interval.push_back(rendezvouses[i]);
+//        int_sol.push_back(interval);
+        int_sol.push_back(all_flights[i-1]);
     }
 
     solution.total_profit = opt_reward[numFlights][B];
