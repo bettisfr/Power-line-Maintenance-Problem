@@ -11,8 +11,8 @@ using namespace std;
 struct solution {
     // General info to be saved
     int total_profit = -1;
-    double total_energy_cost = -1;
-    vector<vector<int>> intervals;
+    double total_energy = -1;
+    vector<vector<int>> total_flights;
     vector<int> profits;
     vector<double> energies;
     vector<int> loads;
@@ -21,10 +21,10 @@ struct solution {
 
     friend ostream &operator<<(ostream &os, const solution &out) {
         os << "Total profit=" << out.total_profit << endl;
-        os << "Total energy=" << out.total_energy_cost << endl;
-        os << "Total flights=" << out.intervals.size() << endl;
+        os << "Total energy=" << out.total_energy << endl;
+        os << "Total flights=" << out.total_flights.size() << endl;
         int i = 0;
-        for (const auto &s: out.intervals) {
+        for (const auto &s: out.total_flights) {
             os << "Flight=" << i << " -> ";
             for (auto e: s) {
                 os << "[" << e << "] ";

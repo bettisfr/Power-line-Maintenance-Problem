@@ -118,12 +118,12 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         for (int i = 0; i < X; i++) {
             // cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
             if (x[i].get(GRB_DoubleAttr_X) > 0) {
-                sol.intervals.push_back(all_flights[i]);
+                sol.total_flights.push_back(all_flights[i]);
                 total_cost = total_cost + energy_costs[i];
                 total_profit = total_profit + flights_profit[i];
             }
         }
-        sol.total_energy_cost = total_cost;
+        sol.total_energy = total_cost;
         sol.total_profit = total_profit;
 
     } catch (GRBException &e) {
@@ -339,10 +339,10 @@ solution algorithms::bin_packing_helper() {
 
     if (!bin_sol.empty()) {
         for (auto flight_id: bin_sol[opt_id]) {
-            sol.intervals.push_back(all_flights[flight_id]);
+            sol.total_flights.push_back(all_flights[flight_id]);
         }
 
-        sol.total_energy_cost = cost[opt_id];
+        sol.total_energy = cost[opt_id];
         sol.total_profit = reward[opt_id];
     }
 
@@ -469,12 +469,12 @@ solution algorithms::knapsack_opt_helper() {
 
         sel_int_profits.push_back(tmp_profit);
         sel_int_loads.push_back(tmp_load);
-        sel_int_energies.push_back(dep->compute_energy(all_flights[i - 1])); // TODO
+        sel_int_energies.push_back(dep->compute_energy(all_flights[i - 1]));
     }
 
     solution.total_profit = opt_reward[numFlights][B];
-    solution.total_energy_cost = opt_costs[numFlights][B];
-    solution.intervals = selected_intervals;
+    solution.total_energy = opt_costs[numFlights][B];
+    solution.total_flights = selected_intervals;
     solution.profits = sel_int_profits;
     solution.loads = sel_int_loads;
     solution.energies = sel_int_energies;
@@ -520,7 +520,7 @@ solution algorithms::coloring_helper() {
     vector<vector<vector<int>>> colors;
     auto n = rendezvouses.size();
 
-    // initialize the colors which is at most n, the number of intervals
+    // initialize the colors which is at most n, the number of total_flights
     for (int i = 0; i < n; i++) {
         colors.emplace_back();
     }
@@ -613,8 +613,8 @@ solution algorithms::coloring_helper() {
     solution solution;
 
     solution.total_profit = max_profit;
-    solution.total_energy_cost = max_cost;
-    solution.intervals = int_sol;
+    solution.total_energy = max_cost;
+    solution.total_flights = int_sol;
     // cout << "max profit " << max_profit << endl;
     return solution;
 }
@@ -705,8 +705,8 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     cout << total_reward << endl;
     solution sol;
     sol.total_profit = total_reward;
-    sol.total_energy_cost = cost;
-    sol.intervals = result;
+    sol.total_energy = cost;
+    sol.total_flights = result;
 
     return sol;
 }
