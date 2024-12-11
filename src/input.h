@@ -30,7 +30,7 @@ struct input {
     // greedy_energy 5
     // greedy_reward_energy 6
     // greedy_reward_load 7
-    int algorithm = 7;
+    int algorithm = 2;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;

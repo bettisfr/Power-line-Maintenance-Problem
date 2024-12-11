@@ -469,7 +469,7 @@ solution algorithms::knapsack_opt_helper() {
 
         sel_int_profits.push_back(tmp_profit);
         sel_int_loads.push_back(tmp_load);
-        sel_int_energies.push_back(-1.); // TODO
+        sel_int_energies.push_back(dep->compute_energy(all_flights[i - 1])); // TODO
     }
 
     solution.total_profit = opt_reward[numFlights][B];
