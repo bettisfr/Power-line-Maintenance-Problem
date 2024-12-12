@@ -62,8 +62,8 @@ struct input {
     // Height of the deliveries
     int height = 2;
 
-    //Energy consumption of a drone per distance 
-    int energy_per_flight = 1;
+    // Energy consumption of a drone per distance
+    int energy_unit_cost = 1;
 };
 
 void print_parameters(const input &);

@@ -29,7 +29,7 @@ private:
     int drone_load;
 
     int height;
-    int energy_per_flight;
+    int energy_unit_cost;
     bool is_load_unit;
 
 public:

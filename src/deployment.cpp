@@ -27,7 +27,7 @@ deployment::deployment(const input &par) {
     is_load_unit = (max_load == 1);
 
     height = par.height;
-    energy_per_flight = par.energy_per_flight;
+    energy_unit_cost = par.energy_unit_cost;
 
     drone_battery = par.battery;
     drone_load = par.load;
@@ -223,7 +223,7 @@ double deployment::compute_energy(const vector<int> &delivery_ids) {
     double b = R_delivery - L_delivery;
     double c = util::get_distance(R_delivery, height, R, 0);
 
-    return (a + b + c) * energy_per_flight;
+    return (a + b + c) * energy_unit_cost;
 }
 
 int deployment::compute_profit(const vector<int> &delivery_ids) {
@@ -281,7 +281,7 @@ int deployment::get_height() const {
 }
 
 int deployment::get_energy_per_flight() const {
-    return energy_per_flight;
+    return energy_unit_cost;
 }
 
 bool deployment::isLoadUnit() const {
