@@ -1,9 +1,10 @@
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 
-#include "input.h"
-#include "output.h"
-#include "algorithms.h"
+#include "io/input.h"
+#include "io/output.h"
+#include "core/algorithms.h"
 
 using namespace std;
 

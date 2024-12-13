@@ -1,7 +1,6 @@
 #include "gurobi_c++.h"
 #include <iterator>
-#include "definitions.h"
-#include "algorithms.h"
+#include "../core/algorithms.h"
 #include <cmath>
 #include <algorithm>
 #include <vector>

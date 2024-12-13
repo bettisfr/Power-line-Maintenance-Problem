@@ -8,7 +8,8 @@
 #include <cmath>
 #include <unordered_set>
 
-#include "input.h"
+#include "../io/input.h"
+#include "../io/output.h"
 #include "deployment.h"
 
 using namespace std;

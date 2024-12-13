@@ -2,7 +2,7 @@
 #include <iostream>
 #include <set>
 #include "deployment.h"
-#include "util.h"
+#include "../util/util.h"
 
 using namespace std;
 

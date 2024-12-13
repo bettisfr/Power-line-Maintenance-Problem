@@ -1,12 +1,11 @@
 #include "algorithms.h"
-#include "definitions.h"
 #include <vector>
 #include <algorithm>
 #include <iterator>
 #include <iomanip>
 
 #include "gurobi_c++.h"
-#include "util.h"
+#include "../util/util.h"
 
 algorithms::algorithms(deployment *m_dep) {
     dep = m_dep;

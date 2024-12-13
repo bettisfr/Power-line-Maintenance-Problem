@@ -8,8 +8,7 @@
 #include <algorithm>
 #include <set>
 
-#include "input.h"
-#include "definitions.h"
+#include "../io/input.h"
 
 using namespace std;
 
