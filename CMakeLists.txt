@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.23)
+include(FetchContent)
 
+FetchContent_Declare(matplotplusplus
+        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
+        GIT_TAG origin/master) # or whatever tag you want
+FetchContent_GetProperties(matplotplusplus)
+if(NOT matplotplusplus_POPULATED)
+    FetchContent_Populate(matplotplusplus)
+    add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 project(code)
 
@@ -40,7 +49,10 @@ set(sources src/algorithms.cpp
         src/deployment.cpp
         src/deployment.h
         src/util.cpp
-        src/util.h)
+        src/util.h
+        src/plots.cpp
+        src/plots.h
+)
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
@@ -52,7 +64,7 @@ if(CXX)
             debug ${GUROBI_CXX_DEBUG_LIBRARY})
 endif()
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ${GUROBI_LIBRARY})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${GUROBI_LIBRARY} matplot)
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     include(FeatureSummary)

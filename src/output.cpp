@@ -1,4 +1,5 @@
 #include "output.h"
+#include "plots.h"
 
 void save_output(const input &par, const vector<solution> &results) {
     string filename = "output/" + par.exp_name + ".csv";
@@ -62,4 +63,6 @@ void save_output(const input &par, const vector<solution> &results) {
     } else {
         cerr << "Error: Unable to open file " << filename << endl;
     }
+
+    test_plot1();
 }
