@@ -29,6 +29,7 @@ private:
             &algorithms::greedy_energy, // 5
             &algorithms::greedy_reward_energy, // 6
             &algorithms::greedy_reward_load, // 7
+            &algorithms::max_profit_extended, // 8
     };
 
     tuple<int, int> compute_LR(const vector<int> &);
@@ -45,8 +46,6 @@ private:
     solution opt_ilp_ul();
 
     solution opt_ilp_al();
-
-    bool get_overlap(int, int, int, int);
 
     static bool check_correct_interval(const vector<vector<int>> &, vector<int>, vector<int>, int, int);
 
@@ -96,6 +95,8 @@ private:
 
     solution coloring_al();
 
+    bool if_flight_extends(vector<int>, int, double);
+
 public:
     explicit algorithms(deployment *);
 
@@ -116,6 +117,9 @@ public:
     solution greedy_reward_load();
 
     solution coloring();
+
+    solution max_profit_extended();
+
 };
 
 #endif //ALGORITHMS_H

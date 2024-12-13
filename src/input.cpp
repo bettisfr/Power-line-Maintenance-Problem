@@ -19,7 +19,8 @@ void print_parameters(const input &par) {
             {4,  "greedy_reward"},
             {5,  "greedy_energy"},
             {6,  "greedy_reward_energy"},
-            {7,  "greedy_reward_load"},
+            {7,  "greedy_reward_load"}, 
+            {8,  "max_profit_extended"},
     };
     /// change the list
 

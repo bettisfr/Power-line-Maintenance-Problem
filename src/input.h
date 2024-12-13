@@ -30,7 +30,8 @@ struct input {
     // greedy_energy 5
     // greedy_reward_energy 6
     // greedy_reward_load 7
-    int algorithm = 2;
+    // max_profit_extended 8
+    int algorithm = 7;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -39,7 +40,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 15;
+    int num_deliveries = 20;
 
     // Maximum length of the road
     int max_len_road = 1000;
@@ -54,10 +55,10 @@ struct input {
     int max_load = 1;
 
     // Drone's energy drone_battery
-    int battery = 150;
+    int battery = 200;
 
     // Drone's drone_load capacity
-    int load = 10;
+    int load = 4;
 
     // Height of the deliveries
     int height = 2;
