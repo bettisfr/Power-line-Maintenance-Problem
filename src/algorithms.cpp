@@ -412,10 +412,11 @@ solution algorithms::knapsack_opt_helper() {
             //best at previous row
             row_reward = opt_reward[i - 1][b];
             row_cost = opt_costs[i - 1][b];
-            if (energy_costs[i] <= b) {
+
+            i_cost = static_cast<int>(energy_costs[i]) + 1;
+            if (i_cost <= b) {
                 // current item
                 i_reward = profits[i];
-                i_cost = static_cast<int>(energy_costs[i]) + 1;
                 //last compatible item
                 pred_reward = opt_reward[predecessors[i]][b - i_cost];
                 pred_cost = opt_costs[predecessors[i]][b - i_cost];
