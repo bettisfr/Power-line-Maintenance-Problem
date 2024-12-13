@@ -5,15 +5,10 @@ void save_output(const input &par, const vector<solution> &results) {
     ofstream file(filename, ofstream::out | ofstream::trunc);
 
     // Initialize averages and standard deviations
-    double total_profit_avg = -1;
-    double total_energy_avg = -1;
-    double total_flights_avg = -1;
-    double running_time_avg = -1;
-
-    double total_profit_std = -1;
-    double total_energy_std = -1;
-    double total_flights_std = -1;
-    double running_time_std = -1;
+    double total_profit_avg, total_profit_std;
+    double total_energy_avg, total_energy_std;
+    double total_flights_avg, total_flights_std;
+    double running_time_avg, running_time_std;
 
     // Calculate averages and standard deviations
     if (!results.empty()) {
@@ -29,15 +24,10 @@ void save_output(const input &par, const vector<solution> &results) {
             running_times.push_back(out.running_time);
         }
 
-        total_profit_avg = calculate_avg(total_profits);
-        total_energy_avg = calculate_avg(total_energy);
-        total_flights_avg = calculate_avg(total_flights);
-        running_time_avg = calculate_avg(running_times);
-
-        total_profit_std = calculate_std(total_profits, total_profit_avg);
-        total_energy_std = calculate_std(total_energy, total_energy_avg);
-        total_flights_std = calculate_std(total_flights, total_flights_avg);
-        running_time_std = calculate_std(running_times, running_time_avg);
+        tie(total_profit_avg, total_profit_std) = calculate_avg_std(total_profits);
+        tie(total_energy_avg, total_energy_std) = calculate_avg_std(total_energy);
+        tie(total_flights_avg, total_flights_std) = calculate_avg_std(total_flights);
+        tie(running_time_avg, running_time_std) = calculate_avg_std(running_times);
     }
 
     if (file.is_open()) {
