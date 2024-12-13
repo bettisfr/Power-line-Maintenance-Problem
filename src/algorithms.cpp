@@ -382,8 +382,8 @@ solution algorithms::knapsack_opt_helper() {
     // }
 
     //dummy value
-    launches.insert(launches.begin(), 0);
-    rendezvouses.insert(rendezvouses.begin(), 0);
+    launches.insert(launches.begin(), -1);
+    rendezvouses.insert(rendezvouses.begin(), -1);
     profits.insert(profits.begin(), 0);
     energy_costs.insert(energy_costs.begin(), 0);
 
