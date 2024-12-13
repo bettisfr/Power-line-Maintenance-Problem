@@ -16,7 +16,8 @@ double numpy(mt19937 &g) {
 deployment::deployment(const input &par) {
     // creating random instance by using par.seed
     int seed = par.seed;
-    mt19937 g(seed);
+    // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
+    static mt19937 g(seed);
 
     num_deliveries = par.num_deliveries;
     int max_len_road = par.max_len_road;
@@ -29,8 +30,8 @@ deployment::deployment(const input &par) {
     height = par.height;
     energy_unit_cost = par.energy_unit_cost;
 
-    drone_battery = par.battery;
-    drone_load = par.load;
+    drone_battery = par.drone_battery;
+    drone_load = par.drone_load;
 
     for (int i = 0; i < num_deliveries; i++) {
         int departure = static_cast<int>(numpy(g) * max_len_road);
@@ -58,7 +59,7 @@ deployment::deployment(const input &par) {
              << ": [" << departure
              << ", " << arrival
              << "], profit=" << profit
-             << ", load=" << load << endl;
+             << ", drone_load=" << load << endl;
     }
 
     cout << endl;
@@ -97,7 +98,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     }
 
     vector<vector<int> > all_subsets = compute_all_subsets(ids);
-    // for each subset in all_subsets, check load and energy
+    // for each subset in all_subsets, check drone_load and energy
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
 
@@ -117,7 +118,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     for (int l: loads) {
         unique_loads.insert(l);
     }
-    // for each load in unique_loads compute flights
+    // for each drone_load in unique_loads compute flights
     map<int, vector<int>> load_flight;
 
     for (auto l: unique_loads) {
@@ -178,7 +179,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unita
                     flight.push_back(id_i);
                     flight.push_back(id_j);
                 }
-                // check [L, R] is energy and load feasible
+                // check [L, R] is energy and drone_load feasible
                 double energy_L_R = compute_energy(flight);
                 if (energy_L_R <= drone_battery && flight.size() <= total_load) {
                     // add all flights of size <= L

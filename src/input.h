@@ -55,10 +55,10 @@ struct input {
     int max_load = 1;
 
     // Drone's energy drone_battery
-    int battery = 200;
+    int battery = 150;
 
     // Drone's drone_load capacity
-    int load = 4;
+    int load = 10;
 
     // Height of the deliveries
     int height = 2;

@@ -34,8 +34,8 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
 
     vector<int> flights_profit;
     for (const auto &f: all_flights) {
-        // int load = dep->compute_load(f);
-        // flights_load.push_back(load);
+        // int drone_load = dep->compute_load(f);
+        // flights_load.push_back(drone_load);
         int profit = dep->compute_profit(f);
         flights_profit.push_back(profit);
     }
@@ -916,7 +916,7 @@ solution algorithms::greedy_reward_load_helper(vector<vector<int>> all_flights_t
         reward_load.push_back(ratio);
     }
 
-    // sort according to reward/load
+    // sort according to reward/drone_load
     vector<pair<double, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
         Ri.emplace_back(reward_load[i], i);

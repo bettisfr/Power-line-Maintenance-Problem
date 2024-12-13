@@ -31,8 +31,8 @@ void print_parameters(const input &par) {
     cout << "Maximum length of an interval = " << par.max_interval_len << endl;
     cout << "Maximum value for a delivery = " << par.max_profit << endl;
     cout << "Maximum drone_load for a delivery = " << par.max_load << endl;
-    cout << "Drone's drone_battery capacity = " << par.battery << endl;
-    cout << "Drone's drone_load capacity = " << par.load << endl;
+    cout << "Drone's drone_battery capacity = " << par.drone_battery << endl;
+    cout << "Drone's drone_load capacity = " << par.drone_load << endl;
     cout << "Height of the deliveries = " << par.height << endl;
     cout << "Energy unit cost per distance = " << par.energy_unit_cost << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
@@ -52,8 +52,8 @@ void save_parameters(const input &par) {
     file_cfg << "max_interval_len=" << par.max_interval_len << endl;
     file_cfg << "max_profit=" << par.max_profit << endl;
     file_cfg << "max_load=" << par.max_load << endl;
-    file_cfg << "drone_battery=" << par.battery << endl;
-    file_cfg << "drone_load=" << par.load << endl;
+    file_cfg << "drone_battery=" << par.drone_battery << endl;
+    file_cfg << "drone_load=" << par.drone_load << endl;
     file_cfg << "height=" << par.height << endl;
     file_cfg << "energy_unit_cost=" << par.energy_unit_cost << endl;
     file_cfg << "algorithm=" << par.algorithm << endl;
@@ -100,9 +100,9 @@ input load_parameters(input &par) {
             } else if (key == "max_load") {
                 par.max_load = stoi(value);
             } else if (key == "drone_battery") {
-                par.battery = stoi(value);
+                par.drone_battery = stoi(value);
             } else if (key == "drone_load") {
-                par.load = stoi(value);
+                par.drone_load = stoi(value);
             } else if (key == "height") {
                 par.height = stoi(value);
             } else if (key == "energy_unit_cost") {
@@ -146,9 +146,9 @@ input read_parameters(input &par, int argc, char *argv[]) {
             } else if (arg == "-max_load") {
                 par.max_load = stoi(argv[i + 1]);
             } else if (arg == "-drone_battery") {
-                par.battery = stoi(argv[i + 1]);
+                par.drone_battery = stoi(argv[i + 1]);
             } else if (arg == "-drone_load") {
-                par.load = stoi(argv[i + 1]);
+                par.drone_load = stoi(argv[i + 1]);
             } else if (arg == "-height") {
                 par.height = stoi(argv[i + 1]);
             } else if (arg == "-energy_unit_cost") {
