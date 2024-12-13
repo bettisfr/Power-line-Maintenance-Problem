@@ -64,5 +64,5 @@ void save_output(const input &par, const vector<solution> &results) {
         cerr << "Error: Unable to open file " << filename << endl;
     }
 
-    test_plot1();
+//    test_plot1();
 }

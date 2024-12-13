@@ -12,7 +12,7 @@ if (NOT matplotplusplus_POPULATED)
     FetchContent_MakeAvailable(matplotplusplus)
 endif ()
 
-project(code)
+project(dcoss)
 
 set(CMAKE_CXX_STANDARD 17)
 
