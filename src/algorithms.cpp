@@ -988,7 +988,7 @@ bool algorithms::if_flight_extends(vector<int>flight, int delivery, double remai
     }
 }
 
-//////// TODO
+
 solution algorithms::max_profit_extended() {
     // A: sort deliveries based on profit
     vector<int> A;
