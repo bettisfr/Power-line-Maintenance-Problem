@@ -1,5 +1,6 @@
 #include "output.h"
-#include "plots.h"
+//#include "plots.h"
+#include "../util/util.h"
 
 void save_output(const input &par, const vector<solution> &results) {
     string filename = "output/" + par.exp_name + ".csv";
@@ -25,10 +26,10 @@ void save_output(const input &par, const vector<solution> &results) {
             running_times.push_back(out.running_time);
         }
 
-        tie(total_profit_avg, total_profit_std) = calculate_avg_std(total_profits);
-        tie(total_energy_avg, total_energy_std) = calculate_avg_std(total_energy);
-        tie(total_flights_avg, total_flights_std) = calculate_avg_std(total_flights);
-        tie(running_time_avg, running_time_std) = calculate_avg_std(running_times);
+        tie(total_profit_avg, total_profit_std) = util::calculate_avg_std(total_profits);
+        tie(total_energy_avg, total_energy_std) = util::calculate_avg_std(total_energy);
+        tie(total_flights_avg, total_flights_std) = util::calculate_avg_std(total_flights);
+        tie(running_time_avg, running_time_std) = util::calculate_avg_std(running_times);
     }
 
     if (file.is_open()) {
@@ -63,6 +64,4 @@ void save_output(const input &par, const vector<solution> &results) {
     } else {
         cerr << "Error: Unable to open file " << filename << endl;
     }
-
-//    test_plot1();
 }

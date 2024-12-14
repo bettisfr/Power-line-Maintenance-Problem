@@ -1,16 +1,4 @@
 cmake_minimum_required(VERSION 3.23)
-include(FetchContent)
-
-FetchContent_Declare(matplotplusplus
-        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
-        GIT_TAG origin/master
-)
-
-FetchContent_GetProperties(matplotplusplus)
-
-if (NOT matplotplusplus_POPULATED)
-    FetchContent_MakeAvailable(matplotplusplus)
-endif ()
 
 project(dcoss)
 
@@ -51,8 +39,6 @@ set(sources src/core/algorithms.cpp
         src/core/deployment.h
         src/util/util.cpp
         src/util/util.h
-        src/io/plots.cpp
-        src/io/plots.h
         src/main.cpp
 )
 
@@ -64,7 +50,7 @@ if (CXX)
             debug ${GUROBI_CXX_DEBUG_LIBRARY})
 endif ()
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ${GUROBI_LIBRARY} matplot)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${GUROBI_LIBRARY})
 
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     include(FeatureSummary)
