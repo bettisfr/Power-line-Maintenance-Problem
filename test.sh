@@ -45,12 +45,11 @@ for NUM_DELIVERIES in "${NUM_DELIVERIES_VEC[@]}"; do
                         -iterations $DEFAULT_ITERATIONS \
                         -save $DEFAULT_SAVE \
                         -energy_unit_cost $DEFAULT_ENERGY_UNIT_COST"
-                    CMD=$(echo $CMD | sed 's/  */ /g')  # Trim multiple spaces to single space
+                    CMD=$(echo "$CMD" | tr -s ' ')  # Replace multiple spaces with a single space
                     echo "Executing: $CMD"
-                    $CMD
 
-                    # Check if the command was successful; if not, exit the script
-                    if [ $? -ne 0 ]; then
+                    # Execute the command
+                    if ! eval "$CMD"; then
                         echo "Error: Command failed. Exiting."
                         exit 1
                     fi
