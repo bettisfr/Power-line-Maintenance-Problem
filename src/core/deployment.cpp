@@ -25,7 +25,7 @@ deployment::deployment(const input &par) {
     int max_load = par.max_weight;
 
     num_deliveries = par.num_deliveries;
-    unit_load = (max_load == 1);
+    unit_weight = (max_load == 1);
 
     height = par.height;
     energy_unit_cost = par.energy_unit_cost;
@@ -90,7 +90,7 @@ vector<vector<int> > deployment::compute_all_subsets(vector<int> &v) {
     return res;
 }
 
-tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_load() {
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_weight() {
     // consider all deliveries and compute all possible flights
     vector<int> ids;
     for (int i = 0; i < launches.size(); i++) {
@@ -113,7 +113,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     return {all_flights, energy_costs};
 }
 
-tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_load_limited() {
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_weight_limited() {
     set<int> unique_loads;
     for (int l: weights) {
         unique_loads.insert(l);
@@ -135,7 +135,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     for (const auto &f: load_flight) {
         int total_load = floor(drone_load / f.first);
 
-        auto fights_energies = compute_all_flights_unitary_load(f.second, total_load);
+        auto fights_energies = compute_all_flights_unitary_weight(f.second, total_load);
 
         vector<vector<int>> all_flights_f = get<0>(fights_energies);
         vector<double> energy_costs_f = get<1>(fights_energies);
@@ -149,7 +149,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     return {all_flights, energy_costs};
 }
 
-tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unitary_load(const vector<int> &deliveries_id, const int &total_load) {
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unitary_weight(const vector<int> &deliveries_id, const int &total_load) {
     // For any launch L and rendezvous point R, compute the all set of deliveries such that their
     // launch and rendezvous point lies in [L, R]
     vector<pair<int, int>> profit_id;
@@ -285,6 +285,6 @@ int deployment::get_energy_per_flight() const {
     return energy_unit_cost;
 }
 
-bool deployment::is_unit_load() const {
-    return unit_load;
+bool deployment::is_unit_weight() const {
+    return unit_weight;
 }

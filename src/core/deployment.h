@@ -29,10 +29,10 @@ private:
 
     double height;
     double energy_unit_cost;
-    bool unit_load;
+    bool unit_weight;
 
 public:
-    bool is_unit_load() const;
+    bool is_unit_weight() const;
 
     explicit deployment(const input &);
 
@@ -60,9 +60,9 @@ public:
 
     int compute_load(const vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_load(const vector<int> &, const int &);
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight(const vector<int> &, const int &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_load();
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight();
 
     double compute_energy(const vector<int> &delivery_ids);
 
@@ -70,7 +70,7 @@ public:
 
     vector<vector<int>> compute_all_subsets(vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_load_limited();
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
 };
 
