@@ -9,5 +9,4 @@ using namespace std;
 void test_plot1();
 
 
-
 #endif //PLOTS_H

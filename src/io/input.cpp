@@ -12,15 +12,15 @@ void print_parameters(const input &par) {
     };
 
     map<int, string> algorithm_str = {
-            {0,  "OPT (ILP)"},
-            {1,  "bin_packing"},
-            {2,  "knapsack"},
-            {3,  "coloring"},
-            {4,  "greedy_reward"},
-            {5,  "greedy_energy"},
-            {6,  "greedy_reward_energy"},
-            {7,  "greedy_reward_load"}, 
-            {8,  "max_profit_extended"},
+            {0, "OPT (ILP)"},
+            {1, "bin_packing"},
+            {2, "knapsack"},
+            {3, "coloring"},
+            {4, "greedy_reward"},
+            {5, "greedy_energy"},
+            {6, "greedy_reward_energy"},
+            {7, "greedy_reward_load"},
+            {8, "max_profit_extended"},
     };
     /// change the list
 

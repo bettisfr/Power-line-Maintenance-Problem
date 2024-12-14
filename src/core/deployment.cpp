@@ -149,7 +149,8 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
     return {all_flights, energy_costs};
 }
 
-tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unitary_weight(const vector<int> &deliveries_id, const int &total_load) {
+tuple<vector<vector<int>>, vector<double>>
+deployment::compute_all_flights_unitary_weight(const vector<int> &deliveries_id, const int &total_load) {
     // For any launch L and rendezvous point R, compute the all set of deliveries such that their
     // launch and rendezvous point lies in [L, R]
     vector<pair<int, int>> profit_id;

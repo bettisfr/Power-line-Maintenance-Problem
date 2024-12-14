@@ -34,7 +34,8 @@ struct solution {
             for (auto e: s) {
                 os << "[" << e << "] ";
             }
-            os << "profit=" << out.profits[i] << ", energy=" << out.energies[i] << ", weight=" << out.weights[i] << endl;
+            os << "profit=" << out.profits[i] << ", energy=" << out.energies[i] << ", weight=" << out.weights[i]
+               << endl;
 
             i++;
         }
@@ -44,14 +45,14 @@ struct solution {
     }
 };
 
-template <typename T>
-pair<double, double> calculate_avg_std(const vector<T>& values) {
+template<typename T>
+pair<double, double> calculate_avg_std(const vector<T> &values) {
     if (values.empty()) {
         return {0.0, 0.0};
     }
 
     T sum = static_cast<T>(0);
-    for (const T& value : values) {
+    for (const T &value: values) {
         sum += value;
     }
 
@@ -62,7 +63,7 @@ pair<double, double> calculate_avg_std(const vector<T>& values) {
     }
 
     T sum_squared_diff = static_cast<T>(0);
-    for (const T& value : values) {
+    for (const T &value: values) {
         T diff = value - static_cast<T>(average);
         sum_squared_diff += diff * diff;
     }
