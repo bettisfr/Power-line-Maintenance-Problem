@@ -7,8 +7,8 @@
 using namespace std;
 
 double numpy(mt19937 &g) {
-    int a = g() >> 5;
-    int b = g() >> 6;
+    int a = static_cast<int>(g() >> 5);
+    int b = static_cast<int>(g() >> 6);
     double value = (a * 67108864.0 + b) / 9007199254740992.0;
     return value;
 }
@@ -275,14 +275,6 @@ int deployment::get_drone_battery() const {
 
 int deployment::get_drone_load() const {
     return drone_load;
-}
-
-int deployment::get_height() const {
-    return height;
-}
-
-int deployment::get_energy_per_flight() const {
-    return energy_unit_cost;
 }
 
 bool deployment::is_unit_weight() const {

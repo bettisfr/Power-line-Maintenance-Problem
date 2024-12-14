@@ -32,29 +32,25 @@ private:
     bool unit_weight;
 
 public:
-    bool is_unit_weight() const;
+    [[nodiscard]] bool is_unit_weight() const;
 
     explicit deployment(const input &);
 
-    int get_num_deliveries() const;
+    [[nodiscard]] int get_num_deliveries() const;
 
-    const vector<int> &get_launches() const;
+    [[nodiscard]] const vector<int> &get_launches() const;
 
-    const vector<int> &get_rendezvouses() const;
+    [[nodiscard]] const vector<int> &get_rendezvouses() const;
 
-    const vector<int> &get_profits() const;
+    [[nodiscard]] const vector<int> &get_profits() const;
 
-    const vector<int> &get_weights() const;
+    [[nodiscard]] const vector<int> &get_weights() const;
 
-    const vector<int> &get_delivery_points() const;
+    [[nodiscard]] const vector<int> &get_delivery_points() const;
 
-    int get_drone_battery() const;
+    [[nodiscard]] int get_drone_battery() const;
 
-    int get_drone_load() const;
-
-    int get_height() const;
-
-    int get_energy_per_flight() const;
+    [[nodiscard]] int get_drone_load() const;
 
     int compute_profit(const vector<int> &);
 

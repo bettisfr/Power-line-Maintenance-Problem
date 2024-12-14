@@ -13,7 +13,7 @@ public:
 
     static bool check_intersection(const vector<int> &, vector<int>);
 
-    static vector<int> largest_nonoverlap_delivery(vector<int>, vector<int>);
+    static vector<int> largest_non_overlap_delivery(vector<int> launches, vector<int> rendezvouses);
 };
 
 

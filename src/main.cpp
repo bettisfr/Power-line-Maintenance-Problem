@@ -40,7 +40,7 @@ void run_experiment(input &par) {
 }
 
 int main(int argc, char **argv) {
-    // Set global precision for cout
+    // Set global precision for printing
     cout << fixed << setprecision(2);
 
     input par;

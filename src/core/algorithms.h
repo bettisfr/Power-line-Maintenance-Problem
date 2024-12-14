@@ -96,7 +96,7 @@ private:
 
     solution coloring_al();
 
-    bool if_flight_extends(vector<int>, int, double);
+    bool if_flight_extends(const vector<int>&, int, double);
 
 public:
     explicit algorithms(deployment *);

@@ -113,7 +113,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
         double total_cost = 0.0;
-        double total_profit = 0.0;
+        int total_profit = 0;
         for (int i = 0; i < X; i++) {
             // cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
             if (x[i].get(GRB_DoubleAttr_X) > 0) {
@@ -291,7 +291,7 @@ solution algorithms::bin_packing_helper() {
     vector<int> rendezvouses = get<4>(parameters);
 
     // compute p
-    vector<int> p = util::largest_nonoverlap_delivery(launches, rendezvouses);
+    vector<int> p = util::largest_non_overlap_delivery(launches, rendezvouses);
 
     vector<int> opt; // profits
     vector<int> pp = weighted_interval(launches, rendezvouses, profits, opt, p);
@@ -377,7 +377,7 @@ solution algorithms::knapsack_opt_helper() {
     vector<int> rendezvouses = get<4>(parameters);
 
     // for (int i=0; i < all_flights.size(); i++) {
-    //     cout << "i: " << i << " profit: " << profits[i] << " cost: " << energy_costs[i] << " launch: " << launches[i] << " rendevouz: " << rendezvouses[i] << endl;
+    //     cout << "i: " << i << " profit: " << profits[i] << " cost: " << energy_costs[i] << " launch: " << launches[i] << " rendezvous: " << rendezvouses[i] << endl;
     // }
 
     //dummy value
@@ -387,7 +387,7 @@ solution algorithms::knapsack_opt_helper() {
     energy_costs.insert(energy_costs.begin(), 0);
 
     // compute predecessors
-    vector<int> predecessors = util::largest_nonoverlap_delivery(launches, rendezvouses);
+    vector<int> predecessors = util::largest_non_overlap_delivery(launches, rendezvouses);
 
     // for (int i = 0; i < predecessors.size(); i++) {
     //     cout << "element: " << i << " compatible with " << predecessors[i] << endl;
@@ -447,7 +447,7 @@ solution algorithms::knapsack_opt_helper() {
     vector<vector<int>> selected_intervals;
     vector<int> sel_int_profits;
     vector<double> sel_int_energies;
-    vector<int> sel_int_loads;
+    vector<int> sel_int_weights;
 
     // cout << " OPT reward = " << opt_reward[numFlights][B] << endl;
     // cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
@@ -460,15 +460,14 @@ solution algorithms::knapsack_opt_helper() {
         selected_intervals.push_back(all_flights[i - 1]);
 
         int tmp_profit = 0;
-        double tmp_energy_cost = 0;
-        int tmp_load = 0;
+        int tmp_weight = 0;
         for (int j : all_flights[i - 1]) {
             tmp_profit += dep->get_profits()[j];
-            tmp_load += dep->get_weights()[j];
+            tmp_weight += dep->get_weights()[j];
         }
 
         sel_int_profits.push_back(tmp_profit);
-        sel_int_loads.push_back(tmp_load);
+        sel_int_weights.push_back(tmp_weight);
         sel_int_energies.push_back(dep->compute_energy(all_flights[i - 1]));
     }
 
@@ -476,7 +475,7 @@ solution algorithms::knapsack_opt_helper() {
     solution.total_energy = opt_costs[numFlights][B];
     solution.total_flights = selected_intervals;
     solution.profits = sel_int_profits;
-    solution.weights = sel_int_loads;
+    solution.weights = sel_int_weights;
     solution.energies = sel_int_energies;
 
     return solution;
@@ -678,8 +677,8 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
                 launches_result.push_back(L);
                 rendezvouses_result.push_back(R);
                 total_reward += profits[0];
-                // B -= static_cast<int>(energy_costs[0]);
-                B -= energy_costs[0];
+                 B -= static_cast<int>(energy_costs[0]); // energy_costs[0] will remain double, but its integer value returned by cast
+//                B -= energy_costs[0];
                 cost += energy_costs[0];
             }
         } else {
@@ -689,8 +688,8 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
                 total_reward += profits[0];
                 launches_result.push_back(L);
                 rendezvouses_result.push_back(R);
-                // B -= static_cast<int>(energy_costs[0]);
-                B -= energy_costs[0];
+                 B -= static_cast<int>(energy_costs[0]);
+//                B -= energy_costs[0];
                 cost += energy_costs[0];
             }
         }
@@ -973,8 +972,8 @@ solution algorithms::greedy_reward_load_al() {
 }
 
 
-bool algorithms::if_flight_extends(vector<int>flight, int delivery, double remaining_energy){
-    // compute energ add load by adding delivery to flight
+bool algorithms::if_flight_extends(const vector<int>& flight, int delivery, double remaining_energy){
+    // compute energy add load by adding delivery to flight
     vector<int> extended_flight = flight;
     extended_flight.push_back(delivery);
     double energy_cost = dep->compute_energy(extended_flight);
@@ -1020,12 +1019,9 @@ solution algorithms::max_profit_extended() {
 
     vector<int> loads = dep->get_weights();
 
-    int drone_load = dep->get_drone_load();
     double B = dep->get_drone_battery();
-    int n = dep->get_num_deliveries();
     vector<vector<int>> flights;
     double cost = 0.0;
-    int visited = 0;
 
     while (!A.empty() && cost < B){   // visited is not enough: && visited < n
         int delivery_maxP = A[0]; // id of delivery
@@ -1037,7 +1033,7 @@ solution algorithms::max_profit_extended() {
 
             // find index of delivery_maxP in C
             auto index = find(C.begin(), C.end(), delivery_maxP);
-            int index_maxP_C = index - C.begin(); 
+            int index_maxP_C = static_cast<int>(index - C.begin());
 
             bool go_left = true;
             bool go_right = true;
@@ -1045,7 +1041,7 @@ solution algorithms::max_profit_extended() {
             int left_increment = 1;
             int right_increment = 1;
 
-            while (go_left == true || go_right == true){ // till we can extend
+            while (go_left || go_right){ // till we can extend
                 int left_index = index_maxP_C - left_increment;
                 int right_index = index_maxP_C + right_increment;
 
@@ -1058,7 +1054,7 @@ solution algorithms::max_profit_extended() {
                     go_right = false;
                 }
 
-                if (go_left == true && go_right == true){ // 1
+                if (go_left && go_right){ // 1
                     int left_delivery = C[left_index];
                     int right_delivery = C[right_index];
 
@@ -1066,7 +1062,7 @@ solution algorithms::max_profit_extended() {
                     bool from_left = if_flight_extends(flight, left_delivery, B - cost);
                     bool from_right = if_flight_extends(flight, right_delivery, B - cost);
 
-                    if (from_left == true && from_right == true){ // 1:1 both can be extended
+                    if (from_left && from_right){ // 1:1 both can be extended
                         // select the most profitable one
                         if (profits[left_delivery] >= profits[right_delivery]){
                             left_increment++;
@@ -1075,11 +1071,11 @@ solution algorithms::max_profit_extended() {
                             right_increment++;
                             flight.push_back(right_delivery);
                         }
-                    } else if (from_left == true && from_right == false){  // 1:2
+                    } else if (from_left && !from_right){  // 1:2
                         left_increment++;
                         flight.push_back(left_delivery);
                         go_right = false;
-                    } else if (from_left == false && from_right == true){  // 1:3
+                    } else if (!from_left && from_right){  // 1:3
                         right_increment++;
                         flight.push_back(right_delivery);
                         go_left = false;
@@ -1087,20 +1083,19 @@ solution algorithms::max_profit_extended() {
                         go_left = false;
                         go_right = false;
                     }
-
-                } else if (go_left == true && go_right == false){ // 2
+                } else if (go_left){ // 2
                     int left_delivery = C[left_index];
                     bool from_left = if_flight_extends(flight, left_delivery, B - cost);
-                    if (from_left == true){
+                    if (from_left){
                         left_increment++;
                         flight.push_back(left_delivery);
                     } else {
                         go_left = false;
                     }
-                } else if (go_left == false && go_right == true){ // 3
+                } else if (go_right){ // 3
                     int right_delivery = C[right_index];
                     bool from_right = if_flight_extends(flight, right_delivery, B - cost);
-                    if (from_right == true){
+                    if (from_right){
                         right_increment++;
                         flight.push_back(right_delivery);
                     } else {
@@ -1113,7 +1108,7 @@ solution algorithms::max_profit_extended() {
             // after while, go_left == go_right = false, then update A, C, cost
             flights.push_back(flight);
             cost = cost + dep->compute_energy(flight);
-            // remove flight from A and C and all the deliveris intersect with flight
+            // remove flight from A and C and all the deliveries intersect with flight
             for (int f:flight){
                 A.erase(find(A.begin(), A.end(), f));
                 C.erase(find(C.begin(), C.end(), f));
@@ -1125,7 +1120,7 @@ solution algorithms::max_profit_extended() {
 
             vector<int>delivery_temp;
             for (int i:A){
-                if (check_correct_interval({flight}, {get<0>(points)}, {get<1>(points)}, launches[i], rendezvouses[i]) == false){
+                if (!check_correct_interval({flight}, {get<0>(points)}, {get<1>(points)}, launches[i], rendezvouses[i])){
                     delivery_temp.push_back(i);
                 }
             }
@@ -1152,7 +1147,7 @@ solution algorithms::max_profit_extended() {
     int total_profit = 0;
     double total_energy = 0.0;
 
-    for (auto f:flights){
+    for (const auto& f:flights){
         int tmp_profit = 0;
         double tmp_energy_cost = 0.0;
         int tmp_load = 0;
