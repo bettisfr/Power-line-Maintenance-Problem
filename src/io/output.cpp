@@ -1,5 +1,4 @@
 #include "output.h"
-//#include "plots.h"
 #include "../util/util.h"
 
 void save_output(const input &par, const vector<solution> &results) {
