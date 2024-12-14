@@ -47,6 +47,9 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         env.start();
         GRBModel model = GRBModel(env);
 
+        // Disable log output
+        model.set(GRB_IntParam_OutputFlag, 0);
+
         // Variables for flights       
         GRBVar x[X];
         for (int i = 0; i < X; i++) {
@@ -112,18 +115,38 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
 
         cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
+        vector<vector<int>> selected_intervals;
+        vector<int> sel_int_profits;
+        vector<double> sel_int_energies;
+        vector<int> sel_int_weights;
+
         double total_cost = 0.0;
         int total_profit = 0;
         for (int i = 0; i < X; i++) {
             // cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
             if (x[i].get(GRB_DoubleAttr_X) > 0) {
-                sol.total_flights.push_back(all_flights[i]);
+                selected_intervals.push_back(all_flights[i]);
                 total_cost = total_cost + energy_costs[i];
                 total_profit = total_profit + flights_profit[i];
+
+                int tmp_profit = 0;
+                int tmp_weight = 0;
+                for (int j : all_flights[i]) {
+                    tmp_profit += dep->get_profits()[j];
+                    tmp_weight += dep->get_weights()[j];
+                }
+
+                sel_int_profits.push_back(tmp_profit);
+                sel_int_weights.push_back(tmp_weight);
+                sel_int_energies.push_back(total_cost);
             }
         }
+        sol.total_flights = selected_intervals;
         sol.total_energy = total_cost;
         sol.total_profit = total_profit;
+        sol.profits = sel_int_profits;
+        sol.weights = sel_int_weights;
+        sol.energies = sel_int_energies;
 
     } catch (GRBException &e) {
         cout << "Error code = " << e.getErrorCode() << endl;

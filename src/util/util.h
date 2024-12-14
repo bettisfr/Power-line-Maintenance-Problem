@@ -1,5 +1,5 @@
-#ifndef CODE_UTIL_H
-#define CODE_UTIL_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <vector>
 #include <iostream>
@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //CODE_UTIL_H
+#endif //UTIL_H
