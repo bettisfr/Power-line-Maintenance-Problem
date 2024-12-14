@@ -20,21 +20,19 @@ private:
     vector<int> launches;
     vector<int> rendezvouses;
     vector<int> profits;
-    vector<int> loads;
+    vector<int> weights;
     vector<int> delivery_points;
 
     // Drone's parameters
     int drone_battery;
     int drone_load;
 
-    int height;
-    int energy_unit_cost;
-    bool is_load_unit;
+    double height;
+    double energy_unit_cost;
+    bool unit_load;
 
 public:
-    bool isLoadUnit() const;
-
-    void setIsLoadUnit(bool isLoadUnit);
+    bool is_unit_load() const;
 
     explicit deployment(const input &);
 
@@ -46,7 +44,7 @@ public:
 
     const vector<int> &get_profits() const;
 
-    const vector<int> &get_loads() const;
+    const vector<int> &get_weights() const;
 
     const vector<int> &get_delivery_points() const;
 

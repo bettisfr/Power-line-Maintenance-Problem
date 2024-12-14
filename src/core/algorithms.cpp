@@ -136,7 +136,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
 }
 
 solution algorithms::opt_ilp() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return opt_ilp_ul();
     } else {
         return opt_ilp_al();
@@ -235,7 +235,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>
     }
 
     tuple<vector<vector<int>>, vector<double>> sets;
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         sets = dep->compute_all_flights_unitary_load(deliveries_id, dep->get_drone_load());
     } else {
         sets = dep->compute_all_flights_arbitrary_load_limited();
@@ -349,7 +349,7 @@ solution algorithms::bin_packing_helper() {
 }
 
 solution algorithms::bin_packing() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return bin_packing_ul();
     } else {
         return bin_packing_al();
@@ -464,7 +464,7 @@ solution algorithms::knapsack_opt_helper() {
         int tmp_load = 0;
         for (int j : all_flights[i - 1]) {
             tmp_profit += dep->get_profits()[j];
-            tmp_load += dep->get_loads()[j];
+            tmp_load += dep->get_weights()[j];
         }
 
         sel_int_profits.push_back(tmp_profit);
@@ -476,14 +476,14 @@ solution algorithms::knapsack_opt_helper() {
     solution.total_energy = opt_costs[numFlights][B];
     solution.total_flights = selected_intervals;
     solution.profits = sel_int_profits;
-    solution.loads = sel_int_loads;
+    solution.weights = sel_int_loads;
     solution.energies = sel_int_energies;
 
     return solution;
 }
 
 solution algorithms::knapsack() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return knapsack_opt_ul();
     } else {
         return knapsack_heu_al();
@@ -621,7 +621,7 @@ solution algorithms::coloring_helper() {
 
 //// Col-S
 solution algorithms::coloring() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return coloring_ul();
     } else {
         return coloring_al();
@@ -746,7 +746,7 @@ solution algorithms::greedy_reward_helper(vector<vector<int>> all_flights_temp, 
 }
 
 solution algorithms::greedy_reward() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return greedy_reward_ul();
     } else {
         return greedy_reward_al();
@@ -802,7 +802,7 @@ solution algorithms::greedy_energy_helper(vector<vector<int>> all_flights_temp, 
 }
 
 solution algorithms::greedy_energy() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return greedy_energy_ul();
     } else {
         return greedy_energy_al();
@@ -871,7 +871,7 @@ solution algorithms::greedy_reward_energy_helper(vector<vector<int>> all_flights
 }
 
 solution algorithms::greedy_reward_energy() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return greedy_reward_energy_ul();
     } else {
         return greedy_reward_energy_al();
@@ -944,7 +944,7 @@ solution algorithms::greedy_reward_load_helper(vector<vector<int>> all_flights_t
 }
 
 solution algorithms::greedy_reward_load() {
-    if (dep->isLoadUnit()) {
+    if (dep->is_unit_load()) {
         return greedy_reward_load_ul();
     } else {
         return greedy_reward_load_al();
@@ -1018,7 +1018,7 @@ solution algorithms::max_profit_extended() {
         C.push_back(it.second);
     }
 
-    vector<int> loads = dep->get_loads();
+    vector<int> loads = dep->get_weights();
 
     int drone_load = dep->get_drone_load();
     double B = dep->get_drone_battery();
@@ -1158,7 +1158,7 @@ solution algorithms::max_profit_extended() {
         int tmp_load = 0;
         for (int j : f) {
             tmp_profit += dep->get_profits()[j];
-            tmp_load += dep->get_loads()[j];
+            tmp_load += dep->get_weights()[j];
         }
 
         sel_int_profits.push_back(tmp_profit);
@@ -1173,7 +1173,7 @@ solution algorithms::max_profit_extended() {
     solution.total_energy = total_energy;
     solution.total_flights = flights;
     solution.profits = sel_int_profits;
-    solution.loads = sel_int_loads;
+    solution.weights = sel_int_loads;
     solution.energies = sel_int_energies;
 
 

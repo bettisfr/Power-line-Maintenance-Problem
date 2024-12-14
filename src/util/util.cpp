@@ -7,7 +7,7 @@
 
 #include "util.h"
 
-double util::get_distance(int x1, int y1, int x2, int y2) {
+double util::get_distance(double x1, double y1, double x2, double y2) {
     double delta_x = x2 - x1;
     double delta_y = y2 - y1;
 
@@ -15,9 +15,9 @@ double util::get_distance(int x1, int y1, int x2, int y2) {
 }
 
 
-bool util::check_intersection(vector<int> flight1, vector<int> flight2) {   
-    for (int i:flight1){
-        if (find(flight2.begin(), flight2.end(), i) != flight2.end()){ // if intersection
+bool util::check_intersection(const vector<int> &flight1, vector<int> flight2) {
+    for (int i: flight1) {
+        if (find(flight2.begin(), flight2.end(), i) != flight2.end()) { // if intersection
             return true;
         }
     }

@@ -43,28 +43,28 @@ struct input {
     int num_deliveries = 10;
 
     // Maximum length of the road
-    int max_len_road = 1000;
+    int max_len_road = 100;
 
     // Maximum length of an interval
-    int max_interval_len = 100;
+    int max_interval_len = 15;
 
     // Maximum value for a delivery
-    int max_profit = 55;
+    int max_profit = 10;
 
-    // Maximum drone_load for a delivery
-    int max_load = 1;
+    // Maximum weight for a delivery
+    int max_weight = 1;
 
     // Drone's energy drone_battery
-    int drone_battery = 150;
+    int drone_battery = 5000;
 
     // Drone's drone_load capacity
-    int drone_load = 10;
+    int drone_load = 5;
 
     // Height of the deliveries
-    int height = 2;
+    double height = 0.5;
 
     // Energy consumption of a drone per distance
-    int energy_unit_cost = 1;
+    double energy_unit_cost = 200;
 };
 
 void print_parameters(const input &);

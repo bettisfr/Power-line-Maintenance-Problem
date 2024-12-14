@@ -30,7 +30,7 @@ void print_parameters(const input &par) {
     cout << "Maximum length of the road = " << par.max_len_road << endl;
     cout << "Maximum length of an interval = " << par.max_interval_len << endl;
     cout << "Maximum value for a delivery = " << par.max_profit << endl;
-    cout << "Maximum drone_load for a delivery = " << par.max_load << endl;
+    cout << "Maximum drone_load for a delivery = " << par.max_weight << endl;
     cout << "Drone's drone_battery capacity = " << par.drone_battery << endl;
     cout << "Drone's drone_load capacity = " << par.drone_load << endl;
     cout << "Height of the deliveries = " << par.height << endl;
@@ -51,7 +51,7 @@ void save_parameters(const input &par) {
     file_cfg << "max_len_road=" << par.max_len_road << endl;
     file_cfg << "max_interval_len=" << par.max_interval_len << endl;
     file_cfg << "max_profit=" << par.max_profit << endl;
-    file_cfg << "max_load=" << par.max_load << endl;
+    file_cfg << "max_weight=" << par.max_weight << endl;
     file_cfg << "drone_battery=" << par.drone_battery << endl;
     file_cfg << "drone_load=" << par.drone_load << endl;
     file_cfg << "height=" << par.height << endl;
@@ -97,16 +97,16 @@ input load_parameters(input &par) {
                 par.max_interval_len = stoi(value);
             } else if (key == "max_profit") {
                 par.max_profit = stoi(value);
-            } else if (key == "max_load") {
-                par.max_load = stoi(value);
+            } else if (key == "max_weight") {
+                par.max_weight = stoi(value);
             } else if (key == "drone_battery") {
                 par.drone_battery = stoi(value);
             } else if (key == "drone_load") {
                 par.drone_load = stoi(value);
             } else if (key == "height") {
-                par.height = stoi(value);
+                par.height = stod(value);
             } else if (key == "energy_unit_cost") {
-                par.energy_unit_cost = stoi(value);
+                par.energy_unit_cost = stod(value);
             }
         }
     }
@@ -143,8 +143,8 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.max_interval_len = stoi(argv[i + 1]);
             } else if (arg == "-max_profit") {
                 par.max_profit = stoi(argv[i + 1]);
-            } else if (arg == "-max_load") {
-                par.max_load = stoi(argv[i + 1]);
+            } else if (arg == "-max_weight") {
+                par.max_weight = stoi(argv[i + 1]);
             } else if (arg == "-drone_battery") {
                 par.drone_battery = stoi(argv[i + 1]);
             } else if (arg == "-drone_load") {

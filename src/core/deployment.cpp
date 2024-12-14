@@ -19,13 +19,13 @@ deployment::deployment(const input &par) {
     // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
     static mt19937 g(seed);
 
-    num_deliveries = par.num_deliveries;
     int max_len_road = par.max_len_road;
     int max_interval_len = par.max_interval_len;
     int max_profit = par.max_profit;
-    int max_load = par.max_load;
+    int max_load = par.max_weight;
 
-    is_load_unit = (max_load == 1);
+    num_deliveries = par.num_deliveries;
+    unit_load = (max_load == 1);
 
     height = par.height;
     energy_unit_cost = par.energy_unit_cost;
@@ -44,7 +44,7 @@ deployment::deployment(const input &par) {
         }
 
         int profit = static_cast<int>(numpy(g) * max_profit) + 1;
-        int load = static_cast<int>(numpy(g) * max_load) + 1;
+        int weight = static_cast<int>(numpy(g) * max_load) + 1;
 
         int x = arrival - departure;
         int delivery_location = departure + static_cast<int>(numpy(g) * x) + 1;
@@ -53,13 +53,13 @@ deployment::deployment(const input &par) {
         launches.push_back(departure);
         rendezvouses.push_back(arrival);
         profits.push_back(profit);
-        loads.push_back(load);
+        weights.push_back(weight);
 
         cout << i << "-> " << delivery_location
              << ": [" << departure
              << ", " << arrival
              << "], profit=" << profit
-             << ", drone_load=" << load << endl;
+             << ", weight=" << weight << endl;
     }
 
     cout << endl;
@@ -115,7 +115,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
 
 tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_load_limited() {
     set<int> unique_loads;
-    for (int l: loads) {
+    for (int l: weights) {
         unique_loads.insert(l);
     }
     // for each drone_load in unique_loads compute flights
@@ -125,8 +125,8 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbit
         load_flight[l] = vector<int>();
     }
 
-    for (int i = 0; i < loads.size(); i++) {
-        load_flight[loads[i]].push_back(i);
+    for (int i = 0; i < weights.size(); i++) {
+        load_flight[weights[i]].push_back(i);
     }
 
     vector<vector<int>> all_flights;
@@ -239,7 +239,7 @@ int deployment::compute_profit(const vector<int> &delivery_ids) {
 int deployment::compute_load(const vector<int> &delivery_ids) {
     int load = 0;
     for (auto id: delivery_ids) {
-        load += loads[id];
+        load += weights[id];
     }
 
     return load;
@@ -261,8 +261,8 @@ const vector<int> &deployment::get_profits() const {
     return profits;
 }
 
-const vector<int> &deployment::get_loads() const {
-    return loads;
+const vector<int> &deployment::get_weights() const {
+    return weights;
 }
 
 const vector<int> &deployment::get_delivery_points() const {
@@ -285,6 +285,6 @@ int deployment::get_energy_per_flight() const {
     return energy_unit_cost;
 }
 
-bool deployment::isLoadUnit() const {
-    return is_load_unit;
+bool deployment::is_unit_load() const {
+    return unit_load;
 }

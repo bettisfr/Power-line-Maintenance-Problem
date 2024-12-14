@@ -20,7 +20,7 @@ struct solution {
     vector<vector<int>> total_flights;
     vector<int> profits;
     vector<double> energies;
-    vector<int> loads;
+    vector<int> weights;
 
     double running_time = -1;
 
@@ -34,11 +34,11 @@ struct solution {
             for (auto e: s) {
                 os << "[" << e << "] ";
             }
-            os << "Profit=" << out.profits[i] << ", Energy=" << out.energies[i] << ", Load=" << out.loads[i] << endl;
+            os << "profit=" << out.profits[i] << ", energy=" << out.energies[i] << ", weight=" << out.weights[i] << endl;
 
             i++;
         }
-        os << "Running Time: " << out.running_time << endl;
+        os << "Running time: " << out.running_time << endl;
 
         return os;
     }
