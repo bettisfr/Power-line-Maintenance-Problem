@@ -1,19 +1,22 @@
 import subprocess
+import os
 
 # Parameters
 BUILD_DIR = 'cmake-build-release'
 BIN_FILE = 'dcoss'
+
+os.makedirs('output', exist_ok=True)
 
 # Parameter vectors
 NUM_DELIVERIES_VEC = [5, 10, 15, 20]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+ALGORITHMS = [0, 1, 2, 4, 5, 6, 7, 8] # remember to re-add 3
 
 # Default parameter values
 DEFAULT_LOG = 0
-DEFAULT_ITERATIONS = 3
+DEFAULT_ITERATIONS = 33
 DEFAULT_MAX_LEN_ROAD = 100
 DEFAULT_MAX_INTERVAL_LEN = 15
 DEFAULT_MAX_PROFIT = 10
@@ -22,14 +25,17 @@ DEFAULT_ENERGY_UNIT_COST = 200
 DEFAULT_SAVE = 1
 
 # Seed initialization
-seed = 0
+seed = 10
 
 # Loop through all parameter combinations
 for num_deliveries in NUM_DELIVERIES_VEC:
-    for algorithm in ALGORITHMS:
+    for drone_battery in DRONE_BATTERY_VEC:
         for max_weight in MAX_WEIGHT_VEC:
             for drone_load in DRONE_LOAD_VEC:
-                for drone_battery in DRONE_BATTERY_VEC:
+                for algorithm in ALGORITHMS:
+
+                    # The seed MUST be the same for each algorithm!
+
                     exp_name = f"out_alg{algorithm}_ndel{num_deliveries}_maxw{max_weight}_load{drone_load}_batt{drone_battery}"
                     cmd = (
                         f"./{BUILD_DIR}/{BIN_FILE} --params "
@@ -59,5 +65,5 @@ for num_deliveries in NUM_DELIVERIES_VEC:
                         print(f"Error: Command failed with exit code {e.returncode}")
                         exit(1)
 
-                    # Increment the seed
-                    seed += 1
+                # Increment the seed
+                seed += 1
