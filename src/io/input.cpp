@@ -45,6 +45,7 @@ void save_parameters(const input &par) {
     string cfg_filename = "input/" + par.exp_name + ".cfg";
     ofstream file_cfg(cfg_filename);
 
+    file_cfg << "log=" << par.log << endl;
     file_cfg << "save=" << par.save << endl;
     file_cfg << "seed=" << par.seed << endl;
     file_cfg << "num_deliveries=" << par.num_deliveries << endl;
@@ -81,7 +82,9 @@ input load_parameters(input &par) {
         string value;
 
         if (getline(lineStream, key, '=') && lineStream >> value) {
-            if (key == "save") {
+            if (key == "log") {
+                par.log = stoi(value);
+            } else if (key == "save") {
                 par.save = stoi(value);
             } else if (key == "seed") {
                 par.seed = stoi(value);
@@ -127,6 +130,8 @@ input read_parameters(input &par, int argc, char *argv[]) {
             // Process the flag or option accordingly
             if (arg == "-exp_name") {
                 par.exp_name = argv[i + 1];
+            } else if (arg == "-log") {
+                par.log = stoi(argv[i + 1]);
             } else if (arg == "-save") {
                 par.save = stoi(argv[i + 1]);
             } else if (arg == "-seed") {

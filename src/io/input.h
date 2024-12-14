@@ -13,6 +13,9 @@ using namespace std;
 
 // Default values
 struct input {
+    // 0: No prints; 1: Prints
+    int log = 1;
+
     // 0: No save to CSV; 1: Save to CSV
     int save = 0;
 

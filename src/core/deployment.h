@@ -68,6 +68,17 @@ public:
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
+    friend ostream &operator<<(ostream &os, const deployment &dep) {
+        for (int i = 0; i < dep.num_deliveries; i++) {
+            os << i << "-> " << dep.delivery_points[i]
+                 << ": [" << dep.launches[i]
+                 << ", " << dep.rendezvouses[i]
+                 << "], profit=" << dep.profits[i]
+                 << ", weight=" << dep.weights[i] << endl;
+        }
+
+        return os;
+    }
 };
 
 #endif //DEPLOYMENT_H
