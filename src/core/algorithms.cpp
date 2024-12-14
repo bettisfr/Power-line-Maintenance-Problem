@@ -44,6 +44,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
     try {
         GRBEnv env = GRBEnv(true);
         // env.set("LogFile", "mip1.log");
+        env.set("OutputFlag", "0");
         env.start();
         GRBModel model = GRBModel(env);
 
@@ -113,7 +114,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         model.setObjective(sum_profit, GRB_MAXIMIZE);
         model.optimize();
 
-        cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
+//        cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
         vector<vector<int>> selected_intervals;
         vector<int> sel_int_profits;
@@ -535,13 +536,13 @@ solution algorithms::knapsack() {
 
 solution algorithms::knapsack_opt_ul() {
     // cout << "knapsack" << endl;
-    cout << "Currently this function is not optimal due to rounding" << endl;
+//    cout << "Currently this function is not optimal due to rounding" << endl;
     return knapsack_opt_helper();
 }
 
 solution algorithms::knapsack_heu_al() {
     // cout << "knapsack" << endl;
-    cout << "Heuristic" << endl;
+//    cout << "Heuristic" << endl;
     return knapsack_opt_helper();
 }
 

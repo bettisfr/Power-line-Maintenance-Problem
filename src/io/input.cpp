@@ -26,15 +26,15 @@ void print_parameters(const input &par) {
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;
 
-    cout << "Number of deliveries = " << par.num_deliveries << endl;
-    cout << "Maximum length of the road = " << par.max_len_road << endl;
-    cout << "Maximum length of an interval = " << par.max_interval_len << endl;
-    cout << "Maximum value for a delivery = " << par.max_profit << endl;
-    cout << "Maximum drone_load for a delivery = " << par.max_weight << endl;
-    cout << "Drone's drone_battery capacity = " << par.drone_battery << endl;
-    cout << "Drone's drone_load capacity = " << par.drone_load << endl;
-    cout << "Height of the deliveries = " << par.height << endl;
-    cout << "Energy unit cost per distance = " << par.energy_unit_cost << endl;
+    cout << "Number of deliveries=" << par.num_deliveries << endl;
+    cout << "Maximum length of the road=" << par.max_len_road << endl;
+    cout << "Maximum length of an interval=" << par.max_interval_len << endl;
+    cout << "Maximum value for a delivery=" << par.max_profit << endl;
+    cout << "Maximum weight for a delivery=" << par.max_weight << endl;
+    cout << "Drone's energy battery=" << par.drone_battery << endl;
+    cout << "Drone's load capacity=" << par.drone_load << endl;
+    cout << "Height of the deliveries=" << par.height << endl;
+    cout << "Energy unit cost per distance=" << par.energy_unit_cost << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
     cout << "Iterations=" << par.iterations << endl;
 
@@ -150,9 +150,9 @@ input read_parameters(input &par, int argc, char *argv[]) {
             } else if (arg == "-drone_load") {
                 par.drone_load = stoi(argv[i + 1]);
             } else if (arg == "-height") {
-                par.height = stoi(argv[i + 1]);
+                par.height = stod(argv[i + 1]);
             } else if (arg == "-energy_unit_cost") {
-                par.energy_unit_cost = stoi(argv[i + 1]);
+                par.energy_unit_cost = stod(argv[i + 1]);
             } else {
                 cerr << "Unknown option: " << arg << endl;
             }

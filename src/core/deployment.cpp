@@ -55,14 +55,14 @@ deployment::deployment(const input &par) {
         profits.push_back(profit);
         weights.push_back(weight);
 
-        cout << i << "-> " << delivery_location
-             << ": [" << departure
-             << ", " << arrival
-             << "], profit=" << profit
-             << ", weight=" << weight << endl;
+//        cout << i << "-> " << delivery_location
+//             << ": [" << departure
+//             << ", " << arrival
+//             << "], profit=" << profit
+//             << ", weight=" << weight << endl;
     }
 
-    cout << endl;
+//    cout << endl;
 }
 
 // to find all unique subsets
