@@ -39,7 +39,7 @@ for num_deliveries in NUM_DELIVERIES_VEC:
                     if algorithm == 0:
                         if max_weight > 1 and num_deliveries > 20:
                             continue
-                        if max_weight == 1 and num_deliveries > 100:
+                        if max_weight == 1 and num_deliveries > 50:
                             continue
 
                     exp_name = f"out_alg{algorithm}_ndel{num_deliveries}_maxw{max_weight}_load{drone_load}_batt{drone_battery}"
