@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include <iomanip>
+#include <thread>
 
 #include "gurobi_c++.h"
 #include "../util/util.h"
@@ -45,6 +46,10 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         GRBEnv env = GRBEnv(true);
         // env.set("LogFile", "mip1.log");
         env.set("OutputFlag", "0");
+
+        int maxThreads = thread::hardware_concurrency();
+        env.set(GRB_IntParam_Threads, maxThreads);
+
         env.start();
         GRBModel model = GRBModel(env);
 
