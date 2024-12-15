@@ -28,7 +28,7 @@ final_df = pd.concat(df_list, ignore_index=True)
 # print(final_df.head())  # Print first few rows for inspection
 
 # Parameter vectors
-NUM_DELIVERIES_VEC = [5, 10, 15, 20, 25, 30]
+NUM_DELIVERIES_VEC = [10, 20, 50, 100, 150, 200]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
@@ -89,7 +89,7 @@ for max_weight in MAX_WEIGHT_VEC:
                 plt.title(f'{metric_label} vs. Number of Deliveries\n(max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery})', fontsize=14)
                 plt.xlabel('Number of Deliveries', fontsize=12)
                 plt.ylabel(metric_label, fontsize=12)
-                plt.xticks(range(min(final_df['num_deliveries']), max(final_df['num_deliveries']) + 1, 5))
+                plt.xticks(range(min(final_df['num_deliveries']), max(final_df['num_deliveries']) + 1, 10))
                 plt.legend(title="Algorithms", bbox_to_anchor=(1.05, 1), loc='upper left')
 
                 # Save the plot to the "plots" folder
