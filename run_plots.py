@@ -34,6 +34,18 @@ DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
 ALGORITHMS = [0, 1, 2, 4, 5, 6, 7, 8] # remember to re-add 3
 
+algorithm_str = {
+    0: "OPT (ILP)",
+    1: "bin packing",
+    2: "knapsack",
+    3: "coloring",
+    4: "GM profit",
+    5: "GM energy",
+    6: "GM profit/energy",
+    7: "GM profit/load",
+    8: "GM profit+neigh",
+}
+
 # Make sure 'plots' directory exists
 os.makedirs('plots', exist_ok=True)
 
@@ -80,7 +92,7 @@ for max_weight in MAX_WEIGHT_VEC:
                         algo_data['num_deliveries'],
                         algo_data[metric_avg],
                         yerr=algo_data[metric_std],
-                        label=f'Algorithm {algorithm}',
+                        label=f'{algorithm_str[algorithm]}',
                         fmt='-o',
                         capsize=5
                     )
@@ -89,7 +101,7 @@ for max_weight in MAX_WEIGHT_VEC:
                 plt.title(f'{metric_label} vs. Number of Deliveries\n(max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery})', fontsize=14)
                 plt.xlabel('Number of Deliveries', fontsize=12)
                 plt.ylabel(metric_label, fontsize=12)
-                plt.xticks(range(min(final_df['num_deliveries']), max(final_df['num_deliveries']) + 1, 10))
+                plt.xticks(NUM_DELIVERIES_VEC)
                 plt.legend(title="Algorithms", bbox_to_anchor=(1.05, 1), loc='upper left')
 
                 # Save the plot to the "plots" folder
