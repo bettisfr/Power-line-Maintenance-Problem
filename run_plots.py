@@ -28,7 +28,7 @@ final_df = pd.concat(df_list, ignore_index=True)
 # print(final_df.head())  # Print first few rows for inspection
 
 # Parameter vectors
-NUM_DELIVERIES_VEC = [5, 10, 15, 20]
+NUM_DELIVERIES_VEC = [5, 10, 15, 20, 25, 30]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
@@ -51,57 +51,59 @@ for max_weight in MAX_WEIGHT_VEC:
                 (final_df['drone_battery'] == drone_battery)
                 ]
 
-            # Debugging: Check the filtered data
-            # print(f"Filtered Data for max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery}:")
-            # print(filtered_df[['num_deliveries', 'algorithm', 'total_profit_avg', 'total_profit_std']])
-
             if filtered_df.empty:
                 print(f"No data found for max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery}")
                 continue
 
-            # Plot setup
-            plt.figure(figsize=(10, 6))
+            # Define the metrics to plot
+            metrics = [
+                ('total_profit_avg', 'total_profit_std', 'Total Profit'),
+                ('total_energy_avg', 'total_energy_std', 'Total Energy'),
+                ('total_flights_avg', 'total_flights_std', 'Total Flights')
+            ]
 
-            # Plot total_profit_avg and total_profit_std for each algorithm
-            for algorithm in ALGORITHMS:
-                algo_data = filtered_df[filtered_df['algorithm'] == algorithm]
-                # Sort the data by num_deliveries to ensure the x-axis is in order
-                algo_data = algo_data.sort_values(by='num_deliveries')
+            for metric_avg, metric_std, metric_label in metrics:
+                # Plot setup
+                plt.figure(figsize=(10, 6))
 
-                if algo_data.empty:
-                    print(f"No data for algorithm {algorithm} with the given filter")
+                # Plot the metric for each algorithm
+                for algorithm in ALGORITHMS:
+                    algo_data = filtered_df[filtered_df['algorithm'] == algorithm]
+                    # Sort the data by num_deliveries to ensure the x-axis is in order
+                    algo_data = algo_data.sort_values(by='num_deliveries')
+
+                    if algo_data.empty:
+                        print(f"No data for algorithm {algorithm} with the given filter")
+                        continue
+
+                    plt.errorbar(
+                        algo_data['num_deliveries'],
+                        algo_data[metric_avg],
+                        yerr=algo_data[metric_std],
+                        label=f'Algorithm {algorithm}',
+                        fmt='-o',
+                        capsize=5
+                    )
+
+                # Labels and title
+                plt.title(f'{metric_label} vs. Number of Deliveries\n(max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery})', fontsize=14)
+                plt.xlabel('Number of Deliveries', fontsize=12)
+                plt.ylabel(metric_label, fontsize=12)
+                plt.xticks(range(min(final_df['num_deliveries']), max(final_df['num_deliveries']) + 1, 5))
+                plt.legend(title="Algorithms", bbox_to_anchor=(1.05, 1), loc='upper left')
+
+                # Save the plot to the "plots" folder
+                plot_filename = f"plots/{metric_label.lower().replace(' ', '_')}_vs_deliveries_maxw{max_weight}_load{drone_load}_batt{drone_battery}.pdf"
+                plt.tight_layout()
+
+                # Check if plot has data before saving
+                if not plt.gca().has_data():
+                    print(f"No data to plot for {metric_label} (max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery})")
+                    plt.close()
                     continue
 
-                # print(f"Algo={algorithm}")
-                # print(algo_data[['num_deliveries', 'algorithm', 'total_profit_avg', 'total_profit_std']])
-
-                plt.errorbar(
-                    algo_data['num_deliveries'],
-                    algo_data['total_profit_avg'],
-                    yerr=algo_data['total_profit_std'],
-                    label=f'Algorithm {algorithm}',
-                    fmt='-o',
-                    capsize=5
-                )
-
-            # Labels and title
-            plt.title(f'Total Profit vs. Number of Deliveries\n(max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery})', fontsize=14)
-            plt.xlabel('Number of Deliveries', fontsize=12)
-            plt.ylabel('Total Profit', fontsize=12)
-            plt.xticks(range(min(final_df['num_deliveries']), max(final_df['num_deliveries']) + 1, 5))
-            plt.legend(title="Algorithms", bbox_to_anchor=(1.05, 1), loc='upper left')
-
-            # Save the plot to the "plots" folder
-            plot_filename = f"plots/profit_vs_deliveries_maxw{max_weight}_load{drone_load}_batt{drone_battery}.pdf"
-            plt.tight_layout()
-
-            # Check if plot has data before saving
-            if not plt.gca().has_data():
-                print(f"No data to plot for max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery}")
+                plt.savefig(plot_filename)
                 plt.close()
-                continue
 
-            plt.savefig(plot_filename)
-            plt.close()
+                print(f"Plot saved to {plot_filename}")
 
-            print(f"Plot saved to {plot_filename}")

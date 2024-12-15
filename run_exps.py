@@ -8,7 +8,7 @@ BIN_FILE = 'dcoss'
 os.makedirs('output', exist_ok=True)
 
 # Parameter vectors
-NUM_DELIVERIES_VEC = [5, 10, 15, 20]
+NUM_DELIVERIES_VEC = [5, 10, 15, 20, 25, 30]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
@@ -32,9 +32,12 @@ for num_deliveries in NUM_DELIVERIES_VEC:
     for drone_battery in DRONE_BATTERY_VEC:
         for max_weight in MAX_WEIGHT_VEC:
             for drone_load in DRONE_LOAD_VEC:
+                # The seed MUST be the same for each algorithm!
+
                 for algorithm in ALGORITHMS:
 
-                    # The seed MUST be the same for each algorithm!
+                    if algorithm == 0 and num_deliveries >= 20:
+                        continue
 
                     exp_name = f"out_alg{algorithm}_ndel{num_deliveries}_maxw{max_weight}_load{drone_load}_batt{drone_battery}"
                     cmd = (
