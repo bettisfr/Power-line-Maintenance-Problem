@@ -8,7 +8,7 @@ BIN_FILE = 'dcoss'
 os.makedirs('output', exist_ok=True)
 
 # Parameter vectors
-NUM_DELIVERIES_VEC = [10, 20, 50, 100, 150, 200]
+NUM_DELIVERIES_VEC = [150]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
