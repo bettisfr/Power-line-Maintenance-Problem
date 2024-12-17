@@ -22,7 +22,11 @@ void print_parameters(const input &par) {
             {7, "Gmax profit/load"},
             {8, "Gmax profit+neigh"},
     };
-    /// change the list
+
+    map<int, string> solution_space_str = {
+            {0, "Exhaustively"},
+            {1, "Knapsack"},
+    };
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;
 
@@ -36,6 +40,7 @@ void print_parameters(const input &par) {
     cout << "Height of the deliveries=" << par.height << endl;
     cout << "Energy unit cost per distance=" << par.energy_unit_cost << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
+    cout << "Solution space=" << solution_space_str[par.solution_space] << endl;
     cout << "Iterations=" << par.iterations << endl;
 
     cout << endl << endl;
@@ -59,6 +64,7 @@ void save_parameters(const input &par) {
     file_cfg << "energy_unit_cost=" << par.energy_unit_cost << endl;
     file_cfg << "algorithm=" << par.algorithm << endl;
     file_cfg << "iterations=" << par.iterations << endl;
+    file_cfg << "solution_space=" << par.solution_space << endl;
 
     file_cfg << endl;
 
@@ -110,6 +116,8 @@ input load_parameters(input &par) {
                 par.height = stod(value);
             } else if (key == "energy_unit_cost") {
                 par.energy_unit_cost = stod(value);
+            } else if (key == "solution_space") {
+                par.solution_space = stoi(value);
             }
         }
     }
@@ -158,6 +166,8 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.height = stod(argv[i + 1]);
             } else if (arg == "-energy_unit_cost") {
                 par.energy_unit_cost = stod(argv[i + 1]);
+            } else if (arg == "-solution_space") {
+                par.solution_space = stoi(argv[i + 1]);
             } else {
                 cerr << "Unknown option: " << arg << endl;
             }

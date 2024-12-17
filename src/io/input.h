@@ -57,6 +57,11 @@ struct input {
     // Maximum weight for a delivery
     int max_weight = 4;
 
+    // How the solution space is computed
+    // exhaustively 0
+    // knapsack 1
+    int solution_space = 0;
+
     // Drone's energy drone_battery
     int drone_battery = 5000;
 

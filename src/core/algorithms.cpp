@@ -42,6 +42,8 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
 
     solution sol;
 
+    cout << "Starting ILP..." << endl;
+
     try {
         GRBEnv env = GRBEnv(true);
         // env.set("LogFile", "mip1.log");
@@ -182,8 +184,8 @@ solution algorithms::opt_ilp_ul() {
 
 solution algorithms::opt_ilp_al() {
     solution sol;
-    auto sets = dep->compute_all_flights_arbitrary_weight();
-    //auto sets = dep->compute_all_flights_using_knapsack();
+//    auto sets = dep->compute_all_flights_arbitrary_weight();
+    auto sets = dep->get_solution_space() == 0 ? dep->compute_all_flights_arbitrary_weight() : dep->compute_all_flights_using_knapsack();
     vector<vector<int>> all_flights = get<0>(sets);
     vector<double> energy_costs = get<1>(sets);
 

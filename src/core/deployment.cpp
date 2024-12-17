@@ -33,6 +33,8 @@ deployment::deployment(const input &par) {
     drone_battery = par.drone_battery;
     drone_load = par.drone_load;
 
+    solution_space = par.solution_space;
+
     for (int i = 0; i < num_deliveries; i++) {
         int departure = static_cast<int>(numpy(g) * max_len_road);
         int arrival = static_cast<int>(departure + numpy(g) * max_interval_len);
@@ -364,4 +366,8 @@ int deployment::get_drone_load() const {
 
 bool deployment::is_unit_weight() const {
     return unit_weight;
+}
+
+int deployment::get_solution_space() const {
+    return solution_space;
 }

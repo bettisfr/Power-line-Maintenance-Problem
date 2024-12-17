@@ -30,6 +30,7 @@ private:
     double height;
     double energy_unit_cost;
     bool unit_weight;
+    int solution_space;
 
 public:
     [[nodiscard]] bool is_unit_weight() const;
@@ -51,6 +52,8 @@ public:
     [[nodiscard]] int get_drone_battery() const;
 
     [[nodiscard]] int get_drone_load() const;
+
+    [[nodiscard]] int get_solution_space() const;
 
     int compute_profit(const vector<int> &);
 
