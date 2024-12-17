@@ -56,7 +56,8 @@ public:
 
     int compute_load(const vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight(const vector<int> &, const int &);
+    // tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight(const vector<int> &, const int &);
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight();
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight();
 
@@ -66,7 +67,7 @@ public:
 
     vector<vector<int>> compute_all_subsets(vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
+    //tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
     friend ostream &operator<<(ostream &os, const deployment &dep) {
         for (int i = 0; i < dep.num_deliveries; i++) {

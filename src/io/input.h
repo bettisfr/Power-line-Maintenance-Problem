@@ -43,7 +43,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 10;
+    int num_deliveries = 15;
 
     // Maximum length of the road
     int max_len_road = 100;
@@ -61,7 +61,7 @@ struct input {
     int drone_battery = 5000;
 
     // Drone's drone_load capacity
-    int drone_load = 5;
+    int drone_load = 8;
 
     // Height of the deliveries
     double height = 0.5;

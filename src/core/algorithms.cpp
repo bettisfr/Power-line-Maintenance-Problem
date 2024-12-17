@@ -173,13 +173,14 @@ solution algorithms::opt_ilp() {
 }
 
 solution algorithms::opt_ilp_ul() {
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
+    // int num_deliveries = dep->get_num_deliveries();
+    // vector<int> deliveries_id;
+    // for (int i = 0; i < num_deliveries; i++) {
+    //     deliveries_id.push_back(i);
+    // }
 
-    auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    // auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights = get<0>(sets);
     vector<double> energy_costs = get<1>(sets);
 
@@ -264,12 +265,13 @@ algorithms::sorting_with_rendezvouses_in_apx() {
         deliveries_id.push_back(i);
     }
 
-    tuple<vector<vector<int>>, vector<double>> sets;
-    if (dep->is_unit_weight()) {
-        sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
-    } else {
-        sets = dep->compute_all_flights_arbitrary_weight_limited();
-    }
+    //tuple<vector<vector<int>>, vector<double>> sets;
+    // if (dep->is_unit_weight()) {
+    //     sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    // } else {
+    //     sets = dep->compute_all_flights_arbitrary_weight_limited();
+    // }
+    auto sets = dep->compute_all_flights_unitary_weight();
 
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
@@ -846,12 +848,13 @@ solution algorithms::greedy_reward() {
 }
 
 solution algorithms::greedy_reward_ul() {
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-    auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    // int num_deliveries = dep->get_num_deliveries();
+    // vector<int> deliveries_id;
+    // for (int i = 0; i < num_deliveries; i++) {
+    //     deliveries_id.push_back(i);
+    // }
+    // auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -859,7 +862,8 @@ solution algorithms::greedy_reward_ul() {
 }
 
 solution algorithms::greedy_reward_al() {
-    auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    //auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -902,12 +906,13 @@ solution algorithms::greedy_energy() {
 }
 
 solution algorithms::greedy_energy_ul() {
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-    auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    // int num_deliveries = dep->get_num_deliveries();
+    // vector<int> deliveries_id;
+    // for (int i = 0; i < num_deliveries; i++) {
+    //     deliveries_id.push_back(i);
+    // }
+    // auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -915,7 +920,8 @@ solution algorithms::greedy_energy_ul() {
 }
 
 solution algorithms::greedy_energy_al() {
-    auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    // auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -972,12 +978,13 @@ solution algorithms::greedy_reward_energy() {
 }
 
 solution algorithms::greedy_reward_energy_ul() {
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-    auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    // int num_deliveries = dep->get_num_deliveries();
+    // vector<int> deliveries_id;
+    // for (int i = 0; i < num_deliveries; i++) {
+    //     deliveries_id.push_back(i);
+    // }
+    // auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -985,7 +992,8 @@ solution algorithms::greedy_reward_energy_ul() {
 }
 
 solution algorithms::greedy_reward_energy_al() {
-    auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    // auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -1045,12 +1053,13 @@ solution algorithms::greedy_reward_load() {
 }
 
 solution algorithms::greedy_reward_load_ul() {
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-    auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    // int num_deliveries = dep->get_num_deliveries();
+    // vector<int> deliveries_id;
+    // for (int i = 0; i < num_deliveries; i++) {
+    //     deliveries_id.push_back(i);
+    // }
+    // auto sets = dep->compute_all_flights_unitary_weight(deliveries_id, dep->get_drone_load());
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
@@ -1058,7 +1067,8 @@ solution algorithms::greedy_reward_load_ul() {
 }
 
 solution algorithms::greedy_reward_load_al() {
-    auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    // auto sets = dep->compute_all_flights_arbitrary_weight_limited();
+    auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
