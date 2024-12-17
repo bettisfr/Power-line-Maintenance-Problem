@@ -129,14 +129,6 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unita
 
         vector<int> deliveries_id = f.second;
 
-        // replace this
-        // auto fights_energies = compute_all_flights_unitary_weight(f.second, total_load);
-
-        // vector<vector<int>> all_flights_f = get<0>(fights_energies);
-        // vector<double> energy_costs_f = get<1>(fights_energies);
-
-
-        ////////////////////////////
         vector<pair<int, int>> profit_id;
         for (int i: deliveries_id) {
             profit_id.emplace_back(profits[i], i);
@@ -150,8 +142,6 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unita
         }
         reverse(ids.begin(), ids.end());
 
-        // vector<vector<int>> all_flights;
-        // vector<double> energy_costs;
         for (int id_i: ids) {
             int L = launches[id_i];
             for (int id_j: ids) {
@@ -184,124 +174,11 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unita
                 }
             }
         }
-
-
-
-        ////////////////////////////
-
-
-
-
-
-
-        // for (int i = 0; i < all_flights_f.size(); i++) {
-        //     all_flights.push_back(all_flights_f[i]);
-        //     energy_costs.push_back(energy_costs_f[i]);
-        // }
-
-
     }
-
-
-
 
     return {all_flights, energy_costs};
 }
 
-
-
-
-
-// tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_arbitrary_weight_limited() {
-//     set<int> unique_loads;
-//     for (int l: weights) {
-//         unique_loads.insert(l);
-//     }
-//     // for each drone_load in unique_loads compute flights
-//     map<int, vector<int>> load_flight;
-
-//     for (auto l: unique_loads) {
-//         load_flight[l] = vector<int>();
-//     }
-
-//     for (int i = 0; i < weights.size(); i++) {
-//         load_flight[weights[i]].push_back(i);
-//     }
-
-//     vector<vector<int>> all_flights;
-//     vector<double> energy_costs;
-
-//     for (const auto &f: load_flight) {
-//         int total_load = floor(drone_load / f.first);
-
-//         auto fights_energies = compute_all_flights_unitary_weight(f.second, total_load);
-
-//         vector<vector<int>> all_flights_f = get<0>(fights_energies);
-//         vector<double> energy_costs_f = get<1>(fights_energies);
-
-//         for (int i = 0; i < all_flights_f.size(); i++) {
-//             all_flights.push_back(all_flights_f[i]);
-//             energy_costs.push_back(energy_costs_f[i]);
-//         }
-//     }
-
-//     return {all_flights, energy_costs};
-// }
-
-// tuple<vector<vector<int>>, vector<double>>
-// deployment::compute_all_flights_unitary_weight(const vector<int> &deliveries_id, const int &total_load) {
-//     // For any launch L and rendezvous point R, compute the all set of deliveries such that their
-//     // launch and rendezvous point lies in [L, R]
-//     vector<pair<int, int>> profit_id;
-//     for (int i: deliveries_id) {
-//         profit_id.emplace_back(profits[i], i);
-//     }
-
-//     sort(profit_id.begin(), profit_id.end());
-
-//     vector<int> ids;
-//     for (auto j: profit_id) {
-//         ids.push_back(j.second);
-//     }
-//     reverse(ids.begin(), ids.end());
-
-//     vector<vector<int>> all_flights;
-//     vector<double> energy_costs;
-//     for (int id_i: ids) {
-//         int L = launches[id_i];
-//         for (int id_j: ids) {
-//             int R = rendezvouses[id_j];
-//             if (R > L && rendezvouses[id_i] <= R && launches[id_j] >= L) {  // id_i != id_j &&                     
-//                 vector<int> flight;
-//                 if (id_i == id_j) {
-//                     flight.push_back(id_i);
-//                 } else {
-//                     flight.push_back(id_i);
-//                     flight.push_back(id_j);
-//                 }
-//                 // check [L, R] is energy and drone_load feasible
-//                 double energy_L_R = compute_energy(flight);
-//                 if (energy_L_R <= drone_battery && flight.size() <= total_load) {
-//                     // add all flights of size <= L
-//                     all_flights.push_back(flight);
-//                     energy_costs.push_back(energy_L_R);
-//                     for (int id_k: ids) {
-//                         if (id_k != id_i && id_k != id_j && L <= launches[id_k] && launches[id_k] <= R &&
-//                             L <= rendezvouses[id_k] && rendezvouses[id_k] <= R &&
-//                             delivery_points[id_k] >= delivery_points[id_i] &&
-//                             delivery_points[id_k] <= delivery_points[id_j] && flight.size() < total_load) {
-//                             flight.push_back(id_k);
-//                             all_flights.push_back(flight);
-//                             energy_costs.push_back(energy_L_R);
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     return {all_flights, energy_costs};
-// }
 
 double deployment::compute_energy(const vector<int> &delivery_ids) {
     vector<int> delivery_locations;

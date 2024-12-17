@@ -34,7 +34,7 @@ struct input {
     // greedy_reward_energy 6
     // greedy_reward_load 7
     // max_profit_extended 8
-    int algorithm = 8;
+    int algorithm = 5;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -55,7 +55,7 @@ struct input {
     int max_profit = 10;
 
     // Maximum weight for a delivery
-    int max_weight = 1;
+    int max_weight = 4;
 
     // Drone's energy drone_battery
     int drone_battery = 5000;
