@@ -34,7 +34,7 @@ struct input {
     // greedy_reward_energy 6
     // greedy_reward_load 7
     // max_profit_extended 8
-    int algorithm = 5;
+    int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;

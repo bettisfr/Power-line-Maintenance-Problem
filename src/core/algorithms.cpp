@@ -183,6 +183,7 @@ solution algorithms::opt_ilp_ul() {
 solution algorithms::opt_ilp_al() {
     solution sol;
     auto sets = dep->compute_all_flights_arbitrary_weight();
+    //auto sets = dep->compute_all_flights_using_knapsack();
     vector<vector<int>> all_flights = get<0>(sets);
     vector<double> energy_costs = get<1>(sets);
 
@@ -1036,7 +1037,7 @@ solution algorithms::greedy_reward_load_al() {
 
 
 bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, double remaining_energy) {
-    // compute energy add load by adding delivery to flight
+    // compute energy add load by adding delivery to flight  
     vector<int> extended_flight = flight;
     extended_flight.push_back(delivery);
     double energy_cost = dep->compute_energy(extended_flight);
@@ -1051,6 +1052,21 @@ bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, doub
 
 
 solution algorithms::max_profit_extended() {
+
+    auto set = dep->compute_all_flights_using_knapsack();
+
+    // vector<vector<int>> flightss;
+    // for (auto f: flightss){
+    //     for (auto i:f){
+    //         cout << i << " ";
+    //     }
+    //     cout << endl;
+        
+    // }
+    
+
+    
+ 
     // A: sort deliveries based on profit
     vector<int> A;
     vector<int> profits = dep->get_profits();

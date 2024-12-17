@@ -67,6 +67,9 @@ public:
 
     vector<vector<int>> compute_all_subsets(vector<int> &);
 
+    vector<int> compute_flight_using_knapsack(vector<int>, int);
+    tuple<vector<vector<int>>, vector<double>> compute_all_flights_using_knapsack();
+
     //tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
     friend ostream &operator<<(ostream &os, const deployment &dep) {

@@ -179,6 +179,114 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_unita
     return {all_flights, energy_costs};
 }
 
+tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_using_knapsack() {
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+
+    vector<int> ids;
+    for (int i = 0; i < num_deliveries; i++){
+        ids.push_back(i);
+    }
+    
+    for (int id_i: ids) {
+        int L = launches[id_i];
+        for (int id_j: ids) {
+            int R = rendezvouses[id_j];
+            if (R > L && rendezvouses[id_i] <= R && launches[id_j] >= L) {                  
+                vector<int> flight;
+                if (id_i == id_j) {
+                    flight.push_back(id_i);
+                } else {
+                    flight.push_back(id_i);
+                    flight.push_back(id_j);
+                }
+                // check [L, R] is energy and drone_load feasible
+                double energy_L_R = compute_energy(flight);
+                int load_flight = compute_load(flight);
+
+                if (energy_L_R <= drone_battery && load_flight <= drone_load) {
+                    // run knapsak for all deliveries between L and R
+                    vector<int> deliveries_L_R;
+                    for (int id_k: ids) {
+                        if (id_k != id_i && id_k != id_j && L <= launches[id_k] && launches[id_k] <= R &&
+                            L <= rendezvouses[id_k] && rendezvouses[id_k] <= R &&
+                            delivery_points[id_k] >= delivery_points[id_i] &&
+                            delivery_points[id_k] <= delivery_points[id_j]) {
+                            deliveries_L_R.push_back(id_k);
+                        }
+                    }
+
+                    all_flights.push_back(flight);
+                    energy_costs.push_back(energy_L_R);
+
+                    if (!deliveries_L_R.empty()) {
+                        vector<int> flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, drone_load - load_flight);
+                        for (int f : flight_knapsack){
+                            flight.push_back(f);
+                            all_flights.push_back(flight);
+                            energy_costs.push_back(energy_L_R);
+                        }
+                    } 
+                }
+            }
+        }
+    }
+
+    return {all_flights, energy_costs};
+}
+
+
+// from chatgpt
+vector<int> deployment::compute_flight_using_knapsack(vector<int> deliveries_id, int total_load) {
+    vector<int> weights_temp;
+    vector<int> values;
+
+    for (int i:deliveries_id){
+        weights_temp.push_back(weights[i]);
+        values.push_back(profits[i]);
+    }
+
+    int n = deliveries_id.size();
+    vector<int> selectedItems;
+
+    // Create a DP table where dp[i][w] will store the maximum value that can be attained with weight w and first i items
+    vector<vector<int>> dp(n + 1, vector<int>(total_load + 1, 0));
+
+    // Build the DP table in a bottom-up manner
+    for (int i = 1; i <= n; ++i) {
+        for (int w = 1; w <= total_load; ++w) {
+            // If the current item can be included in the knapsack
+            if (weights_temp[i - 1] <= w) {
+                // Take the maximum of either including or excluding the item
+                dp[i][w] = max(dp[i - 1][w], values[i - 1] + dp[i - 1][w - weights_temp[i - 1]]);
+            } else {
+                // If the item cannot be included, take the value from the row above (exclude the item)
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    // To find the selected items, we backtrack through the DP table
+    int w = total_load;
+    for (int i = n; i > 0; --i) {
+        if (dp[i][w] != dp[i - 1][w]) {  // Item i was included
+            selectedItems.push_back(i - 1);  // Store the index of the selected item (0-based index)
+            w -= weights_temp[i - 1];  // Reduce the remaining weight
+        }
+    }
+
+    // Return the maximum value found in the bottom-right corner of the DP table
+    //cout << "max_profit: " << dp[n][total_load] << endl;
+
+    reverse(selectedItems.begin(), selectedItems.begin());
+    vector<int> flight;
+    for (int i : selectedItems){
+        flight.push_back(deliveries_id[i]);
+    }
+    
+    return flight;
+}
+
 
 double deployment::compute_energy(const vector<int> &delivery_ids) {
     vector<int> delivery_locations;
