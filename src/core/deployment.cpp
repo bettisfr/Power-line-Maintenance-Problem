@@ -331,7 +331,7 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_using
                 int load_flight = compute_load(flight);
 
                 if (energy_L_R <= drone_battery && load_flight <= drone_load) {
-                    // run knapsak for all deliveries between L and R
+                    // run knapsack for all deliveries between L and R
                     vector<int> deliveries_L_R;
                     for (int id_k: ids) {
                         if (id_k != id_i && id_k != id_j && L <= launches[id_k] && launches[id_k] <= R &&
@@ -372,7 +372,7 @@ vector<int> deployment::compute_flight_using_knapsack(vector<int> deliveries_id,
         values.push_back(profits[i]);
     }
 
-    int n = deliveries_id.size();
+    int n = static_cast<int>(deliveries_id.size());
     vector<int> selectedItems;
 
     // Create a DP table where dp[i][w] will store the maximum value that can be attained with weight w and first i items

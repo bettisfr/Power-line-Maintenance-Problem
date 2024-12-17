@@ -50,7 +50,7 @@ solution algorithms::opt_ilp() {
         // env.set("LogFile", "mip1.log");
         env.set("OutputFlag", "0");
 
-        int maxThreads = thread::hardware_concurrency();
+        int maxThreads = static_cast<int>(thread::hardware_concurrency());
         env.set(GRB_IntParam_Threads, maxThreads);
 
         env.start();
