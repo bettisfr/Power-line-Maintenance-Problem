@@ -59,6 +59,130 @@ deployment::deployment(const input &par) {
     }
 }
 
+tuple<int, int> deployment::compute_LR(const vector<int> &flight) {
+    vector<int> launch_points;
+    vector<int> rendezvous_points;
+
+    for (auto id: flight) {
+        launch_points.push_back(launches[id]);
+        rendezvous_points.push_back(rendezvouses[id]);
+    }
+
+    int L = *min_element(launch_points.begin(), launch_points.end());
+    int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
+
+    return {L, R};
+}
+
+tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> deployment::sorting_with_rendezvouses_in_apx() {
+    // compute all flights and energy, then sort them
+    vector<int> deliveries_id;
+    for (int i = 0; i < num_deliveries; i++) {
+        deliveries_id.push_back(i);
+    }
+
+    auto sets = compute_all_flights_unitary_weight();
+
+    vector<vector<int>> all_flights_temp = get<0>(sets);
+    vector<double> energy_costs_temp = get<1>(sets);
+
+    vector<int> launches_temp;
+    vector<int> rendezvouses_temp;
+
+    for (const auto &flight: all_flights_temp) {
+        auto points = compute_LR(flight);
+        launches_temp.push_back(get<0>(points));
+        rendezvouses_temp.push_back(get<1>(points));
+    }
+
+    // sort according to rendezvouses_temp
+    vector<pair<int, int> > Ri;
+    for (int i = 0; i < all_flights_temp.size(); i++) {
+        Ri.emplace_back(rendezvouses_temp[i], i);
+    }
+
+    sort(Ri.begin(), Ri.end());
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+    vector<int> new_profits;
+    vector<int> new_launches;
+    vector<int> new_rendezvouses;
+
+    for (auto it: Ri) {
+        all_flights.push_back(all_flights_temp[it.second]);
+        energy_costs.push_back(energy_costs_temp[it.second]);
+        new_launches.push_back(launches_temp[it.second]);
+        new_rendezvouses.push_back(rendezvouses_temp[it.second]);
+        new_profits.push_back(compute_profit(all_flights_temp[it.second]));
+    }
+
+    return {all_flights, energy_costs, new_profits, new_launches, new_rendezvouses};
+}
+
+bool deployment::check_correct_interval(const vector<vector<int>> &flights, vector<int> launches_flights,
+                                        vector<int> rendezvouses_flights, int L, int R) {
+    // no intersection: true
+    for (int i = 0; i < flights.size(); i++) {
+        if (L <= launches_flights[i] && launches_flights[i] <= R) {
+            return false;
+        }
+
+        if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) ||
+            (launches_flights[i] <= R && R <= rendezvouses_flights[i])) {
+            return false;
+        }
+
+        if (L <= rendezvouses_flights[i] && rendezvouses_flights[i] <= R) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int deployment::compute_opt(int id, const vector<int> &launches, const vector<int> &rendezvouses,
+                            vector<int> profits, vector<int> opt,
+                            vector<int> p) {
+
+    if (id == -1) {
+        return 0;
+    } else if (id >= 0 && id < opt.size()) {
+        return opt[id];
+    } else {
+        return max(profits[id] + compute_opt(p[id], launches, rendezvouses, profits, opt, p),
+                   compute_opt(id - 1, launches, rendezvouses, profits, opt, p));
+    }
+}
+
+
+vector<int> deployment::weighted_interval(const vector<int> &launches, const vector<int> &rendezvouses,
+                                          const vector<int> &profits, vector<int> opt,
+                                          const vector<int> &p) {
+
+    for (int i = 0; i < launches.size(); i++) {
+        int opt_i = compute_opt(i, launches, rendezvouses, profits, opt, p);
+        opt.push_back(opt_i);
+    }
+
+    return opt;
+}
+
+vector<int> deployment::find_solution(int j, const vector<int> &launches, const vector<int> &rendezvouses,
+                                      vector<int> profits, vector<int> opt,
+                                      vector<int> p, vector<int> O) {
+    if (j == -1) {
+        return O;
+    } else {
+        if (profits[j] + opt[p[j]] >= opt[j - 1]) {
+            O.push_back(j);
+            return find_solution(p[j], launches, rendezvouses, profits, opt, p, O);
+        } else {
+            return find_solution(j - 1, launches, rendezvouses, profits, opt, p, O);
+        }
+    }
+}
+
 // to find all unique subsets
 void deployment::find_subsets(vector<int> &v, int idx, vector<int> &subset, set<vector<int>> &result) {
     if (!subset.empty())
@@ -370,4 +494,12 @@ bool deployment::is_unit_weight() const {
 
 int deployment::get_solution_space() const {
     return solution_space;
+}
+
+tuple<vector<vector<int>>, vector<double>> deployment::compute_solution_space() {
+    return is_unit_weight()
+                ? compute_all_flights_unitary_weight()
+                : (get_solution_space() == 0
+                   ? compute_all_flights_arbitrary_weight()
+                   : compute_all_flights_using_knapsack());
 }

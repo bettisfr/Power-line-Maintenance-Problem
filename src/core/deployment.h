@@ -55,9 +55,25 @@ public:
 
     [[nodiscard]] int get_solution_space() const;
 
+    tuple<vector<vector<int>>, vector<double>> compute_solution_space();
+
+    tuple<int, int> compute_LR(const vector<int> &);
+
     int compute_profit(const vector<int> &);
 
     int compute_load(const vector<int> &);
+
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx();
+
+    static bool check_correct_interval(const vector<vector<int>> &, vector<int>, vector<int>, int, int);
+
+    static vector<int>
+    weighted_interval(const vector<int> &, const vector<int> &, const vector<int> &, vector<int>, const vector<int> &);
+
+    static int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>);
+
+    static vector<int>
+    find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
     // tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight(const vector<int> &, const int &);
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight();

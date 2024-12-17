@@ -17,7 +17,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 12) {
+    if (index >= 0 && index <= 8) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -26,7 +26,10 @@ solution algorithms::run_experiment(int algorithm) {
     return out;
 }
 
-solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<double> &energy_costs) {
+solution algorithms::opt_ilp() {
+    // Pre-processing
+    auto [all_flights, energy_costs] = dep->compute_solution_space();
+
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep->get_num_deliveries();
     int B = dep->get_drone_battery();
@@ -42,8 +45,6 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
 
     solution sol;
 
-    cout << "Starting ILP..." << endl;
-
     try {
         GRBEnv env = GRBEnv(true);
         // env.set("LogFile", "mip1.log");
@@ -58,7 +59,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         // Disable log output
         model.set(GRB_IntParam_OutputFlag, 0);
 
-        // Variables for flights       
+        // Variables for flights
         GRBVar x[X];
         for (int i = 0; i < X; i++) {
             ostringstream v_name;
@@ -121,7 +122,7 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
         model.setObjective(sum_profit, GRB_MAXIMIZE);
         model.optimize();
 
-//        cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
+        // cout << "Obj: " << model.get(GRB_DoubleAttr_ObjVal) << endl;
 
         vector<vector<int>> selected_intervals;
         vector<int> sel_int_profits;
@@ -166,146 +167,11 @@ solution algorithms::opt_ilp_helper(vector<vector<int>> &all_flights, vector<dou
     return sol;
 }
 
-solution algorithms::opt_ilp() {
-    if (dep->is_unit_weight()) {
-        return opt_ilp_ul();
-    } else {
-        return opt_ilp_al();
-    }
-}
-
-solution algorithms::opt_ilp_ul() {
-    auto sets = dep->compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights = get<0>(sets);
-    vector<double> energy_costs = get<1>(sets);
-
-    return opt_ilp_helper(all_flights, energy_costs);
-}
-
-solution algorithms::opt_ilp_al() {
-    solution sol;
-//    auto sets = dep->compute_all_flights_arbitrary_weight();
-    auto sets = dep->get_solution_space() == 0 ? dep->compute_all_flights_arbitrary_weight() : dep->compute_all_flights_using_knapsack();
-    vector<vector<int>> all_flights = get<0>(sets);
-    vector<double> energy_costs = get<1>(sets);
-
-    return opt_ilp_helper(all_flights, energy_costs);
-}
-
-tuple<int, int> algorithms::compute_LR(const vector<int> &flight) {
-    vector<int> launches = dep->get_launches();
-    vector<int> rendezvouses = dep->get_rendezvouses();
-
-    vector<int> launch_points;
-    vector<int> rendezvous_points;
-
-    for (auto id: flight) {
-        launch_points.push_back(launches[id]);
-        rendezvous_points.push_back(rendezvouses[id]);
-    }
-
-    int L = *min_element(launch_points.begin(), launch_points.end());
-    int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
-
-    return {L, R};
-}
-
-int algorithms::compute_opt(int id, const vector<int> &launches, const vector<int> &rendezvouses,
-                            vector<int> profits, vector<int> opt,
-                            vector<int> p) {
-
-    if (id == -1) {
-        return 0;
-    } else if (id >= 0 && id < opt.size()) {
-        return opt[id];
-    } else {
-        return max(profits[id] + compute_opt(p[id], launches, rendezvouses, profits, opt, p),
-                   compute_opt(id - 1, launches, rendezvouses, profits, opt, p));
-    }
-}
-
-
-vector<int> algorithms::weighted_interval(const vector<int> &launches, const vector<int> &rendezvouses,
-                                          const vector<int> &profits, vector<int> opt,
-                                          const vector<int> &p) {
-
-    for (int i = 0; i < launches.size(); i++) {
-        int opt_i = compute_opt(i, launches, rendezvouses, profits, opt, p);
-        opt.push_back(opt_i);
-    }
-
-    return opt;
-}
-
-vector<int> algorithms::find_solution(int j, const vector<int> &launches, const vector<int> &rendezvouses,
-                                      vector<int> profits, vector<int> opt,
-                                      vector<int> p, vector<int> O) {
-    if (j == -1) {
-        return O;
-    } else {
-        if (profits[j] + opt[p[j]] >= opt[j - 1]) {
-            O.push_back(j);
-            return find_solution(p[j], launches, rendezvouses, profits, opt, p, O);
-        } else {
-            return find_solution(j - 1, launches, rendezvouses, profits, opt, p, O);
-        }
-    }
-}
-
-tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>>
-algorithms::sorting_with_rendezvouses_in_apx() {
-    // compute all flights and energy, then sort them
-    int num_deliveries = dep->get_num_deliveries();
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-
-    auto sets = dep->compute_all_flights_unitary_weight();
-
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    vector<int> launches_temp;
-    vector<int> rendezvouses_temp;
-
-    for (const auto &flight: all_flights_temp) {
-        auto points = compute_LR(flight);
-        launches_temp.push_back(get<0>(points));
-        rendezvouses_temp.push_back(get<1>(points));
-    }
-
-    // sort according to rendezvouses_temp
-    vector<pair<int, int> > Ri;
-    for (int i = 0; i < all_flights_temp.size(); i++) {
-        Ri.emplace_back(rendezvouses_temp[i], i);
-    }
-
-    sort(Ri.begin(), Ri.end());
-
-    vector<vector<int>> all_flights;
-    vector<double> energy_costs;
-    vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
-
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        launches.push_back(launches_temp[it.second]);
-        rendezvouses.push_back(rendezvouses_temp[it.second]);
-        profits.push_back(dep->compute_profit(all_flights_temp[it.second]));
-    }
-
-    return {all_flights, energy_costs, profits, launches, rendezvouses};
-}
-
-
 solution algorithms::bin_packing_helper() {
     solution sol;
     int B = dep->get_drone_battery();
 
-    auto parameters = sorting_with_rendezvouses_in_apx();
+    auto parameters = dep->sorting_with_rendezvouses_in_apx();
     vector<vector<int>> all_flights = get<0>(parameters);
     vector<double> energy_costs = get<1>(parameters);
     vector<int> profits = get<2>(parameters);
@@ -316,11 +182,11 @@ solution algorithms::bin_packing_helper() {
     vector<int> p = util::largest_non_overlap_delivery(launches, rendezvouses);
 
     vector<int> opt; // profits
-    vector<int> pp = weighted_interval(launches, rendezvouses, profits, opt, p);
+    vector<int> pp = deployment::weighted_interval(launches, rendezvouses, profits, opt, p);
 
     vector<int> O;  // ids
     vector<int> opt_flights;
-    opt_flights = find_solution(static_cast<int>(launches.size() - 1), launches, rendezvouses, profits, pp, p, O);
+    opt_flights = deployment::find_solution(static_cast<int>(launches.size() - 1), launches, rendezvouses, profits, pp, p, O);
     reverse(opt_flights.begin(), opt_flights.end());
 
     // bin packing
@@ -411,7 +277,7 @@ solution algorithms::knapsack_opt_helper() {
     solution sol;
     int B = dep->get_drone_battery();
 
-    auto parameters = sorting_with_rendezvouses_in_apx();
+    auto parameters = dep->sorting_with_rendezvouses_in_apx();
     vector<vector<int>> all_flights = get<0>(parameters);
     vector<double> energy_costs = get<1>(parameters);
     vector<int> profits = get<2>(parameters);
@@ -547,7 +413,7 @@ solution algorithms::coloring_helper() {
     // Variables
     int B = dep->get_drone_battery();
 
-    auto parameters = sorting_with_rendezvouses_in_apx();
+    auto parameters = dep->sorting_with_rendezvouses_in_apx();
     vector<vector<int>> all_flights = get<0>(parameters);
     vector<double> energy_costs = get<1>(parameters);
     vector<int> profits = get<2>(parameters);
@@ -692,27 +558,6 @@ solution algorithms::coloring_al() {
 }
 
 /////////////   Heuristics   ////////////////
-bool algorithms::check_correct_interval(const vector<vector<int>> &flights, vector<int> launches_flights,
-                                        vector<int> rendezvouses_flights, int L, int R) {
-    // no intersection: true
-    for (int i = 0; i < flights.size(); i++) {
-        if (L <= launches_flights[i] && launches_flights[i] <= R) {
-            return false;
-        }
-
-        if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) ||
-            (launches_flights[i] <= R && R <= rendezvouses_flights[i])) {
-            return false;
-        }
-
-        if (L <= rendezvouses_flights[i] && rendezvouses_flights[i] <= R) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, vector<double> energy_costs,
                                              vector<int> profits, vector<int> launches, vector<int> rendezvouses) {
     vector<vector<int>> selected_intervals;
@@ -733,7 +578,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
 
         if (energy_costs[0] <= B &&
             (selected_intervals.empty() ||
-             check_correct_interval(selected_intervals, launches_result, rendezvouses_result, L, R))) {
+             deployment::check_correct_interval(selected_intervals, launches_result, rendezvouses_result, L, R))) {
             selected_intervals.push_back(task);
             launches_result.push_back(L);
             rendezvouses_result.push_back(R);
@@ -819,7 +664,7 @@ solution algorithms::greedy_reward_helper(vector<vector<int>> all_flights_temp, 
 
     for (auto it: Ri) {
         all_flights.push_back(all_flights_temp[it.second]);
-        auto points = compute_LR(all_flights_temp[it.second]);
+        auto points = dep->compute_LR(all_flights_temp[it.second]);
         launches.push_back(get<0>(points));
         rendezvouses.push_back(get<1>(points));
         energy_costs.push_back(energy_costs_temp[it.second]);
@@ -829,7 +674,7 @@ solution algorithms::greedy_reward_helper(vector<vector<int>> all_flights_temp, 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
-solution algorithms::greedy_reward() {
+solution algorithms::greedy_profit() {
     if (dep->is_unit_weight()) {
         return greedy_reward_ul();
     } else {
@@ -870,7 +715,7 @@ solution algorithms::greedy_energy_helper(vector<vector<int>> all_flights_temp, 
 
     for (auto it: Ri) {
         all_flights.push_back(all_flights_temp[it.second]);
-        auto points = compute_LR(all_flights_temp[it.second]);
+        auto points = dep->compute_LR(all_flights_temp[it.second]);
         launches.push_back(get<0>(points));
         rendezvouses.push_back(get<1>(points));
         energy_costs.push_back(energy_costs_temp[it.second]);
@@ -935,7 +780,7 @@ algorithms::greedy_reward_energy_helper(vector<vector<int>> all_flights_temp, ve
 
     for (auto it: Ri) {
         all_flights.push_back(all_flights_temp[it.second]);
-        auto points = compute_LR(all_flights_temp[it.second]);
+        auto points = dep->compute_LR(all_flights_temp[it.second]);
         launches.push_back(get<0>(points));
         rendezvouses.push_back(get<1>(points));
         energy_costs.push_back(energy_costs_temp[it.second]);
@@ -945,7 +790,7 @@ algorithms::greedy_reward_energy_helper(vector<vector<int>> all_flights_temp, ve
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
-solution algorithms::greedy_reward_energy() {
+solution algorithms::greedy_profit_energy() {
     if (dep->is_unit_weight()) {
         return greedy_reward_energy_ul();
     } else {
@@ -1003,7 +848,7 @@ solution algorithms::greedy_reward_load_helper(vector<vector<int>> all_flights_t
 
     for (auto it: Ri) {
         all_flights.push_back(all_flights_temp[it.second]);
-        auto points = compute_LR(all_flights_temp[it.second]);
+        auto points = dep->compute_LR(all_flights_temp[it.second]);
         launches.push_back(get<0>(points));
         rendezvouses.push_back(get<1>(points));
         energy_costs.push_back(energy_costs_temp[it.second]);
@@ -1013,7 +858,7 @@ solution algorithms::greedy_reward_load_helper(vector<vector<int>> all_flights_t
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
-solution algorithms::greedy_reward_load() {
+solution algorithms::greedy_profit_load() {
     if (dep->is_unit_weight()) {
         return greedy_reward_load_ul();
     } else {
@@ -1063,12 +908,9 @@ solution algorithms::max_profit_extended() {
     //         cout << i << " ";
     //     }
     //     cout << endl;
-        
-    // }
-    
 
-    
- 
+    // }
+
     // A: sort deliveries based on profit
     vector<int> A;
     vector<int> profits = dep->get_profits();
@@ -1195,14 +1037,14 @@ solution algorithms::max_profit_extended() {
                 C.erase(find(C.begin(), C.end(), f));
             }
 
-            auto points = compute_LR(flight);
+            auto points = dep->compute_LR(flight);
             vector<int> launches = dep->get_launches();
             vector<int> rendezvouses = dep->get_rendezvouses();
 
             vector<int> delivery_temp;
             for (int i: A) {
-                if (!check_correct_interval({flight}, {get<0>(points)}, {get<1>(points)}, launches[i],
-                                            rendezvouses[i])) {
+                if (!deployment::check_correct_interval({flight}, {get<0>(points)}, {get<1>(points)}, launches[i],
+                                                        rendezvouses[i])) {
                     delivery_temp.push_back(i);
                 }
             }

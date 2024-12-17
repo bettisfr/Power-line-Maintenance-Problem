@@ -29,10 +29,10 @@ struct input {
     // bin_packing 1
     // knapsack 2
     // coloring 3
-    // greedy_reward 4
+    // greedy_profit 4
     // greedy_energy 5
-    // greedy_reward_energy 6
-    // greedy_reward_load 7
+    // greedy_profit_energy 6
+    // greedy_profit_load 7
     // max_profit_extended 8
     int algorithm = 0;
 

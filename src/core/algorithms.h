@@ -26,30 +26,12 @@ private:
             &algorithms::bin_packing, // 1
             &algorithms::knapsack, // 2
             &algorithms::coloring, // 3
-            &algorithms::greedy_reward, // 4
+            &algorithms::greedy_profit, // 4
             &algorithms::greedy_energy, // 5
-            &algorithms::greedy_reward_energy, // 6
-            &algorithms::greedy_reward_load, // 7
+            &algorithms::greedy_profit_energy, // 6
+            &algorithms::greedy_profit_load, // 7
             &algorithms::max_profit_extended, // 8
     };
-
-    tuple<int, int> compute_LR(const vector<int> &);
-
-    vector<int>
-    weighted_interval(const vector<int> &, const vector<int> &, const vector<int> &, vector<int>, const vector<int> &);
-
-    int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>);
-
-    vector<int>
-    find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
-
-    solution opt_ilp_helper(vector<vector<int>> &, vector<double> &);
-
-    solution opt_ilp_ul();
-
-    solution opt_ilp_al();
-
-    static bool check_correct_interval(const vector<vector<int>> &, vector<int>, vector<int>, int, int);
 
     solution greedy_reward_helper(vector<vector<int>>, vector<double>);
 
@@ -76,9 +58,6 @@ private:
     solution greedy_reward_load_ul();
 
     solution greedy_reward_load_al();
-
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>>
-    sorting_with_rendezvouses_in_apx();
 
     solution bin_packing_helper();
 
@@ -111,13 +90,13 @@ public:
 
     solution knapsack();
 
-    solution greedy_reward();
+    solution greedy_profit();
 
     solution greedy_energy();
 
-    solution greedy_reward_energy();
+    solution greedy_profit_energy();
 
-    solution greedy_reward_load();
+    solution greedy_profit_load();
 
     solution coloring();
 
