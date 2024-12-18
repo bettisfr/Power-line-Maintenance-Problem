@@ -648,7 +648,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     return sol;
 }
 
-solution algorithms::greedy_reward_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
+solution algorithms::greedy_profit_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
     vector<int> profits_temp;
     for (const auto &flight: all_flights_temp) {
         int profit = dep->compute_profit(flight);
@@ -684,26 +684,26 @@ solution algorithms::greedy_reward_helper(vector<vector<int>> all_flights_temp, 
 
 solution algorithms::greedy_profit() {
     if (dep->is_unit_weight()) {
-        return greedy_reward_ul();
+        return greedy_profit_ul();
     } else {
-        return greedy_reward_al();
+        return greedy_profit_al();
     }
 }
 
-solution algorithms::greedy_reward_ul() {
+solution algorithms::greedy_profit_ul() {
     auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
-    return greedy_reward_helper(all_flights_temp, energy_costs_temp);
+    return greedy_profit_helper(all_flights_temp, energy_costs_temp);
 }
 
-solution algorithms::greedy_reward_al() {
+solution algorithms::greedy_profit_al() {
     auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
-    return greedy_reward_helper(all_flights_temp, energy_costs_temp);
+    return greedy_profit_helper(all_flights_temp, energy_costs_temp);
 }
 
 solution algorithms::greedy_energy_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
@@ -758,7 +758,7 @@ solution algorithms::greedy_energy_al() {
 }
 
 solution
-algorithms::greedy_reward_energy_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
+algorithms::greedy_profit_energy_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
     // sort according to reward/energy
     vector<int> profits_temp;
     for (const auto &flight: all_flights_temp) {
@@ -800,29 +800,29 @@ algorithms::greedy_reward_energy_helper(vector<vector<int>> all_flights_temp, ve
 
 solution algorithms::greedy_profit_energy() {
     if (dep->is_unit_weight()) {
-        return greedy_reward_energy_ul();
+        return greedy_profit_energy_ul();
     } else {
-        return greedy_reward_energy_al();
+        return greedy_profit_energy_al();
     }
 }
 
-solution algorithms::greedy_reward_energy_ul() {
+solution algorithms::greedy_profit_energy_ul() {
     auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
-    return greedy_reward_energy_helper(all_flights_temp, energy_costs_temp);
+    return greedy_profit_energy_helper(all_flights_temp, energy_costs_temp);
 }
 
-solution algorithms::greedy_reward_energy_al() {
+solution algorithms::greedy_profit_energy_al() {
     auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
-    return greedy_reward_energy_helper(all_flights_temp, energy_costs_temp);
+    return greedy_profit_energy_helper(all_flights_temp, energy_costs_temp);
 }
 
-solution algorithms::greedy_reward_load_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
+solution algorithms::greedy_profit_load_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
     vector<int> profits_temp;
     vector<int> loads_temp;
 
@@ -868,26 +868,26 @@ solution algorithms::greedy_reward_load_helper(vector<vector<int>> all_flights_t
 
 solution algorithms::greedy_profit_load() {
     if (dep->is_unit_weight()) {
-        return greedy_reward_load_ul();
+        return greedy_profit_load_ul();
     } else {
-        return greedy_reward_load_al();
+        return greedy_profit_load_al();
     }
 }
 
-solution algorithms::greedy_reward_load_ul() {
+solution algorithms::greedy_profit_load_ul() {
     auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
-    return greedy_reward_load_helper(all_flights_temp, energy_costs_temp);
+    return greedy_profit_load_helper(all_flights_temp, energy_costs_temp);
 }
 
-solution algorithms::greedy_reward_load_al() {
+solution algorithms::greedy_profit_load_al() {
     auto sets = dep->compute_all_flights_unitary_weight();
     vector<vector<int>> all_flights_temp = get<0>(sets);
     vector<double> energy_costs_temp = get<1>(sets);
 
-    return greedy_reward_load_helper(all_flights_temp, energy_costs_temp);
+    return greedy_profit_load_helper(all_flights_temp, energy_costs_temp);
 }
 
 

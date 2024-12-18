@@ -33,11 +33,11 @@ private:
             &algorithms::max_profit_extended, // 8
     };
 
-    solution greedy_reward_helper(vector<vector<int>>, vector<double>);
+    solution greedy_profit_helper(vector<vector<int>>, vector<double>);
 
-    solution greedy_reward_ul();
+    solution greedy_profit_ul();
 
-    solution greedy_reward_al();
+    solution greedy_profit_al();
 
     solution greedy_energy_helper(vector<vector<int>>, vector<double>);
 
@@ -47,17 +47,17 @@ private:
 
     solution flight_selection_in_heu(vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>);
 
-    solution greedy_reward_energy_helper(vector<vector<int>>, vector<double>);
+    solution greedy_profit_energy_helper(vector<vector<int>>, vector<double>);
 
-    solution greedy_reward_energy_ul();
+    solution greedy_profit_energy_ul();
 
-    solution greedy_reward_energy_al();
+    solution greedy_profit_energy_al();
 
-    solution greedy_reward_load_helper(vector<vector<int>>, vector<double>);
+    solution greedy_profit_load_helper(vector<vector<int>>, vector<double>);
 
-    solution greedy_reward_load_ul();
+    solution greedy_profit_load_ul();
 
-    solution greedy_reward_load_al();
+    solution greedy_profit_load_al();
 
     solution bin_packing_helper();
 
