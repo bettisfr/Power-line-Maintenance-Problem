@@ -30,6 +30,14 @@ solution algorithms::opt_ilp() {
     // Pre-processing
     auto [all_flights, energy_costs] = dep->compute_solution_space();
 
+    for (auto f:all_flights){
+        for (int i : f){
+            cout << i << " ";
+        }
+        cout << endl;
+        
+    }
+
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep->get_num_deliveries();
     int B = dep->get_drone_battery();

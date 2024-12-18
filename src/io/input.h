@@ -17,7 +17,7 @@ struct input {
     int log = 1;
 
     // 0: No save to CSV; 1: Save to CSV
-    int save = 0;
+    int save = 9;
 
     // Application parameters
     int seed = 0;
@@ -43,7 +43,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 15;
+    int num_deliveries = 22;
 
     // Maximum length of the road
     int max_len_road = 100;
@@ -55,7 +55,7 @@ struct input {
     int max_profit = 10;
 
     // Maximum weight for a delivery
-    int max_weight = 4;
+    int max_weight = 5;
 
     // How the solution space is computed
     // exhaustively 0
@@ -63,10 +63,10 @@ struct input {
     int solution_space = 0;
 
     // Drone's energy drone_battery
-    int drone_battery = 5000;
+    int drone_battery = 2500;
 
     // Drone's drone_load capacity
-    int drone_load = 8;
+    int drone_load = 5;
 
     // Height of the deliveries
     double height = 0.5;

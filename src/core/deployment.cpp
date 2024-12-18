@@ -358,6 +358,9 @@ tuple<vector<vector<int>>, vector<double>> deployment::compute_all_flights_using
         }
     }
 
+
+    
+
     return {all_flights, energy_costs};
 }
 
