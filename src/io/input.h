@@ -17,10 +17,10 @@ struct input {
     int log = 1;
 
     // 0: No save to CSV; 1: Save to CSV
-    int save = 9;
+    int save = 0;
 
     // Application parameters
-    int seed = 0;
+    int seed = 9;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -60,7 +60,7 @@ struct input {
     // How the solution space is computed
     // exhaustively 0
     // knapsack 1
-    int solution_space = 0;
+    int solution_space = 1;
 
     // Drone's energy drone_battery
     int drone_battery = 2500;
