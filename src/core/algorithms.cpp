@@ -661,13 +661,13 @@ solution algorithms::greedy_profit() {
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(profits_temp[it.second]);
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(profits_temp[i]);
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
@@ -689,13 +689,13 @@ solution algorithms::greedy_energy() {
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(dep.compute_profit(all_flights_temp[it.second]));
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(dep.compute_profit(all_flights_temp[i]));
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
@@ -729,13 +729,13 @@ solution algorithms::greedy_profit_energy() {
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(profits_temp[it.second]);
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(profits_temp[i]);
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
@@ -772,13 +772,13 @@ solution algorithms::greedy_profit_load() {
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(profits_temp[it.second]);
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(profits_temp[i]);
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
@@ -820,8 +820,8 @@ solution algorithms::max_profit_extended() {
 
     sort(Ri.begin(), Ri.end()), greater<>();
 
-    for (auto it: Ri) {
-        A.push_back(it.second);
+    for (auto [value, i]: Ri) {
+        A.push_back(i);
     }
 
     // C: sort deliveries based on delivery_points
@@ -834,8 +834,8 @@ solution algorithms::max_profit_extended() {
 
     sort(pi.begin(), pi.end());
 
-    for (auto it: pi) {
-        C.push_back(it.second);
+    for (auto [value, i]: pi) {
+        C.push_back(i);
     }
 
     vector<int> loads = dep.get_weights();
