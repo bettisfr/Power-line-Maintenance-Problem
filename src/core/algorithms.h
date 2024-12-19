@@ -19,7 +19,7 @@ class algorithms {
 private:
 //    constexpr static const double epsilon = 0.01;
 
-    deployment *dep;
+    deployment dep;
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
             &algorithms::opt_ilp, // 0
@@ -80,7 +80,7 @@ private:
     bool if_flight_extends(const vector<int> &, int, double);
 
 public:
-    explicit algorithms(deployment *);
+    explicit algorithms(const deployment&);
 
     solution run_experiment(int);
 

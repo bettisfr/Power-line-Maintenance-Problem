@@ -7,6 +7,7 @@
 #include "core/algorithms.h"
 
 using namespace std;
+using namespace chrono;
 
 void run_experiment(input &par) {
     if (par.log == 1) {
@@ -23,14 +24,14 @@ void run_experiment(input &par) {
 
         cout << "Iteration: " << (i + 1) << "/" << par.iterations << endl;
 
-        algorithms alg(&dep);
+        algorithms alg(dep);
 
-        auto start_time = chrono::high_resolution_clock::now();
+        auto start_time = high_resolution_clock::now();
 
         solution out = alg.run_experiment(par.algorithm);
 
-        auto end_time = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+        auto end_time = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(end_time - start_time);
         out.running_time = static_cast<double>(duration.count()) / 1e+3;
 
         if (par.log == 1) {
