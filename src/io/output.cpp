@@ -33,7 +33,7 @@ void save_output(const input &par, const vector<solution> &results) {
 
     if (file.is_open()) {
         file
-                << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,drone_battery,drone_load,height,algorithm,iterations,energy_unit_cost,total_profit_avg,total_profit_std,total_energy_avg,total_energy_std,total_flights_avg,total_flights_std" //,running_time_avg,running_time_std"
+                << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,drone_battery,drone_load,height,algorithm,solution_space,iterations,energy_unit_cost,total_profit_avg,total_profit_std,total_energy_avg,total_energy_std,total_flights_avg,total_flights_std" //,running_time_avg,running_time_std"
                 << endl;
         file
                 // input
@@ -46,6 +46,7 @@ void save_output(const input &par, const vector<solution> &results) {
                 << par.drone_battery << ","
                 << par.drone_load << ","
                 << par.height << ","
+                << par.solution_space << ","
                 << par.algorithm << ","
                 << par.iterations << ","
                 << par.energy_unit_cost << ","
