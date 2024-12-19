@@ -644,14 +644,13 @@ solution algorithms::greedy_profit() {
 
     vector<int> profits_temp;
     for (const auto &flight: all_flights_temp) {
-        int profit = dep.compute_profit(flight);
-        profits_temp.push_back(profit);
+        profits_temp.push_back(dep.compute_profit(flight));
     }
 
     // sort according to profits_temp (decreasing order)
     vector<pair<int, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
-        Ri.emplace_back(profits_temp[i], i);
+        Ri.emplace_back(dep.compute_profit(all_flights_temp[i]), i);
     }
 
     sort(Ri.begin(), Ri.end());
@@ -710,8 +709,7 @@ solution algorithms::greedy_profit_energy() {
     // sort according to reward/energy
     vector<int> profits_temp;
     for (const auto &flight: all_flights_temp) {
-        int profit = dep.compute_profit(flight);
-        profits_temp.push_back(profit);
+        profits_temp.push_back(dep.compute_profit(flight));
     }
 
     vector<double> reward_energy;
@@ -753,10 +751,8 @@ solution algorithms::greedy_profit_load() {
     vector<int> loads_temp;
 
     for (const auto &flight: all_flights_temp) {
-        int profit = dep.compute_profit(flight);
-        int load = dep.compute_load(flight);
-        profits_temp.push_back(profit);
-        loads_temp.push_back(load);
+        profits_temp.push_back(dep.compute_profit(flight));
+        loads_temp.push_back(dep.compute_load(flight));
     }
 
     vector<double> reward_load;
