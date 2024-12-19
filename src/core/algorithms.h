@@ -17,9 +17,8 @@ using namespace std;
 class algorithms {
 
 private:
-//    constexpr static const double epsilon = 0.01;
-
     deployment dep;
+    solution sol;
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
             &algorithms::opt_ilp, // 0

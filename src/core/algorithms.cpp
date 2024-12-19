@@ -32,12 +32,11 @@ solution algorithms::opt_ilp() {
     // Pre-processing
     auto [all_flights, energy_costs] = dep.compute_solution_space();
 
-    for (auto f:all_flights){
+    for (const auto& f:all_flights) {
         for (int i : f){
             cout << i << " ";
         }
         cout << endl;
-        
     }
 
     int X = static_cast<int>(all_flights.size());
@@ -52,8 +51,6 @@ solution algorithms::opt_ilp() {
         int profit = dep.compute_profit(f);
         flights_profit.push_back(profit);
     }
-
-    solution sol;
 
     try {
         GRBEnv env = GRBEnv(true);
@@ -178,7 +175,6 @@ solution algorithms::opt_ilp() {
 }
 
 solution algorithms::bin_packing_helper() {
-    solution sol;
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();
@@ -283,8 +279,6 @@ solution algorithms::bin_packing_al() {
 }
 
 solution algorithms::knapsack_opt_helper() {
-    // Variables
-    solution sol;
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();
@@ -337,7 +331,7 @@ solution algorithms::knapsack_opt_helper() {
                 //last compatible item
                 pred_reward = opt_reward[predecessors[i]][b - i_cost];
                 pred_cost = opt_costs[predecessors[i]][b - i_cost];
-                // cout << "previous solution: " << row_reward << " " << row_cost << endl;
+                // cout << "previous sol: " << row_reward << " " << row_cost << endl;
                 if (i_reward + pred_reward > row_reward) {
                     opt_reward[i][b] = i_reward + pred_reward;
                     opt_costs[i][b] = i_cost + pred_cost;
@@ -359,8 +353,6 @@ solution algorithms::knapsack_opt_helper() {
             // cout << "OPT[" << i << "][" << b << "] = {r: " << opt_reward[i][b] << ", c: " << opt_costs[i][b] << ", int: " << result.str().c_str() << endl;
         }
     }
-
-    solution solution;
 
     vector<vector<int>> selected_intervals;
     vector<int> sel_int_profits;
@@ -389,14 +381,14 @@ solution algorithms::knapsack_opt_helper() {
         sel_int_energies.push_back(dep.compute_energy(all_flights[i - 1]));
     }
 
-    solution.total_profit = opt_reward[numFlights][B];
-    solution.total_energy = opt_costs[numFlights][B];
-    solution.total_flights = selected_intervals;
-    solution.profits = sel_int_profits;
-    solution.weights = sel_int_weights;
-    solution.energies = sel_int_energies;
+    sol.total_profit = opt_reward[numFlights][B];
+    sol.total_energy = opt_costs[numFlights][B];
+    sol.total_flights = selected_intervals;
+    sol.profits = sel_int_profits;
+    sol.weights = sel_int_weights;
+    sol.energies = sel_int_energies;
 
-    return solution;
+    return sol;
 }
 
 solution algorithms::knapsack() {
@@ -538,8 +530,6 @@ solution algorithms::coloring_helper() {
         sel_int_energies.push_back(dep.compute_energy(all_flights[i]));
     }
 
-    solution sol;
-
     sol.total_profit = max_profit;
     sol.total_energy = max_cost;
     sol.total_flights = selected_intervals;
@@ -638,7 +628,6 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
 
 //    cout << total_profit << endl;
 
-    solution sol;
     sol.total_profit = total_profit;
     sol.total_energy = total_energy;
     sol.total_flights = selected_intervals;
@@ -892,7 +881,6 @@ solution algorithms::greedy_profit_load_al() {
     return greedy_profit_load_helper(all_flights_temp, energy_costs_temp);
 }
 
-
 bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, double remaining_energy) {
     // compute energy add load by adding delivery to flight  
     vector<int> extended_flight = flight;
@@ -907,9 +895,7 @@ bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, doub
     }
 }
 
-
 solution algorithms::max_profit_extended() {
-
     auto set = dep.compute_all_flights_using_knapsack();
 
     // vector<vector<int>> flightss;
@@ -1072,8 +1058,6 @@ solution algorithms::max_profit_extended() {
 
     } // first while
 
-    solution solution;
-
     vector<int> sel_int_profits;
     vector<double> sel_int_energies;
     vector<int> sel_int_loads;
@@ -1098,12 +1082,12 @@ solution algorithms::max_profit_extended() {
         total_energy += tmp_energy_cost;
     }
 
-    solution.total_profit = total_profit;
-    solution.total_energy = total_energy;
-    solution.total_flights = flights;
-    solution.profits = sel_int_profits;
-    solution.weights = sel_int_loads;
-    solution.energies = sel_int_energies;
+    sol.total_profit = total_profit;
+    sol.total_energy = total_energy;
+    sol.total_flights = flights;
+    sol.profits = sel_int_profits;
+    sol.weights = sel_int_loads;
+    sol.energies = sel_int_energies;
 
-    return solution;
+    return sol;
 }
