@@ -17,9 +17,8 @@ using namespace std;
 class algorithms {
 
 private:
-//    constexpr static const double epsilon = 0.01;
-
     deployment dep;
+    solution sol;
 
     vector<function<solution(algorithms &)>> algorithm_functions = {
             &algorithms::opt_ilp, // 0
@@ -33,31 +32,7 @@ private:
             &algorithms::max_profit_extended, // 8
     };
 
-    solution greedy_profit_helper(vector<vector<int>>, vector<double>);
-
-    solution greedy_profit_ul();
-
-    solution greedy_profit_al();
-
-    solution greedy_energy_helper(vector<vector<int>>, vector<double>);
-
-    solution greedy_energy_ul();
-
-    solution greedy_energy_al();
-
     solution flight_selection_in_heu(vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>);
-
-    solution greedy_profit_energy_helper(vector<vector<int>>, vector<double>);
-
-    solution greedy_profit_energy_ul();
-
-    solution greedy_profit_energy_al();
-
-    solution greedy_profit_load_helper(vector<vector<int>>, vector<double>);
-
-    solution greedy_profit_load_ul();
-
-    solution greedy_profit_load_al();
 
     solution bin_packing_helper();
 

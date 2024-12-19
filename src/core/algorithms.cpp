@@ -32,12 +32,11 @@ solution algorithms::opt_ilp() {
     // Pre-processing
     auto [all_flights, energy_costs] = dep.compute_solution_space();
 
-    for (auto f:all_flights){
+    for (const auto& f:all_flights) {
         for (int i : f){
             cout << i << " ";
         }
         cout << endl;
-        
     }
 
     int X = static_cast<int>(all_flights.size());
@@ -52,8 +51,6 @@ solution algorithms::opt_ilp() {
         int profit = dep.compute_profit(f);
         flights_profit.push_back(profit);
     }
-
-    solution sol;
 
     try {
         GRBEnv env = GRBEnv(true);
@@ -178,7 +175,6 @@ solution algorithms::opt_ilp() {
 }
 
 solution algorithms::bin_packing_helper() {
-    solution sol;
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();
@@ -283,8 +279,6 @@ solution algorithms::bin_packing_al() {
 }
 
 solution algorithms::knapsack_opt_helper() {
-    // Variables
-    solution sol;
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();
@@ -337,7 +331,7 @@ solution algorithms::knapsack_opt_helper() {
                 //last compatible item
                 pred_reward = opt_reward[predecessors[i]][b - i_cost];
                 pred_cost = opt_costs[predecessors[i]][b - i_cost];
-                // cout << "previous solution: " << row_reward << " " << row_cost << endl;
+                // cout << "previous sol: " << row_reward << " " << row_cost << endl;
                 if (i_reward + pred_reward > row_reward) {
                     opt_reward[i][b] = i_reward + pred_reward;
                     opt_costs[i][b] = i_cost + pred_cost;
@@ -359,8 +353,6 @@ solution algorithms::knapsack_opt_helper() {
             // cout << "OPT[" << i << "][" << b << "] = {r: " << opt_reward[i][b] << ", c: " << opt_costs[i][b] << ", int: " << result.str().c_str() << endl;
         }
     }
-
-    solution solution;
 
     vector<vector<int>> selected_intervals;
     vector<int> sel_int_profits;
@@ -389,14 +381,14 @@ solution algorithms::knapsack_opt_helper() {
         sel_int_energies.push_back(dep.compute_energy(all_flights[i - 1]));
     }
 
-    solution.total_profit = opt_reward[numFlights][B];
-    solution.total_energy = opt_costs[numFlights][B];
-    solution.total_flights = selected_intervals;
-    solution.profits = sel_int_profits;
-    solution.weights = sel_int_weights;
-    solution.energies = sel_int_energies;
+    sol.total_profit = opt_reward[numFlights][B];
+    sol.total_energy = opt_costs[numFlights][B];
+    sol.total_flights = selected_intervals;
+    sol.profits = sel_int_profits;
+    sol.weights = sel_int_weights;
+    sol.energies = sel_int_energies;
 
-    return solution;
+    return sol;
 }
 
 solution algorithms::knapsack() {
@@ -538,8 +530,6 @@ solution algorithms::coloring_helper() {
         sel_int_energies.push_back(dep.compute_energy(all_flights[i]));
     }
 
-    solution sol;
-
     sol.total_profit = max_profit;
     sol.total_energy = max_cost;
     sol.total_flights = selected_intervals;
@@ -638,7 +628,6 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
 
 //    cout << total_profit << endl;
 
-    solution sol;
     sol.total_profit = total_profit;
     sol.total_energy = total_energy;
     sol.total_flights = selected_intervals;
@@ -650,21 +639,21 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     return sol;
 }
 
-solution algorithms::greedy_profit_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
+solution algorithms::greedy_profit() {
+    auto [all_flights_temp, energy_costs_temp] = dep.compute_solution_space();
+
     vector<int> profits_temp;
     for (const auto &flight: all_flights_temp) {
-        int profit = dep.compute_profit(flight);
-        profits_temp.push_back(profit);
+        profits_temp.push_back(dep.compute_profit(flight));
     }
 
     // sort according to profits_temp (decreasing order)
     vector<pair<int, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
-        Ri.emplace_back(profits_temp[i], i);
+        Ri.emplace_back(dep.compute_profit(all_flights_temp[i]), i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -672,100 +661,53 @@ solution algorithms::greedy_profit_helper(vector<vector<int>> all_flights_temp, 
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(profits_temp[it.second]);
-    }
-
-    return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
-}
-
-solution algorithms::greedy_profit() {
-    if (dep.is_unit_weight()) {
-        return greedy_profit_ul();
-    } else {
-        return greedy_profit_al();
-    }
-}
-
-solution algorithms::greedy_profit_ul() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_profit_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution algorithms::greedy_profit_al() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_profit_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution algorithms::greedy_energy_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
-    // sort according to energy_costs_temp
-    vector<pair<double, int> > Ri;
-    for (int i = 0; i < all_flights_temp.size(); i++) {
-        Ri.emplace_back(energy_costs_temp[i], i);
-    }
-
-    sort(Ri.begin(), Ri.end());
-
-    vector<vector<int>> all_flights;
-    vector<double> energy_costs;
-    vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
-
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(dep.compute_profit(all_flights_temp[it.second]));
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(profits_temp[i]);
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
 solution algorithms::greedy_energy() {
-    if (dep.is_unit_weight()) {
-        return greedy_energy_ul();
-    } else {
-        return greedy_energy_al();
+    auto [all_flights_temp, energy_costs_temp] = dep.compute_solution_space();
+
+    // sort according to energy_costs_temp
+    vector<pair<double, int> > Ri;
+    for (int i = 0; i < all_flights_temp.size(); i++) {
+        Ri.emplace_back(energy_costs_temp[i], i);
     }
+    sort(Ri.begin(), Ri.end(), greater<>());
+
+    vector<vector<int>> all_flights;
+    vector<double> energy_costs;
+    vector<int> profits;
+    vector<int> launches;
+    vector<int> rendezvouses;
+
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(dep.compute_profit(all_flights_temp[i]));
+    }
+
+    return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
-solution algorithms::greedy_energy_ul() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
+solution algorithms::greedy_profit_energy() {
+    auto [all_flights_temp, energy_costs_temp] = dep.compute_solution_space();
 
-    return greedy_energy_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution algorithms::greedy_energy_al() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_energy_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution
-algorithms::greedy_profit_energy_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
     // sort according to reward/energy
     vector<int> profits_temp;
     for (const auto &flight: all_flights_temp) {
-        int profit = dep.compute_profit(flight);
-        profits_temp.push_back(profit);
+        profits_temp.push_back(dep.compute_profit(flight));
     }
 
     vector<double> reward_energy;
@@ -779,8 +721,7 @@ algorithms::greedy_profit_energy_helper(vector<vector<int>> all_flights_temp, ve
         Ri.emplace_back(reward_energy[i], i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -788,51 +729,27 @@ algorithms::greedy_profit_energy_helper(vector<vector<int>> all_flights_temp, ve
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(profits_temp[it.second]);
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(profits_temp[i]);
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
-solution algorithms::greedy_profit_energy() {
-    if (dep.is_unit_weight()) {
-        return greedy_profit_energy_ul();
-    } else {
-        return greedy_profit_energy_al();
-    }
-}
+solution algorithms::greedy_profit_load() {
+    auto [all_flights_temp, energy_costs_temp] = dep.compute_solution_space();
 
-solution algorithms::greedy_profit_energy_ul() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_profit_energy_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution algorithms::greedy_profit_energy_al() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_profit_energy_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution algorithms::greedy_profit_load_helper(vector<vector<int>> all_flights_temp, vector<double> energy_costs_temp) {
     vector<int> profits_temp;
     vector<int> loads_temp;
 
     for (const auto &flight: all_flights_temp) {
-        int profit = dep.compute_profit(flight);
-        int load = dep.compute_load(flight);
-        profits_temp.push_back(profit);
-        loads_temp.push_back(load);
+        profits_temp.push_back(dep.compute_profit(flight));
+        loads_temp.push_back(dep.compute_load(flight));
     }
 
     vector<double> reward_load;
@@ -847,8 +764,7 @@ solution algorithms::greedy_profit_load_helper(vector<vector<int>> all_flights_t
         Ri.emplace_back(reward_load[i], i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end()), greater<>();
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -856,42 +772,17 @@ solution algorithms::greedy_profit_load_helper(vector<vector<int>> all_flights_t
     vector<int> launches;
     vector<int> rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        auto points = dep.compute_LR(all_flights_temp[it.second]);
-        launches.push_back(get<0>(points));
-        rendezvouses.push_back(get<1>(points));
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        profits.push_back(profits_temp[it.second]);
+    for (auto [value, i]: Ri) {
+        all_flights.push_back(all_flights_temp[i]);
+        auto [l, r] = dep.compute_LR(all_flights_temp[i]);
+        launches.push_back(l);
+        rendezvouses.push_back(r);
+        energy_costs.push_back(energy_costs_temp[i]);
+        profits.push_back(profits_temp[i]);
     }
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
-
-solution algorithms::greedy_profit_load() {
-    if (dep.is_unit_weight()) {
-        return greedy_profit_load_ul();
-    } else {
-        return greedy_profit_load_al();
-    }
-}
-
-solution algorithms::greedy_profit_load_ul() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_profit_load_helper(all_flights_temp, energy_costs_temp);
-}
-
-solution algorithms::greedy_profit_load_al() {
-    auto sets = dep.compute_all_flights_unitary_weight();
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
-
-    return greedy_profit_load_helper(all_flights_temp, energy_costs_temp);
-}
-
 
 bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, double remaining_energy) {
     // compute energy add load by adding delivery to flight  
@@ -907,9 +798,7 @@ bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, doub
     }
 }
 
-
 solution algorithms::max_profit_extended() {
-
     auto set = dep.compute_all_flights_using_knapsack();
 
     // vector<vector<int>> flightss;
@@ -929,11 +818,10 @@ solution algorithms::max_profit_extended() {
         Ri.emplace_back(profits[i], i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end()), greater<>();
 
-    for (auto it: Ri) {
-        A.push_back(it.second);
+    for (auto [value, i]: Ri) {
+        A.push_back(i);
     }
 
     // C: sort deliveries based on delivery_points
@@ -946,8 +834,8 @@ solution algorithms::max_profit_extended() {
 
     sort(pi.begin(), pi.end());
 
-    for (auto it: pi) {
-        C.push_back(it.second);
+    for (auto [value, i]: pi) {
+        C.push_back(i);
     }
 
     vector<int> loads = dep.get_weights();
@@ -1072,8 +960,6 @@ solution algorithms::max_profit_extended() {
 
     } // first while
 
-    solution solution;
-
     vector<int> sel_int_profits;
     vector<double> sel_int_energies;
     vector<int> sel_int_loads;
@@ -1098,12 +984,12 @@ solution algorithms::max_profit_extended() {
         total_energy += tmp_energy_cost;
     }
 
-    solution.total_profit = total_profit;
-    solution.total_energy = total_energy;
-    solution.total_flights = flights;
-    solution.profits = sel_int_profits;
-    solution.weights = sel_int_loads;
-    solution.energies = sel_int_energies;
+    sol.total_profit = total_profit;
+    sol.total_energy = total_energy;
+    sol.total_flights = flights;
+    sol.profits = sel_int_profits;
+    sol.weights = sel_int_loads;
+    sol.energies = sel_int_energies;
 
-    return solution;
+    return sol;
 }
