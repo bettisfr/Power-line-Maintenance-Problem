@@ -653,8 +653,7 @@ solution algorithms::greedy_profit() {
         Ri.emplace_back(dep.compute_profit(all_flights_temp[i]), i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -682,8 +681,7 @@ solution algorithms::greedy_energy() {
     for (int i = 0; i < all_flights_temp.size(); i++) {
         Ri.emplace_back(energy_costs_temp[i], i);
     }
-
-    sort(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -723,8 +721,7 @@ solution algorithms::greedy_profit_energy() {
         Ri.emplace_back(reward_energy[i], i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -767,8 +764,7 @@ solution algorithms::greedy_profit_load() {
         Ri.emplace_back(reward_load[i], i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end()), greater<>();
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -822,8 +818,7 @@ solution algorithms::max_profit_extended() {
         Ri.emplace_back(profits[i], i);
     }
 
-    sort(Ri.begin(), Ri.end());
-    reverse(Ri.begin(), Ri.end());
+    sort(Ri.begin(), Ri.end()), greater<>();
 
     for (auto it: Ri) {
         A.push_back(it.second);
