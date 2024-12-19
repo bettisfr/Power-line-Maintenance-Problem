@@ -101,7 +101,7 @@ solution algorithms::opt_ilp() {
         for (int i = 0; i < X; i++) {
             for (int k = 0; k < X; k++) {
                 if (i != k) {
-                    if (util::check_intersection(all_flights[i], all_flights[k])) {
+                    if (deployment::check_intersection(all_flights[i], all_flights[k])) {
                         model.addConstr(x[i] + x[k] <= 1);
                     }
                 }
@@ -187,7 +187,7 @@ solution algorithms::bin_packing_helper() {
     vector<int> rendezvouses = get<4>(parameters);
 
     // compute p
-    vector<int> p = util::largest_non_overlap_delivery(launches, rendezvouses);
+    vector<int> p = deployment::largest_non_overlap_delivery(launches, rendezvouses);
 
     vector<int> opt; // profits
     vector<int> pp = deployment::weighted_interval(launches, rendezvouses, profits, opt, p);
@@ -303,7 +303,7 @@ solution algorithms::knapsack_opt_helper() {
     energy_costs.insert(energy_costs.begin(), 0);
 
     // compute predecessors
-    vector<int> predecessors = util::largest_non_overlap_delivery(launches, rendezvouses);
+    vector<int> predecessors = deployment::largest_non_overlap_delivery(launches, rendezvouses);
 
     // for (int i = 0; i < predecessors.size(); i++) {
     //     cout << "element: " << i << " compatible with " << predecessors[i] << endl;

@@ -57,6 +57,10 @@ public:
 
     tuple<vector<vector<int>>, vector<double>> compute_solution_space();
 
+    static bool check_intersection(const vector<int> &, vector<int>);
+
+    static vector<int> largest_non_overlap_delivery(vector<int> launches, vector<int> rendezvouses);
+
     tuple<int, int> compute_LR(const vector<int> &);
 
     int compute_profit(const vector<int> &);
@@ -75,7 +79,6 @@ public:
     static vector<int>
     find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
-    // tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight(const vector<int> &, const int &);
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight();
 
     tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight();
