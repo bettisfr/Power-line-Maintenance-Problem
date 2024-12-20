@@ -31,13 +31,12 @@ solution algorithms::run_experiment(int algorithm) {
 solution algorithms::opt_ilp() {
     // Pre-processing
     auto [all_flights, energy_costs, profits, loads] = dep.compute_solution_space();
-
-    for (const auto& f:all_flights) {
-        for (int i : f){
-            cout << i << " ";
-        }
-        cout << endl;
-    }
+    // for (const auto& f:all_flights) {
+    //     for (int i : f){
+    //         cout << i << " ";
+    //     }
+    //     cout << endl;
+    // }
 
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep.get_num_deliveries();
@@ -772,7 +771,7 @@ bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, doub
 }
 
 solution algorithms::max_profit_extended() {
-    auto set = dep.compute_all_flights_using_knapsack();
+    //auto set = dep.compute_all_flights_using_knapsack();
 
     // vector<vector<int>> flightss;
     // for (auto f: flightss){

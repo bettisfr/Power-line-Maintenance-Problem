@@ -93,6 +93,8 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_using_knapsack();
 
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_new();
+
     //tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
     friend ostream &operator<<(ostream &os, const deployment &dep) {
