@@ -55,7 +55,7 @@ public:
 
     [[nodiscard]] int get_solution_space() const;
 
-    tuple<vector<vector<int>>, vector<double>> compute_solution_space();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_solution_space();
 
     static bool check_intersection(const vector<int> &, vector<int>);
 
@@ -79,9 +79,9 @@ public:
     static vector<int>
     find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_unitary_weight();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_unitary_weight();
 
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_arbitrary_weight();
 
     double compute_energy(const vector<int> &delivery_ids);
 
@@ -90,7 +90,8 @@ public:
     vector<vector<int>> compute_all_subsets(vector<int> &);
 
     vector<int> compute_flight_using_knapsack(vector<int>, int);
-    tuple<vector<vector<int>>, vector<double>> compute_all_flights_using_knapsack();
+
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_using_knapsack();
 
     //tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
