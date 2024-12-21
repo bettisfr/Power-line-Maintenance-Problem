@@ -1,4 +1,4 @@
-# C++ Code for Optimizing Single-Drone and Truck Collaboration for Last-Mile Delivery with Energy and Capacity Constraints
+# C++ Code for Truck-drone Multi-delivery Problem (TMP)
 
 ![C++](https://img.shields.io/badge/-C++-blue?logo=cplusplus)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -18,9 +18,9 @@ We show that TMP is NP-hard and propose an Integer Linear Programming (ILP) form
 Clone the repository and follow these steps to build the project:
 
 ```bash
-git clone https://github.com/bettisfr/flysidekickproblem_generalized
-cd flysidekickproblem_generalized
-cmake -B build
+git clone https://github.com/bettisfr/TMP_DCOSS
+cd TMP_DCOSS
+cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/dcoss
 ```
