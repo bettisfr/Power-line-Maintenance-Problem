@@ -9,6 +9,54 @@
 using namespace std;
 using namespace chrono;
 
+void run_experiment(input&);
+void run_test(input&);
+
+int main(int argc, char **argv) {
+    // Set global precision for printing
+    cout << fixed << setprecision(2);
+
+    input par;
+
+    if (argc > 1) {
+        string option = argv[1];
+
+        // Choose the behavior based on the command line argument
+        if (option == "--file") {
+            if (argc > 2) {
+                // Read from config file
+                cout << "Reading parameters from file" << endl;
+                par.experiment = 1;
+                par.exp_name = argv[2];
+                par = load_parameters(par);
+            } else {
+                cerr << "Error: File name not provided." << endl;
+                exit(-1);
+            }
+        } else if (option == "--params") {
+            // Read from command line parameters
+            par.experiment = 2;
+            cout << "Reading command line parameters" << endl;
+            read_parameters(par, argc, argv);
+        } else {
+            cerr << "Unknown option: " << option << endl;
+            exit(-1);
+        }
+    } else {
+        par.experiment = 0;
+        cout << "Loading default parameters" << endl;
+    }
+
+    // Fake iteration numbers to execute this test part!
+    if (par.iterations == -1) {
+        run_test(par);
+    } else {
+        run_experiment(par);
+    }
+
+    return 0;
+}
+
 void run_experiment(input &par) {
     if (par.log == 1) {
         print_parameters(par);
@@ -46,42 +94,41 @@ void run_experiment(input &par) {
     }
 }
 
-int main(int argc, char **argv) {
-    // Set global precision for printing
-    cout << fixed << setprecision(2);
+void run_test(input &par) {
+//    if (par.log == 1) {
+//        print_parameters(par);
+//    }
 
-    input par;
+    int max_seed = 10000;
+    for (int i = 0; i < max_seed; i++) {
+        cout << "Seed: " << (i + 1) << "/" << max_seed << endl;
 
-    if (argc > 1) {
-        string option = argv[1];
+        vector<solution> solutions;
+        for (int j = 0; j < 2; j++) {
+            par.solution_space = j;
+            par.seed = i;
+            deployment dep(par);
+//            if (par.log == 1) {
+//                cout << dep << endl;
+//            }
 
-        // Choose the behavior based on the command line argument
-        if (option == "--file") {
-            if (argc > 2) {
-                // Read from config file
-                cout << "Reading parameters from file" << endl;
-                par.experiment = 1;
-                par.exp_name = argv[2];
-                par = load_parameters(par);
-            } else {
-                cerr << "Error: File name not provided." << endl;
-                exit(-1);
-            }
-        } else if (option == "--params") {
-            // Read from command line parameters
-            par.experiment = 2;
-            cout << "Reading command line parameters" << endl;
-            read_parameters(par, argc, argv);
-        } else {
-            cerr << "Unknown option: " << option << endl;
+            algorithms alg(dep);
+
+            solution out = alg.run_experiment(par.algorithm);
+            solutions.push_back(out);
+
+//            if (par.log == 1) {
+//                cout << out << endl;
+//            }
+        }
+
+        if (solutions[0].total_profit != solutions[1].total_profit) {
+            cerr << "Error - Found counterexample" << endl;
+
+            cout << "Exhaustive=" << solutions[0] << endl;
+            cout << "Knapsack=" << solutions[1] << endl;
+
             exit(-1);
         }
-    } else {
-        par.experiment = 0;
-        cout << "Loading default parameters" << endl;
     }
-
-    run_experiment(par);
-
-    return 0;
 }
