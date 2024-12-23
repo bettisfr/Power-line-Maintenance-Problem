@@ -99,7 +99,9 @@ solution algorithms::opt_ilp() {
         for (int i = 0; i < X; i++) {
             for (int k = 0; k < X; k++) {
                 if (i != k) {
-                    if (deployment::check_intersection(all_flights[i], all_flights[k])) {
+                    if (!deployment::check_correct_interval({all_flights[i]},
+                                        {get<0>(dep.compute_LR(all_flights[i]))}, {get<1>(dep.compute_LR(all_flights[i]))},
+                                            get<0>(dep.compute_LR(all_flights[k])), get<1>(dep.compute_LR(all_flights[k])))) {
                         model.addConstr(x[i] + x[k] <= 1);
                     }
                 }

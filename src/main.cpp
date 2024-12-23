@@ -101,16 +101,16 @@ void run_test(input &par) {
 
     int max_seed = 10000;
     for (int i = 0; i < max_seed; i++) {
-        cout << "Seed: " << (i + 1) << "/" << max_seed << endl;
+        cout << "Seed: " << (i) << "/" << max_seed << endl;
 
         vector<solution> solutions;
         for (int j = 0; j < 2; j++) {
             par.solution_space = j;
             par.seed = i;
             deployment dep(par);
-//            if (par.log == 1) {
-//                cout << dep << endl;
-//            }
+        //    if (par.log == 1) {
+        //        cout << dep << endl;
+        //    }
 
             algorithms alg(dep);
 

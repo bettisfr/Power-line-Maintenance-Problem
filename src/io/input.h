@@ -20,7 +20,7 @@ struct input {
     int save = 0;
 
     // Application parameters
-    int seed = 9;
+    int seed = 3719;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -37,36 +37,36 @@ struct input {
     int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
-    int iterations = 1;
+    int iterations = -1;
 
     // Name of the experiment (just a string to be used when loading/saving)
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 25;
+    int num_deliveries = 20;
 
     // Maximum length of the road
     int max_len_road = 100;
 
     // Maximum length of an interval
-    int max_interval_len = 15;
+    int max_interval_len = 20;
 
     // Maximum value for a delivery
-    int max_profit = 10;
+    int max_profit = 8;
 
     // Maximum weight for a delivery
-    int max_weight = 5;
+    int max_weight = 4;
 
     // How the solution space is computed
     // exhaustively 0
     // knapsack 1
-    int solution_space = 1;
+    int solution_space = 0;
 
     // Drone's energy drone_battery
-    int drone_battery = 2500;
+    int drone_battery = 3000;
 
     // Drone's drone_load capacity
-    int drone_load = 8;
+    int drone_load = 10;
 
     // Height of the deliveries
     double height = 0.5;

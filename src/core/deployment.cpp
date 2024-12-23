@@ -17,7 +17,7 @@ deployment::deployment(const input &par) {
     // creating random instance by using par.seed
     int seed = par.seed;
     // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
-    static mt19937 g(seed);
+    mt19937 g(seed);
 
     int max_len_road = par.max_len_road;
     int max_interval_len = par.max_interval_len;
@@ -196,14 +196,14 @@ void deployment::find_subsets(vector<int> &v, int idx, vector<int> &subset, set<
     }
 }
 
-bool deployment::check_intersection(const vector<int> &flight1, vector<int> flight2) {
-    for (int i: flight1) {
-        if (find(flight2.begin(), flight2.end(), i) != flight2.end()) { // if intersection
-            return true;
-        }
-    }
-    return false;
-}
+// bool deployment::check_intersection(const vector<int> &flight1, vector<int> flight2) {
+//     for (int i: flight1) {
+//         if (find(flight2.begin(), flight2.end(), i) != flight2.end()) { // if intersection
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 vector<int> deployment::largest_non_overlap_delivery(vector<int> launches, vector<int> rendezvouses) {
     vector<int> p;  // >= -1
@@ -322,7 +322,6 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     if (!deliveries_L_R.empty()) {                        
                         vector<int> flights_L_R; // after computing, update indices based on deliveries_L_R
                         // using deliveries_L_R[indices]
-                        // compute all flights for deliveries_L_R, then for each flight check <= drone_load - load_flight
                         vector<int> indices;
                         for (int i = 0; i < deliveries_L_R.size(); i++) {
                             indices.push_back(i);
@@ -334,12 +333,14 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                             for (int index : f){
                                 flight_temp.push_back(deliveries_L_R[index]);
                             }
+
                             for (int i : flight){
                                 flight_temp.push_back(i);
                             }
 
                             int load_flight_temp = compute_load(flight_temp);
-                            if (load_flight_temp <= drone_load - load_flight){
+
+                            if (load_flight_temp <= drone_load){
                                 all_flights.push_back(flight_temp);
                                 energy_flight.push_back(energy_L_R);
                                 loads_flight.push_back(load_flight_temp);
@@ -481,13 +482,14 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                             delivery_points[id_k] <= delivery_points[id_j]) {
                             deliveries_L_R.push_back(id_k);
                         }
-                    }
+                    }  
 
                     all_flights.push_back(flight);
                     energy_flight.push_back(energy_L_R);
 
                     if (!deliveries_L_R.empty()) {
-                        vector<int> flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, drone_load - load_flight);
+                        int available_load = drone_load - load_flight;
+                        vector<int> flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, available_load);
                         for (int f : flight_knapsack){
                             flight.push_back(f);
                             all_flights.push_back(flight);
