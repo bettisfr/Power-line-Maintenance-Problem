@@ -276,7 +276,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     return {all_flights, energy_flight, profits_flight, loads_flight};
 }
 
-// TODO
+
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_new() {
     vector<vector<int>> all_flights;
     vector<double> energy_flight;
@@ -554,9 +554,22 @@ vector<int> deployment::compute_flight_using_knapsack(vector<int> deliveries_id,
     //cout << "max_profit: " << dp[n][total_load] << endl;
 
     reverse(selectedItems.begin(), selectedItems.begin());
-    vector<int> flight;
+    vector<int> flight_temp;
     for (int i : selectedItems){
-        flight.push_back(deliveries_id[i]);
+        flight_temp.push_back(deliveries_id[i]);
+    }
+
+    // sort flight_temp based on profits
+    vector<pair<int, int> > Ri;
+    for (int i : flight_temp) {
+        Ri.emplace_back(profits[i], i);
+    }
+
+    sort(Ri.begin(), Ri.end()), greater<>();
+
+    vector<int> flight;
+    for (auto [value, i]: Ri) {
+        flight.push_back(i);
     }
     
     return flight;
@@ -649,6 +662,6 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     return is_unit_weight()
                 ? compute_all_flights_unitary_weight()
                 : (get_solution_space() == 0
-                   ? compute_all_flights_arbitrary_weight() //compute_all_flights_new()  ?????
+                   ? compute_all_flights_new()  // compute_all_flights_arbitrary_weight()
                    : compute_all_flights_using_knapsack());
 }
