@@ -34,16 +34,16 @@ struct input {
     // greedy_profit_energy 6
     // greedy_profit_load 7
     // max_profit_extended 8
-    int algorithm = 0;
+    int algorithm = 3;
 
     // Number or random instances to be performed (when doing plots)
-    int iterations = -1;
+    int iterations = 1;
 
     // Name of the experiment (just a string to be used when loading/saving)
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 20;
+    int num_deliveries = 15;
 
     // Maximum length of the road
     int max_len_road = 100;
@@ -55,7 +55,7 @@ struct input {
     int max_profit = 8;
 
     // Maximum weight for a delivery
-    int max_weight = 4;
+    int max_weight = 1;
 
     // How the solution space is computed
     // exhaustively 0

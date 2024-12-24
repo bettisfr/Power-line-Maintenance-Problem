@@ -31,12 +31,6 @@ solution algorithms::run_experiment(int algorithm) {
 solution algorithms::opt_ilp() {
     // Pre-processing
     auto [all_flights, energy_costs, profits, loads] = dep.compute_solution_space();
-    // for (const auto& f:all_flights) {
-    //     for (int i : f){
-    //         cout << i << " ";
-    //     }
-    //     cout << endl;
-    // }
 
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep.get_num_deliveries();
@@ -175,7 +169,7 @@ solution algorithms::opt_ilp() {
     return sol;
 }
 
-solution algorithms::bin_packing_helper() {
+solution algorithms::bin_packing() {
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();
@@ -263,23 +257,8 @@ solution algorithms::bin_packing_helper() {
     return sol;
 }
 
-solution algorithms::bin_packing() {
-    if (dep.is_unit_weight()) {
-        return bin_packing_ul();
-    } else {
-        return bin_packing_al();
-    }
-}
 
-solution algorithms::bin_packing_ul() {
-    return bin_packing_helper();
-}
-
-solution algorithms::bin_packing_al() {
-    return bin_packing_helper();
-}
-
-solution algorithms::knapsack_opt_helper() {
+solution algorithms::knapsack() {
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();
@@ -392,27 +371,8 @@ solution algorithms::knapsack_opt_helper() {
     return sol;
 }
 
-solution algorithms::knapsack() {
-    if (dep.is_unit_weight()) {
-        return knapsack_opt_ul();
-    } else {
-        return knapsack_heu_al();
-    }
-}
 
-solution algorithms::knapsack_opt_ul() {
-    // cout << "knapsack" << endl;
-//    cout << "Currently this function is not optimal due to rounding" << endl;
-    return knapsack_opt_helper();
-}
-
-solution algorithms::knapsack_heu_al() {
-    // cout << "knapsack" << endl;
-//    cout << "Heuristic" << endl;
-    return knapsack_opt_helper();
-}
-
-solution algorithms::coloring_helper() {
+solution algorithms::coloring() {
     // Variables
     int B = dep.get_drone_battery();
 
@@ -541,22 +501,6 @@ solution algorithms::coloring_helper() {
     return sol;
 }
 
-//// Col-S
-solution algorithms::coloring() {
-    if (dep.is_unit_weight()) {
-        return coloring_ul();
-    } else {
-        return coloring_al();
-    }
-}
-
-solution algorithms::coloring_ul() {
-    return coloring_helper();
-}
-
-solution algorithms::coloring_al() {
-    return coloring_helper();
-}
 
 /////////////   Heuristics   ////////////////
 solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, vector<double> energy_costs,

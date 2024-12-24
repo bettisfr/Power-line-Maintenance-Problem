@@ -75,16 +75,7 @@ tuple<int, int> deployment::compute_LR(const vector<int> &flight) {
 }
 
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> deployment::sorting_with_rendezvouses_in_apx() {
-    // compute all flights and energy, then sort them
-    vector<int> deliveries_id;
-    for (int i = 0; i < num_deliveries; i++) {
-        deliveries_id.push_back(i);
-    }
-
-    auto sets = compute_all_flights_unitary_weight();
-
-    vector<vector<int>> all_flights_temp = get<0>(sets);
-    vector<double> energy_costs_temp = get<1>(sets);
+    auto [all_flights_temp, energy_costs_temp, profits_temp, loads_temp] = compute_solution_space();
 
     vector<int> launches_temp;
     vector<int> rendezvouses_temp;
@@ -114,11 +105,53 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>
         energy_costs.push_back(energy_costs_temp[it.second]);
         new_launches.push_back(launches_temp[it.second]);
         new_rendezvouses.push_back(rendezvouses_temp[it.second]);
-        new_profits.push_back(compute_profit(all_flights_temp[it.second]));
+        new_profits.push_back(profits_temp[it.second]);
     }
 
     return {all_flights, energy_costs, new_profits, new_launches, new_rendezvouses};
 }
+
+
+// tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> deployment::sorting_with_rendezvouses_in_apx() {
+//     // compute all flights and energy, then sort them
+//     auto sets = compute_all_flights_equal_weight();
+
+//     vector<vector<int>> all_flights_temp = get<0>(sets);
+//     vector<double> energy_costs_temp = get<1>(sets);
+
+//     vector<int> launches_temp;
+//     vector<int> rendezvouses_temp;
+
+//     for (const auto &flight: all_flights_temp) {
+//         auto points = compute_LR(flight);
+//         launches_temp.push_back(get<0>(points));
+//         rendezvouses_temp.push_back(get<1>(points));
+//     }
+
+//     // sort according to rendezvouses_temp
+//     vector<pair<int, int> > Ri;
+//     for (int i = 0; i < all_flights_temp.size(); i++) {
+//         Ri.emplace_back(rendezvouses_temp[i], i);
+//     }
+
+//     sort(Ri.begin(), Ri.end());
+
+//     vector<vector<int>> all_flights;
+//     vector<double> energy_costs;
+//     vector<int> new_profits;
+//     vector<int> new_launches;
+//     vector<int> new_rendezvouses;
+
+//     for (auto it: Ri) {
+//         all_flights.push_back(all_flights_temp[it.second]);
+//         energy_costs.push_back(energy_costs_temp[it.second]);
+//         new_launches.push_back(launches_temp[it.second]);
+//         new_rendezvouses.push_back(rendezvouses_temp[it.second]);
+//         new_profits.push_back(compute_profit(all_flights_temp[it.second]));
+//     }
+
+//     return {all_flights, energy_costs, new_profits, new_launches, new_rendezvouses};
+// }
 
 bool deployment::check_correct_interval(const vector<vector<int>> &flights, vector<int> launches_flights,
                                         vector<int> rendezvouses_flights, int L, int R) {
@@ -244,40 +277,40 @@ vector<vector<int> > deployment::compute_all_subsets(vector<int> &v) {
     return res;
 }
 
-tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_arbitrary_weight() {
-    // consider all deliveries and compute all possible flights
-    vector<int> ids;
-    for (int i = 0; i < launches.size(); i++) {
-        ids.push_back(i);
-    }
+// tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_arbitrary_weight() {
+//     // consider all deliveries and compute all possible flights
+//     vector<int> ids;
+//     for (int i = 0; i < launches.size(); i++) {
+//         ids.push_back(i);
+//     }
 
-    vector<vector<int> > all_subsets = compute_all_subsets(ids);
-    // for each subset in all_subsets, check drone_load and energy
-    vector<vector<int>> all_flights;
-    vector<double> energy_flight;
+//     vector<vector<int> > all_subsets = compute_all_subsets(ids);
+//     // for each subset in all_subsets, check drone_load and energy
+//     vector<vector<int>> all_flights;
+//     vector<double> energy_flight;
 
-    for (const auto &flight: all_subsets) {
-        double energy = compute_energy(flight);
-        int load = compute_load(flight);
-        if (energy <= drone_battery && load <= drone_load) {
-            all_flights.push_back(flight);
-            energy_flight.push_back(energy);
-        }
-    }
+//     for (const auto &flight: all_subsets) {
+//         double energy = compute_energy(flight);
+//         int load = compute_load(flight);
+//         if (energy <= drone_battery && load <= drone_load) {
+//             all_flights.push_back(flight);
+//             energy_flight.push_back(energy);
+//         }
+//     }
 
-    vector<int> profits_flight;
-    vector<int> loads_flight;
+//     vector<int> profits_flight;
+//     vector<int> loads_flight;
 
-    for (const auto &flight: all_flights) {
-        profits_flight.push_back(compute_profit(flight));
-        loads_flight.push_back(compute_load(flight));
-    }
+//     for (const auto &flight: all_flights) {
+//         profits_flight.push_back(compute_profit(flight));
+//         loads_flight.push_back(compute_load(flight));
+//     }
 
-    return {all_flights, energy_flight, profits_flight, loads_flight};
-}
+//     return {all_flights, energy_flight, profits_flight, loads_flight};
+// }
 
 
-tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_new() {
+tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights() {
     vector<vector<int>> all_flights;
     vector<double> energy_flight;
     vector<int> loads_flight;
@@ -364,7 +397,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
 
 
 
-tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_unitary_weight() {
+tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_equal_weight() {
     set<int> unique_loads;
     for (int l: weights) {
         unique_loads.insert(l);
@@ -662,8 +695,8 @@ int deployment::get_solution_space() const {
 
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_solution_space() {
     return is_unit_weight()
-                ? compute_all_flights_unitary_weight()
+                ? compute_all_flights_equal_weight()
                 : (get_solution_space() == 0
-                   ? compute_all_flights_new()  // compute_all_flights_arbitrary_weight()
+                   ? compute_all_flights()
                    : compute_all_flights_using_knapsack());
 }

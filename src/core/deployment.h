@@ -79,9 +79,9 @@ public:
     static vector<int>
     find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_unitary_weight();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_equal_weight();
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_arbitrary_weight();
+    //tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_arbitrary_weight();
 
     double compute_energy(const vector<int> &delivery_ids);
 
@@ -93,7 +93,7 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_using_knapsack();
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_new();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights();
 
     //tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 
