@@ -29,30 +29,12 @@ private:
             &algorithms::greedy_energy, // 5
             &algorithms::greedy_profit_energy, // 6
             &algorithms::greedy_profit_load, // 7
-            &algorithms::max_profit_extended, // 8
+//            &algorithms::max_profit_extended, // 8
     };
 
     solution flight_selection_in_heu(vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>);
 
-    solution bin_packing_helper();
-
-    solution bin_packing_ul();
-
-    solution bin_packing_al();
-
-    solution knapsack_opt_helper();
-
-    solution knapsack_opt_ul();
-
-    solution knapsack_heu_al();
-
-    solution coloring_helper();
-
-    solution coloring_ul();
-
-    solution coloring_al();
-
-    bool if_flight_extends(const vector<int> &, int, double);
+//    bool if_flight_extends(const vector<int> &, int, double);
 
 public:
     explicit algorithms(const deployment&);
@@ -75,7 +57,7 @@ public:
 
     solution coloring();
 
-    solution max_profit_extended();
+//    solution max_profit_extended();
 
 };
 

@@ -19,7 +19,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 8) {
+    if (index >= 0 && index <= 7) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -702,212 +702,212 @@ solution algorithms::greedy_profit_load() {
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
 
-bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, double remaining_energy) {
-    // compute energy add load by adding delivery to flight  
-    vector<int> extended_flight = flight;
-    extended_flight.push_back(delivery);
-    double energy_cost = dep.compute_energy(extended_flight);
-    int load = dep.compute_load(extended_flight);
+//bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, double remaining_energy) {
+//    // compute energy add load by adding delivery to flight
+//    vector<int> extended_flight = flight;
+//    extended_flight.push_back(delivery);
+//    double energy_cost = dep.compute_energy(extended_flight);
+//    int load = dep.compute_load(extended_flight);
+//
+//    if (energy_cost <= remaining_energy && load <= dep.get_drone_load()) {
+//        return true;
+//    } else {
+//        return false;
+//    }
+//}
 
-    if (energy_cost <= remaining_energy && load <= dep.get_drone_load()) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-solution algorithms::max_profit_extended() {
-    //auto set = dep.compute_all_flights_using_knapsack();
-
-    // vector<vector<int>> flightss;
-    // for (auto f: flightss){
-    //     for (auto i:f){
-    //         cout << i << " ";
-    //     }
-    //     cout << endl;
-
-    // }
-
-    // A: sort deliveries based on profit
-    vector<int> A;
-    vector<int> profits = dep.get_profits();
-    vector<pair<double, int> > Ri;
-    for (int i = 0; i < profits.size(); i++) {
-        Ri.emplace_back(profits[i], i);
-    }
-
-    sort(Ri.begin(), Ri.end()), greater<>();
-
-    for (auto [value, i]: Ri) {
-        A.push_back(i);
-    }
-
-    // C: sort deliveries based on delivery_points
-    vector<int> C;
-    vector<int> delivery_points = dep.get_delivery_points();
-    vector<pair<double, int> > pi;
-    for (int i = 0; i < profits.size(); i++) {
-        pi.emplace_back(delivery_points[i], i);
-    }
-
-    sort(pi.begin(), pi.end());
-
-    for (auto [value, i]: pi) {
-        C.push_back(i);
-    }
-
-    vector<int> loads = dep.get_weights();
-
-    double B = dep.get_drone_battery();
-    vector<vector<int>> flights;
-    double cost = 0.0;
-
-    while (!A.empty() && cost < B) {   // visited is not enough: && visited < n
-        int delivery_maxP = A[0]; // id of delivery
-        double cost_maxP = dep.compute_energy({delivery_maxP});
-        if (cost_maxP <= B - cost) { // single delivery (delivery_maxP), load satisfied
-            // there is a flight
-            vector<int> flight;
-            flight.push_back(delivery_maxP);
-
-            // find index of delivery_maxP in C
-            auto index = find(C.begin(), C.end(), delivery_maxP);
-            int index_maxP_C = static_cast<int>(index - C.begin());
-
-            bool go_left = true;
-            bool go_right = true;
-
-            int left_increment = 1;
-            int right_increment = 1;
-
-            while (go_left || go_right) { // till we can extend
-                int left_index = index_maxP_C - left_increment;
-                int right_index = index_maxP_C + right_increment;
-
-                // update go_left and right based on index
-                if (left_index < 0) {
-                    go_left = false;
-                }
-
-                if (right_index > C.size() - 1) {
-                    go_right = false;
-                }
-
-                if (go_left && go_right) { // 1
-                    int left_delivery = C[left_index];
-                    int right_delivery = C[right_index];
-
-                    // check if flight extends from left and right, then 4 case
-                    bool from_left = if_flight_extends(flight, left_delivery, B - cost);
-                    bool from_right = if_flight_extends(flight, right_delivery, B - cost);
-
-                    if (from_left && from_right) { // 1:1 both can be extended
-                        // select the most profitable one
-                        if (profits[left_delivery] >= profits[right_delivery]) {
-                            left_increment++;
-                            flight.push_back(left_delivery);
-                        } else {
-                            right_increment++;
-                            flight.push_back(right_delivery);
-                        }
-                    } else if (from_left && !from_right) {  // 1:2
-                        left_increment++;
-                        flight.push_back(left_delivery);
-                        go_right = false;
-                    } else if (!from_left && from_right) {  // 1:3
-                        right_increment++;
-                        flight.push_back(right_delivery);
-                        go_left = false;
-                    } else {  // 1:4    if (from_left == false && from_right == false)
-                        go_left = false;
-                        go_right = false;
-                    }
-                } else if (go_left) { // 2
-                    int left_delivery = C[left_index];
-                    bool from_left = if_flight_extends(flight, left_delivery, B - cost);
-                    if (from_left) {
-                        left_increment++;
-                        flight.push_back(left_delivery);
-                    } else {
-                        go_left = false;
-                    }
-                } else if (go_right) { // 3
-                    int right_delivery = C[right_index];
-                    bool from_right = if_flight_extends(flight, right_delivery, B - cost);
-                    if (from_right) {
-                        right_increment++;
-                        flight.push_back(right_delivery);
-                    } else {
-                        go_right = false;
-                    }
-                }
-
-            }// second while
-
-            // after while, go_left == go_right = false, then update A, C, cost
-            flights.push_back(flight);
-            cost = cost + dep.compute_energy(flight);
-            // remove flight from A and C and all the deliveries intersect with flight
-            for (int f: flight) {
-                A.erase(find(A.begin(), A.end(), f));
-                C.erase(find(C.begin(), C.end(), f));
-            }
-
-            auto points = dep.compute_LR(flight);
-            vector<int> launches = dep.get_launches();
-            vector<int> rendezvouses = dep.get_rendezvouses();
-
-            vector<int> delivery_temp;
-            for (int i: A) {
-                if (!deployment::check_correct_interval({flight}, {get<0>(points)}, {get<1>(points)}, launches[i],
-                                                        rendezvouses[i])) {
-                    delivery_temp.push_back(i);
-                }
-            }
-
-            for (int f: delivery_temp) {
-                A.erase(find(A.begin(), A.end(), f));
-                C.erase(find(C.begin(), C.end(), f));
-            }
-
-        } else {
-            // remove delivery_maxP from A and C
-            A.erase(find(A.begin(), A.end(), delivery_maxP));
-            C.erase(find(C.begin(), C.end(), delivery_maxP));
-        } // first if-else
-
-    } // first while
-
-    vector<int> sel_int_profits;
-    vector<double> sel_int_energies;
-    vector<int> sel_int_loads;
-
-    int total_profit = 0;
-    double total_energy = 0.0;
-
-    for (const auto &f: flights) {
-        int tmp_profit = 0;
-        double tmp_energy_cost = 0.0;
-        int tmp_load = 0;
-        for (int j: f) {
-            tmp_profit += dep.get_profits()[j];
-            tmp_load += dep.get_weights()[j];
-        }
-
-        sel_int_profits.push_back(tmp_profit);
-        total_profit += tmp_profit;
-        sel_int_loads.push_back(tmp_load);
-        tmp_energy_cost = dep.compute_energy(f);
-        sel_int_energies.push_back(tmp_energy_cost);
-        total_energy += tmp_energy_cost;
-    }
-
-    sol.total_profit = total_profit;
-    sol.total_energy = total_energy;
-    sol.total_flights = flights;
-    sol.profits = sel_int_profits;
-    sol.weights = sel_int_loads;
-    sol.energies = sel_int_energies;
-
-    return sol;
-}
+//solution algorithms::max_profit_extended() {
+//    //auto set = dep.compute_all_flights_using_knapsack();
+//
+//    // vector<vector<int>> flightss;
+//    // for (auto f: flightss){
+//    //     for (auto i:f){
+//    //         cout << i << " ";
+//    //     }
+//    //     cout << endl;
+//
+//    // }
+//
+//    // A: sort deliveries based on profit
+//    vector<int> A;
+//    vector<int> profits = dep.get_profits();
+//    vector<pair<double, int> > Ri;
+//    for (int i = 0; i < profits.size(); i++) {
+//        Ri.emplace_back(profits[i], i);
+//    }
+//
+//    sort(Ri.begin(), Ri.end()), greater<>();
+//
+//    for (auto [value, i]: Ri) {
+//        A.push_back(i);
+//    }
+//
+//    // C: sort deliveries based on delivery_points
+//    vector<int> C;
+//    vector<int> delivery_points = dep.get_delivery_points();
+//    vector<pair<double, int> > pi;
+//    for (int i = 0; i < profits.size(); i++) {
+//        pi.emplace_back(delivery_points[i], i);
+//    }
+//
+//    sort(pi.begin(), pi.end());
+//
+//    for (auto [value, i]: pi) {
+//        C.push_back(i);
+//    }
+//
+//    vector<int> loads = dep.get_weights();
+//
+//    double B = dep.get_drone_battery();
+//    vector<vector<int>> flights;
+//    double cost = 0.0;
+//
+//    while (!A.empty() && cost < B) {   // visited is not enough: && visited < n
+//        int delivery_maxP = A[0]; // id of delivery
+//        double cost_maxP = dep.compute_energy({delivery_maxP});
+//        if (cost_maxP <= B - cost) { // single delivery (delivery_maxP), load satisfied
+//            // there is a flight
+//            vector<int> flight;
+//            flight.push_back(delivery_maxP);
+//
+//            // find index of delivery_maxP in C
+//            auto index = find(C.begin(), C.end(), delivery_maxP);
+//            int index_maxP_C = static_cast<int>(index - C.begin());
+//
+//            bool go_left = true;
+//            bool go_right = true;
+//
+//            int left_increment = 1;
+//            int right_increment = 1;
+//
+//            while (go_left || go_right) { // till we can extend
+//                int left_index = index_maxP_C - left_increment;
+//                int right_index = index_maxP_C + right_increment;
+//
+//                // update go_left and right based on index
+//                if (left_index < 0) {
+//                    go_left = false;
+//                }
+//
+//                if (right_index > C.size() - 1) {
+//                    go_right = false;
+//                }
+//
+//                if (go_left && go_right) { // 1
+//                    int left_delivery = C[left_index];
+//                    int right_delivery = C[right_index];
+//
+//                    // check if flight extends from left and right, then 4 case
+//                    bool from_left = if_flight_extends(flight, left_delivery, B - cost);
+//                    bool from_right = if_flight_extends(flight, right_delivery, B - cost);
+//
+//                    if (from_left && from_right) { // 1:1 both can be extended
+//                        // select the most profitable one
+//                        if (profits[left_delivery] >= profits[right_delivery]) {
+//                            left_increment++;
+//                            flight.push_back(left_delivery);
+//                        } else {
+//                            right_increment++;
+//                            flight.push_back(right_delivery);
+//                        }
+//                    } else if (from_left && !from_right) {  // 1:2
+//                        left_increment++;
+//                        flight.push_back(left_delivery);
+//                        go_right = false;
+//                    } else if (!from_left && from_right) {  // 1:3
+//                        right_increment++;
+//                        flight.push_back(right_delivery);
+//                        go_left = false;
+//                    } else {  // 1:4    if (from_left == false && from_right == false)
+//                        go_left = false;
+//                        go_right = false;
+//                    }
+//                } else if (go_left) { // 2
+//                    int left_delivery = C[left_index];
+//                    bool from_left = if_flight_extends(flight, left_delivery, B - cost);
+//                    if (from_left) {
+//                        left_increment++;
+//                        flight.push_back(left_delivery);
+//                    } else {
+//                        go_left = false;
+//                    }
+//                } else if (go_right) { // 3
+//                    int right_delivery = C[right_index];
+//                    bool from_right = if_flight_extends(flight, right_delivery, B - cost);
+//                    if (from_right) {
+//                        right_increment++;
+//                        flight.push_back(right_delivery);
+//                    } else {
+//                        go_right = false;
+//                    }
+//                }
+//
+//            }// second while
+//
+//            // after while, go_left == go_right = false, then update A, C, cost
+//            flights.push_back(flight);
+//            cost = cost + dep.compute_energy(flight);
+//            // remove flight from A and C and all the deliveries intersect with flight
+//            for (int f: flight) {
+//                A.erase(find(A.begin(), A.end(), f));
+//                C.erase(find(C.begin(), C.end(), f));
+//            }
+//
+//            auto points = dep.compute_LR(flight);
+//            vector<int> launches = dep.get_launches();
+//            vector<int> rendezvouses = dep.get_rendezvouses();
+//
+//            vector<int> delivery_temp;
+//            for (int i: A) {
+//                if (!deployment::check_correct_interval({flight}, {get<0>(points)}, {get<1>(points)}, launches[i],
+//                                                        rendezvouses[i])) {
+//                    delivery_temp.push_back(i);
+//                }
+//            }
+//
+//            for (int f: delivery_temp) {
+//                A.erase(find(A.begin(), A.end(), f));
+//                C.erase(find(C.begin(), C.end(), f));
+//            }
+//
+//        } else {
+//            // remove delivery_maxP from A and C
+//            A.erase(find(A.begin(), A.end(), delivery_maxP));
+//            C.erase(find(C.begin(), C.end(), delivery_maxP));
+//        } // first if-else
+//
+//    } // first while
+//
+//    vector<int> sel_int_profits;
+//    vector<double> sel_int_energies;
+//    vector<int> sel_int_loads;
+//
+//    int total_profit = 0;
+//    double total_energy = 0.0;
+//
+//    for (const auto &f: flights) {
+//        int tmp_profit = 0;
+//        double tmp_energy_cost = 0.0;
+//        int tmp_load = 0;
+//        for (int j: f) {
+//            tmp_profit += dep.get_profits()[j];
+//            tmp_load += dep.get_weights()[j];
+//        }
+//
+//        sel_int_profits.push_back(tmp_profit);
+//        total_profit += tmp_profit;
+//        sel_int_loads.push_back(tmp_load);
+//        tmp_energy_cost = dep.compute_energy(f);
+//        sel_int_energies.push_back(tmp_energy_cost);
+//        total_energy += tmp_energy_cost;
+//    }
+//
+//    sol.total_profit = total_profit;
+//    sol.total_energy = total_energy;
+//    sol.total_flights = flights;
+//    sol.profits = sel_int_profits;
+//    sol.weights = sel_int_loads;
+//    sol.energies = sel_int_energies;
+//
+//    return sol;
+//}

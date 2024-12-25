@@ -694,9 +694,23 @@ int deployment::get_solution_space() const {
 }
 
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_solution_space() {
-    return is_unit_weight()
-                ? compute_all_flights_equal_weight()
-                : (get_solution_space() == 0
-                   ? compute_all_flights()
-                   : compute_all_flights_using_knapsack());
+    if (is_unit_weight()) {
+        // It works also with unitary weights
+        return compute_all_flights_equal_weight();
+    } else {
+        int type = get_solution_space();
+        if (type == 0) {
+            // Exhaustively, optimal
+            return compute_all_flights();
+        } else if (type == 1) {
+            // Knapsack, optimal
+            return compute_all_flights_using_knapsack();
+        } else if (type == 2) {
+            // It works also with non-unitary weights, sub-optimal
+            return compute_all_flights_equal_weight();
+        } else {
+            cerr << "Error in compute_solution_space" << endl;
+            exit(1);
+        }
+    }
 }

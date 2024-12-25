@@ -46,8 +46,8 @@ void save_output(const input &par, const vector<solution> &results) {
                 << par.drone_battery << ","
                 << par.drone_load << ","
                 << par.height << ","
-                << par.solution_space << ","
                 << par.algorithm << ","
+                << par.solution_space << ","
                 << par.iterations << ","
                 << par.energy_unit_cost << ","
                 // output

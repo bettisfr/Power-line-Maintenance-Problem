@@ -58,8 +58,9 @@ struct input {
     int max_weight = 1;
 
     // How the solution space is computed
-    // exhaustively 0
-    // knapsack 1
+    // exhaustively 0 (optimal)
+    // knapsack 1 (optimal)
+    // same weight 2 (not optimal)
     int solution_space = 0;
 
     // Drone's energy drone_battery
