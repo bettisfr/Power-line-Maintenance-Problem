@@ -84,7 +84,7 @@ void run_experiment(input &par) {
         out.running_time = static_cast<double>(duration.count()) / 1e+3;
 
         if (par.log == 1) {
-            cout << out << endl;
+            cout << endl << out << endl;
         }
 
         outputs.push_back(out);
