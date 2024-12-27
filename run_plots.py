@@ -32,7 +32,7 @@ NUM_DELIVERIES_VEC = [10, 20, 50, 100, 150, 200]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [0, 1, 2, 4, 5, 6, 7] # remember to re-add 3
+ALGORITHMS = [1, 2, 4, 5, 6, 7, 0] # remember to re-add 3
 
 algorithm_str = {
     0: "OPT (ILP)",

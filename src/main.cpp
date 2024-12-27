@@ -70,7 +70,8 @@ void run_experiment(input &par) {
             cout << dep << endl;
         }
 
-        cout << "Iteration: " << (i + 1) << "/" << par.iterations << endl;
+        // Print iteration number on the same line
+        cout << "\rIteration: " << (i + 1) << "/" << par.iterations << flush;
 
         algorithms alg(dep);
 
@@ -88,6 +89,9 @@ void run_experiment(input &par) {
 
         outputs.push_back(out);
     }
+
+    // Print a newline after the iterations are done to avoid overwriting the last line
+    cout << endl;
 
     if (par.save == 1) {
         save_output(par, outputs);

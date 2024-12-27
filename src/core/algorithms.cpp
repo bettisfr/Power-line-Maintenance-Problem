@@ -648,7 +648,6 @@ solution algorithms::greedy_profit_energy() {
         double ratio = static_cast<double>(profits_temp[i]) / energy_costs_temp[i];
         Ri.emplace_back(ratio, i);
     }
-
     sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
@@ -672,17 +671,12 @@ solution algorithms::greedy_profit_energy() {
 solution algorithms::greedy_profit_load() {
     auto [all_flights_temp, energy_costs_temp, profits_temp, loads_temp] = dep.compute_solution_space();
 
-    vector<double> reward_load;
+    vector<pair<double, int>> Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
-        reward_load.push_back(static_cast<double>(profits_temp[i]) / loads_temp[i]);
+        double ratio = static_cast<double>(profits_temp[i]) / loads_temp[i];
+        Ri.emplace_back(ratio, i);
     }
-
-    // sort according to reward/drone_load
-    vector<pair<double, int> > Ri;
-    for (int i = 0; i < all_flights_temp.size(); i++) {
-        Ri.emplace_back(reward_load[i], i);
-    }
-    sort(Ri.begin(), Ri.end()), greater<>();
+    sort(Ri.begin(), Ri.end(), greater<>());
 
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
@@ -736,7 +730,7 @@ solution algorithms::greedy_profit_load() {
 //        Ri.emplace_back(profits[i], i);
 //    }
 //
-//    sort(Ri.begin(), Ri.end()), greater<>();
+//    sort(Ri.begin(), Ri.end(), greater<>());
 //
 //    for (auto [value, i]: Ri) {
 //        A.push_back(i);
