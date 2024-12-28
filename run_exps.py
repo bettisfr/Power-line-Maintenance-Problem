@@ -12,7 +12,7 @@ NUM_DELIVERIES_VEC = [10, 20, 50, 100, 150, 200]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [7] # remember to re-add 3
+ALGORITHMS = [1, 2, 4, 5, 6, 7] # remember to re-add 3
 
 # Default parameter values
 DEFAULT_LOG = 0
@@ -38,9 +38,7 @@ for num_deliveries in NUM_DELIVERIES_VEC:
                 for algorithm in ALGORITHMS:
 
                     if algorithm == 0:
-                        if max_weight > 1 and num_deliveries > 20:
-                            continue
-                        if max_weight == 1 and num_deliveries > 50:
+                        if num_deliveries > 150:
                             continue
 
                     exp_name = f"out_alg{algorithm}_ndel{num_deliveries}_maxw{max_weight}_load{drone_load}_batt{drone_battery}"
@@ -68,7 +66,7 @@ for num_deliveries in NUM_DELIVERIES_VEC:
                     try:
                         # Execute the command
                         result = subprocess.run(cmd, shell=True, check=True, text=True)
-                        print(f"Command completed successfully")
+                        #print(f"Command completed successfully")
                     except subprocess.CalledProcessError as e:
                         print(f"Error: Command failed with exit code {e.returncode}")
                         exit(1)
