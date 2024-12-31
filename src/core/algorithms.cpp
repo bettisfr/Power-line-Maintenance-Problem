@@ -439,7 +439,7 @@ solution algorithms::coloring() {
     index = 0;
     int curr_index = 0;
 
-    while (index <= colors.size()) {
+    while (index < colors.size()) {
         color = colors[index];
         if (color.empty()) {
             break;

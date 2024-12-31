@@ -17,7 +17,7 @@ deployment::deployment(const input &par) {
     // creating random instance by using par.seed
     int seed = par.seed;
     // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
-    mt19937 g(seed);
+    static mt19937 g(seed);
 
     int max_len_road = par.max_len_road;
     int max_interval_len = par.max_interval_len;
