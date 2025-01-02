@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.ticker import MaxNLocator
 
 plt.rcParams.update({
     "text.usetex": True,
@@ -9,25 +10,16 @@ plt.rcParams.update({
     "font.sans-serif": "Helvetica",
 })
 
-# Directory where the CSV files are located
-output_dir = 'output'  # Change this to the correct path if needed
+output_dir = 'output'
 
-# List to store dataframes
 df_list = []
 
-# Loop through all files in the directory
 for filename in os.listdir(output_dir):
     if filename.endswith('.csv'):
-        # Construct the file path
         file_path = os.path.join(output_dir, filename)
-
-        # Read the CSV file into a dataframe
         df = pd.read_csv(file_path)
-
-        # Append the dataframe to the list
         df_list.append(df)
 
-# Combine all dataframes into a single dataframe
 final_df = pd.concat(df_list, ignore_index=True)
 
 # Parameter vectors
@@ -35,7 +27,7 @@ NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [1, 2, 3, 4, 5, 6, 0]
+ALGORITHMS = [2, 1, 3, 4, 5, 6, 0]
 
 algorithm_str = {
     0: "OPT",
@@ -44,13 +36,11 @@ algorithm_str = {
     3: "COL",
     4: "GMP",
     5: "GmE",
-    6: "GMP-E",
+    6: "GMP/E",
 }
 
-# Make sure 'plots' directory exists
 os.makedirs('plots', exist_ok=True)
 
-# Set the style for the plot
 sns.set_theme(style="whitegrid")
 
 # Define the metrics to plot
@@ -60,7 +50,6 @@ metrics = [
     ('total_flights_avg', 'total_flights_std', 'Total Flights'),
 ]
 
-# Iterate through each metric for combined plots
 for metric_avg, metric_std, metric_label in metrics:
     fig, axes = plt.subplots(2, 4, figsize=(10, 5), sharex=True, sharey=True)
 
@@ -97,16 +86,19 @@ for metric_avg, metric_std, metric_label in metrics:
                     if algo_data.empty:
                         continue
 
-                    # Define line styles and colors based on the algorithm
-                    if algorithm in [4, 5, 6]:  # Dashed for GMP, GmE, GMP-E
+                    # Dashed for greedy, solid for others
+                    if algorithm in [4, 5, 6]:
                         linestyle = '--'
                     else:
                         linestyle = '-'  # Solid for others
 
-                    if algorithm == 0:  # Black solid for OPT
+                    # Black for OPT, cyan for KNA, random for others
+                    if algorithm == 0:
                         color = 'black'
+                    elif algorithm == 2:
+                        color = 'cyan'
                     else:
-                        color = None  # Default color cycle
+                        color = None
 
                     # Plot with specified styles
                     ax.errorbar(
@@ -114,7 +106,7 @@ for metric_avg, metric_std, metric_label in metrics:
                         algo_data[metric_avg],
                         yerr=algo_data[metric_std],
                         label=f'{algorithm_str[algorithm]}',
-                        fmt='o',  # Marker
+                        fmt='o',
                         capsize=3,
                         markersize=4,
                         linewidth=0.8,
@@ -122,24 +114,26 @@ for metric_avg, metric_std, metric_label in metrics:
                         color=color
                     )
 
-                ax.set_title(f"W={drone_load}, max w={max_weight}, B={drone_battery}", fontsize=10)
+                ax.set_title(f"$W={drone_load}, \\max \\omega={max_weight}, B={drone_battery}$", fontsize=10)
 
                 # Add x-label only for the second row
                 if (subplot_idx-1) // 4 == 1:
-                    ax.set_xlabel('n', fontsize=9)
+                    ax.set_xlabel('Total deliveries $n$', fontsize=9)
 
                 # Add y-label only for the first column
                 if subplot_idx % 4 == 1:
                     ax.set_ylabel(metric_label, fontsize=9)
 
+                ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
                 ax.tick_params(axis='both', which='major', labelsize=8)
+                ax.set_xticks(NUM_DELIVERIES_VEC)
 
     # Add a single legend to the figure
     handles, labels = ax.get_legend_handles_labels()
     fig.legend(handles, labels, loc='upper center', ncol=8, fontsize=9)
-    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    fig.tight_layout(rect=[0, -0.025, 1, 0.965])
 
-    # Save the plot
     plot_filename = f"plots/{metric_label.lower().replace(' ', '_')}_combined.pdf"
     plt.savefig(plot_filename)
     plt.close()
