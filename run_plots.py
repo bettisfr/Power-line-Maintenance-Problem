@@ -24,26 +24,23 @@ for filename in os.listdir(output_dir):
 # Combine all dataframes into a single dataframe
 final_df = pd.concat(df_list, ignore_index=True)
 
-# Display the resulting dataframe (optional)
-# print(final_df.head())  # Print first few rows for inspection
-
 # Parameter vectors
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [1, 2, 3, 4, 5, 6, 7, 0] # remember to re-add 3
+ALGORITHMS = [0, 1, 2, 3, 4, 5, 6]
 
 algorithm_str = {
-    0: "OPT (ILP)",
-    1: "bin packing",
-    2: "knapsack",
-    3: "coloring",
-    4: "GM profit",
-    5: "GM energy",
-    6: "GM profit/energy",
-    7: "GM profit/load",
-    8: "GM profit+neigh",
+    0: "OPT",
+    1: "BIN",
+    2: "KNA",
+    3: "COL",
+    4: "GMP",
+    5: "GmE",
+    6: "GMP-E",
+    # 7: "GM profit/load",
+    # 8: "GM profit+neigh",
 }
 
 # Make sure 'plots' directory exists
@@ -76,7 +73,7 @@ for max_weight in MAX_WEIGHT_VEC:
 
             for metric_avg, metric_std, metric_label in metrics:
                 # Plot setup
-                plt.figure(figsize=(10, 6))
+                plt.figure(figsize=(4.5, 3.5))
 
                 # Plot the metric for each algorithm
                 for algorithm in ALGORITHMS:
@@ -98,15 +95,21 @@ for max_weight in MAX_WEIGHT_VEC:
                     )
 
                 # Labels and title
-                plt.title(f'{metric_label} vs. Number of Deliveries\n(max_weight={max_weight}, drone_load={drone_load}, drone_battery={drone_battery})', fontsize=14)
-                plt.xlabel('Number of Deliveries', fontsize=12)
-                plt.ylabel(metric_label, fontsize=12)
-                plt.xticks(NUM_DELIVERIES_VEC)
-                plt.legend(title="Algorithms", bbox_to_anchor=(1.05, 1), loc='upper left')
+                plt.xlabel('n', fontsize=9)
+                plt.ylabel(metric_label, fontsize=9)
+                plt.xticks(NUM_DELIVERIES_VEC, fontsize=9)
+                plt.yticks(fontsize=9)
+                plt.legend(
+                    title="",
+                    bbox_to_anchor=(0.5, 1.025),
+                    loc='lower center',
+                    ncol=4,
+                    fontsize=9
+                )
 
                 # Save the plot to the "plots" folder
                 plot_filename = f"plots/{metric_label.lower().replace(' ', '_')}_vs_deliveries_maxw{max_weight}_load{drone_load}_batt{drone_battery}.pdf"
-                plt.tight_layout()
+                plt.tight_layout(rect=[0, 0, 1, 1.025])
 
                 # Check if plot has data before saving
                 if not plt.gca().has_data():
@@ -118,4 +121,3 @@ for max_weight in MAX_WEIGHT_VEC:
                 plt.close()
 
                 print(f"Plot saved to {plot_filename}")
-
