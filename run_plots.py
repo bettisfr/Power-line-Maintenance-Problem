@@ -51,7 +51,7 @@ metrics = [
 ]
 
 for metric_avg, metric_std, metric_label in metrics:
-    fig, axes = plt.subplots(2, 4, figsize=(10, 5), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, 4, figsize=(10, 4), sharex=True, sharey=True)
 
     # Flatten the axes array for easier indexing
     axes = axes.flatten()
