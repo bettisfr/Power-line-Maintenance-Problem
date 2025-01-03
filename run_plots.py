@@ -124,7 +124,7 @@ for metric_avg, metric_std, metric_label in metrics:
                 if subplot_idx % 4 == 1:
                     ax.set_ylabel(metric_label, fontsize=9)
 
-                ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+                # ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
                 ax.tick_params(axis='both', which='major', labelsize=8)
                 ax.set_xticks(NUM_DELIVERIES_VEC)
