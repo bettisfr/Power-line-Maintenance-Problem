@@ -39,6 +39,7 @@ void print_parameters(const input &par) {
     cout << "Drone's load capacity=" << par.drone_load << endl;
     cout << "Height of the deliveries=" << par.height << endl;
     cout << "Energy unit cost per distance=" << par.energy_unit_cost << endl;
+    cout << "Energy per delivery=" << par.energy_per_delivery << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
     cout << "Solution space=" << solution_space_str[par.solution_space] << endl;
     cout << "Iterations=" << par.iterations << endl;

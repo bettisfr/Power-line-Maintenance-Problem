@@ -50,6 +50,7 @@ void save_output(const input &par, const vector<solution> &results) {
                 << par.solution_space << ","
                 << par.iterations << ","
                 << par.energy_unit_cost << ","
+                << par.energy_per_delivery << ","
                 // output
                 << total_profit_avg << ","
                 << total_profit_std << ","

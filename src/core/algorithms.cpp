@@ -373,7 +373,6 @@ solution algorithms::knapsack() {
 
 
 solution algorithms::coloring() {
-    // Variables
     int B = dep.get_drone_battery();
 
     auto parameters = dep.sorting_with_rendezvouses_in_apx();

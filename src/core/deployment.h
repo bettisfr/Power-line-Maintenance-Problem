@@ -31,6 +31,7 @@ private:
     double energy_unit_cost;
     bool unit_weight;
     int solution_space;
+    int energy_per_delivery;
 
 public:
     [[nodiscard]] bool is_unit_weight() const;
@@ -57,9 +58,9 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_solution_space();
 
-    static bool check_intersection(const vector<int> &, vector<int>);
+    //static bool check_intersection(const vector<int> &, vector<int>);
 
-    static vector<int> largest_non_overlap_delivery(vector<int> launches, vector<int> rendezvouses);
+    static vector<int> largest_non_overlap_delivery(vector<int>, vector<int>);
 
     tuple<int, int> compute_LR(const vector<int> &);
 
@@ -81,11 +82,13 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_equal_weight();
 
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_individual_deliveries();
+
     //tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_arbitrary_weight();
 
-    double compute_energy(const vector<int> &delivery_ids);
+    double compute_energy(const vector<int> &);
 
-    void find_subsets(vector<int> &v, int idx, vector<int> &subset, set<vector<int>> &result);
+    void find_subsets(vector<int> &, int, vector<int> &, set<vector<int>> &);
 
     vector<vector<int>> compute_all_subsets(vector<int> &);
 

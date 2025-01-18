@@ -20,7 +20,7 @@ struct input {
     int save = 0;
 
     // Application parameters
-    int seed = 3719;
+    int seed = 0;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -34,7 +34,7 @@ struct input {
     // greedy_profit_energy 6
     // greedy_profit_load 7
     // max_profit_extended 8
-    int algorithm = 3;
+    int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
     int iterations = 1;
@@ -43,13 +43,13 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 15;
+    int num_deliveries = 10;
 
     // Maximum length of the road
     int max_len_road = 100;
 
     // Maximum length of an interval
-    int max_interval_len = 20;
+    int max_interval_len = 15;
 
     // Maximum value for a delivery
     int max_profit = 8;
@@ -64,16 +64,19 @@ struct input {
     int solution_space = 0;
 
     // Drone's energy drone_battery
-    int drone_battery = 3000;
+    int drone_battery = 4000;
 
     // Drone's drone_load capacity
-    int drone_load = 10;
+    int drone_load = 5;
 
     // Height of the deliveries
     double height = 0.5;
 
     // Energy consumption of a drone per distance
     double energy_unit_cost = 200;
+
+    // Energy consumption to drop the delivery at the delivery location
+    double energy_per_delivery = 100;
 };
 
 void print_parameters(const input &);
