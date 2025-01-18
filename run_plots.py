@@ -2,13 +2,6 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from matplotlib.ticker import MaxNLocator
-
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "sans-serif",
-    "font.sans-serif": "Helvetica",
-})
 
 output_dir = 'output'
 
@@ -37,21 +30,44 @@ algorithm_str = {
     4: "GMP",
     5: "GmE",
     6: "GMP/E",
+    8: "OPTs",
 }
+
+algorithm_color = {
+    0: 'black',
+    1: 'red',
+    2: 'blue',
+    3: 'purple',
+    4: 'magenta',
+    5: 'orange',
+    6: 'green',
+    8: 'yellow',
+}
+
 
 os.makedirs('plots', exist_ok=True)
 
-sns.set_theme(style="whitegrid")
+sns.set_theme(style="whitegrid", rc={
+    "axes.edgecolor": "black",   # Set outer border to black
+    "axes.linewidth": 1.,       # Set outer border thickness
+    "grid.color": "#d3d3d3",     # Set internal grid lines to light grey
+    "grid.linewidth": 0.5,       # Thinner internal grid lines
+})
 
 # Define the metrics to plot
 metrics = [
     ('total_profit_avg', 'total_profit_std', 'Total Profit'),
-    ('total_energy_avg', 'total_energy_std', 'Total Energy'),
+    ('total_energy_avg', 'total_energy_std', 'Remaining Energy'),
     ('total_flights_avg', 'total_flights_std', 'Total Flights'),
 ]
 
 for metric_avg, metric_std, metric_label in metrics:
-    fig, axes = plt.subplots(2, 4, figsize=(10, 3.8), sharex=True, sharey=True)
+    # Adjust the metric for total energy (subtract from drone_battery)
+    if metric_avg == 'total_energy_avg':
+        metric_avg = 'remaining_energy_avg'  # New name for the calculated metric
+        final_df[metric_avg] = final_df['drone_battery'] - final_df['total_energy_avg']  # Calculate remaining energy
+
+    fig, axes = plt.subplots(2, 4, figsize=(12, 4.8), sharex=True, sharey=True)
 
     # Flatten the axes array for easier indexing
     axes = axes.flatten()
@@ -92,18 +108,10 @@ for metric_avg, metric_std, metric_label in metrics:
                     else:
                         linestyle = '-'  # Solid for others
 
-                    # Black for OPT, cyan for KNA, random for others
-                    if algorithm == 0:
-                        color = 'black'
-                    elif algorithm == 2:
-                        color = 'cyan'
-                    else:
-                        color = None
-
                     # Plot with specified styles
                     ax.errorbar(
                         algo_data['num_deliveries'],
-                        algo_data[metric_avg],
+                        algo_data[metric_avg],  # Use remaining energy here
                         yerr=algo_data[metric_std],
                         label=f'{algorithm_str[algorithm]}',
                         fmt='o',
@@ -111,7 +119,7 @@ for metric_avg, metric_std, metric_label in metrics:
                         markersize=4,
                         linewidth=0.8,
                         linestyle=linestyle,
-                        color=color
+                        color=algorithm_color[algorithm]
                     )
 
                 ax.set_title(f"$W={drone_load}, \\max \\omega={max_weight}, B={drone_battery}$", fontsize=10)
@@ -124,14 +132,12 @@ for metric_avg, metric_std, metric_label in metrics:
                 if subplot_idx % 4 == 1:
                     ax.set_ylabel(metric_label, fontsize=9)
 
-                # ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-
                 ax.tick_params(axis='both', which='major', labelsize=8)
                 ax.set_xticks(NUM_DELIVERIES_VEC)
 
     # Add a single legend to the figure
     handles, labels = ax.get_legend_handles_labels()
-    fig.legend(handles, labels, loc='upper center', ncol=8, fontsize=9)
+    fig.legend(handles, labels, loc='upper center', ncol=8, fontsize=8)
     fig.tight_layout(rect=[0, -0.025, 1, 0.965])
 
     plot_filename = f"plots/{metric_label.lower().replace(' ', '_')}_combined.pdf"
