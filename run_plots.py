@@ -27,7 +27,7 @@ NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [2, 1, 3, 4, 5, 6, 0]
+ALGORITHMS = [2, 1, 3, 4, 5, 6, 0, 8]
 
 algorithm_str = {
     0: "OPT",

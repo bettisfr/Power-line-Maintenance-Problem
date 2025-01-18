@@ -38,6 +38,7 @@ void print_parameters(const input &par) {
     cout << "Drone's energy battery=" << par.drone_battery << endl;
     cout << "Drone's load capacity=" << par.drone_load << endl;
     cout << "Height of the deliveries=" << par.height << endl;
+    cout << "Distance from the road=" << par.distance << endl;
     cout << "Energy unit cost per distance=" << par.energy_unit_cost << endl;
     cout << "Energy per delivery=" << par.energy_per_delivery << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
@@ -62,7 +63,9 @@ void save_parameters(const input &par) {
     file_cfg << "drone_battery=" << par.drone_battery << endl;
     file_cfg << "drone_load=" << par.drone_load << endl;
     file_cfg << "height=" << par.height << endl;
+    file_cfg << "distance=" << par.distance << endl;
     file_cfg << "energy_unit_cost=" << par.energy_unit_cost << endl;
+    file_cfg << "energy_per_delivery=" << par.energy_per_delivery << endl;
     file_cfg << "algorithm=" << par.algorithm << endl;
     file_cfg << "iterations=" << par.iterations << endl;
     file_cfg << "solution_space=" << par.solution_space << endl;
@@ -115,8 +118,12 @@ input load_parameters(input &par) {
                 par.drone_load = stoi(value);
             } else if (key == "height") {
                 par.height = stod(value);
+            } else if (key == "distance") {
+                par.distance = stod(value);
             } else if (key == "energy_unit_cost") {
                 par.energy_unit_cost = stod(value);
+            } else if (key == "energy_per_delivery") {
+                par.energy_per_delivery = stod(value);
             } else if (key == "solution_space") {
                 par.solution_space = stoi(value);
             }
@@ -165,9 +172,13 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.drone_load = stoi(argv[i + 1]);
             } else if (arg == "-height") {
                 par.height = stod(argv[i + 1]);
+            } else if (arg == "-distance") {
+                par.distance = stod(argv[i + 1]);
             } else if (arg == "-energy_unit_cost") {
                 par.energy_unit_cost = stod(argv[i + 1]);
-            } else if (arg == "-solution_space") {
+            } else if (arg == "-energy_unit_cost") {
+                par.energy_per_delivery = stod(argv[i + 1]);
+            } else if (arg == "-energy_per_delivery") {
                 par.solution_space = stoi(argv[i + 1]);
             } else {
                 cerr << "Unknown option: " << arg << endl;

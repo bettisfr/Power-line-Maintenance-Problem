@@ -28,9 +28,8 @@ solution algorithms::run_experiment(int algorithm) {
     return out;
 }
 
-solution algorithms::opt_ilp() {
-    // Pre-processing
-    auto [all_flights, energy_costs, profits, loads] = dep.compute_solution_space();
+solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> input) {
+    auto [all_flights, energy_costs, profits, loads] = std::move(input);
 
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep.get_num_deliveries();
@@ -94,8 +93,8 @@ solution algorithms::opt_ilp() {
             for (int k = 0; k < X; k++) {
                 if (i != k) {
                     if (!deployment::check_correct_interval({all_flights[i]},
-                                        {get<0>(dep.compute_LR(all_flights[i]))}, {get<1>(dep.compute_LR(all_flights[i]))},
-                                            get<0>(dep.compute_LR(all_flights[k])), get<1>(dep.compute_LR(all_flights[k])))) {
+                                                            {get<0>(dep.compute_LR(all_flights[i]))}, {get<1>(dep.compute_LR(all_flights[i]))},
+                                                            get<0>(dep.compute_LR(all_flights[k])), get<1>(dep.compute_LR(all_flights[k])))) {
                         model.addConstr(x[i] + x[k] <= 1);
                     }
                 }
@@ -167,6 +166,15 @@ solution algorithms::opt_ilp() {
     }
 
     return sol;
+}
+
+
+solution algorithms::opt_multi() {
+    return ilp_solver(dep.compute_solution_space());
+}
+
+solution algorithms::opt_single() {
+    return ilp_solver(dep.compute_individual_deliveries());
 }
 
 solution algorithms::bin_packing() {
@@ -694,6 +702,7 @@ solution algorithms::greedy_profit_load() {
 
     return flight_selection_in_heu(all_flights, energy_costs, profits, launches, rendezvouses);
 }
+
 
 //bool algorithms::if_flight_extends(const vector<int> &flight, int delivery, double remaining_energy) {
 //    // compute energy add load by adding delivery to flight

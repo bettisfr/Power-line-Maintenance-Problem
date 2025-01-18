@@ -28,10 +28,11 @@ private:
     int drone_load;
 
     double height;
+    double distance;
     double energy_unit_cost;
     bool unit_weight;
     int solution_space;
-    int energy_per_delivery;
+    double energy_per_delivery;
 
 public:
     [[nodiscard]] bool is_unit_weight() const;

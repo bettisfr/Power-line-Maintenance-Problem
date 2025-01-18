@@ -9,7 +9,9 @@ using namespace std;
 class util {
 
 public:
-    static double get_distance(double, double, double, double);
+    static double get_2D_distance(double, double, double, double);
+
+    static double get_3D_distance(double, double, double, double, double, double);
 
     template<typename T>
     static pair<double, double> calculate_avg_std(const vector<T> &values) {

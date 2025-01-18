@@ -28,6 +28,7 @@ deployment::deployment(const input &par) {
     unit_weight = (max_load == 1);
 
     height = par.height;
+    distance = par.distance;
     energy_unit_cost = par.energy_unit_cost;
     energy_per_delivery = par.energy_per_delivery;
 
@@ -70,7 +71,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
         all_flights.push_back({i});
     }
 
-    for (auto f : all_flights){
+    for (const auto& f : all_flights){
         energy_flight.push_back(compute_energy(f));
     }
 
@@ -645,7 +646,9 @@ double deployment::compute_energy(const vector<int> &delivery_ids) {
     int first_delivery;
     int last_delivery;
 
-    if (delivery_ids.size() == 1){
+    int total = static_cast<int>(delivery_ids.size());
+
+    if (total == 1) {
         first_delivery = delivery_ids[0];
         last_delivery = delivery_ids[0];
     } else {
@@ -656,11 +659,13 @@ double deployment::compute_energy(const vector<int> &delivery_ids) {
     int l = launches[first_delivery];
     int r = rendezvouses[last_delivery];
 
-    double a = util::get_distance(l, 0, delivery_points[first_delivery], height);
+//    double a = util::get_2D_distance(l, 0, delivery_points[first_delivery], height);
+    double a = util::get_3D_distance(l, 0, 0, delivery_points[first_delivery], height, distance);
     double b = abs(delivery_points[first_delivery] - delivery_points[last_delivery]);
-    double c = util::get_distance(delivery_points[last_delivery], height, r, 0);
+//    double c = util::get_2D_distance(delivery_points[last_delivery], height, r, 0);
+    double c = util::get_3D_distance(delivery_points[last_delivery], height, distance, r, 0, 0);
 
-    return (a + b + c) * energy_unit_cost + delivery_ids.size() * energy_per_delivery;
+    return (a + b + c) * energy_unit_cost + (total * energy_per_delivery);
 
 
     ////////////////////////////////
@@ -680,9 +685,9 @@ double deployment::compute_energy(const vector<int> &delivery_ids) {
     // int L_delivery = *min_element(delivery_locations.begin(), delivery_locations.end());
     // int R_delivery = *max_element(delivery_locations.begin(), delivery_locations.end());
 
-    // double a = util::get_distance(L, 0, L_delivery, height);
+    // double a = util::get_2D_distance(L, 0, L_delivery, height);
     // double b = R_delivery - L_delivery;
-    // double c = util::get_distance(R_delivery, height, R, 0);
+    // double c = util::get_2D_distance(R_delivery, height, R, 0);
 
     // return (a + b + c) * energy_unit_cost;
 }

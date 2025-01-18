@@ -25,7 +25,7 @@ struct input {
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
 
-    // opt_ilp 0
+    // opt_multi 0
     // bin_packing 1
     // knapsack 2
     // coloring 3
@@ -72,11 +72,14 @@ struct input {
     // Height of the deliveries
     double height = 0.5;
 
+    // Distance from the road
+    double distance = 0.5;
+
     // Energy consumption of a drone per distance
     double energy_unit_cost = 200;
 
-    // Energy consumption to drop the delivery at the delivery location
-    double energy_per_delivery = 100;
+    // Energy consumption to drop the delivery at the delivery location (assumes 100 seconds at 300 J/s)
+    double energy_per_delivery = 3000;
 };
 
 void print_parameters(const input &);
