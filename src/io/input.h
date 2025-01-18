@@ -78,8 +78,8 @@ struct input {
     // Energy consumption of a drone per distance
     double energy_unit_cost = 200;
 
-    // Energy consumption to drop the delivery at the delivery location (assumes 100 seconds at 300 J/s)
-    double energy_per_delivery = 3000;
+    // Energy consumption to drop the delivery at the delivery location (assumes 100 seconds at 0.3 kJ/s)
+    double energy_per_delivery = 30;
 };
 
 void print_parameters(const input &);

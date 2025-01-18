@@ -19,7 +19,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 7) {
+    if (index >= 0 && index <= 8) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;

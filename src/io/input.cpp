@@ -176,9 +176,9 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.distance = stod(argv[i + 1]);
             } else if (arg == "-energy_unit_cost") {
                 par.energy_unit_cost = stod(argv[i + 1]);
-            } else if (arg == "-energy_unit_cost") {
-                par.energy_per_delivery = stod(argv[i + 1]);
             } else if (arg == "-energy_per_delivery") {
+                par.energy_per_delivery = stod(argv[i + 1]);
+            } else if (arg == "-solution_space") {
                 par.solution_space = stoi(argv[i + 1]);
             } else {
                 cerr << "Unknown option: " << arg << endl;
