@@ -41,7 +41,7 @@ algorithm_color = {
     4: 'magenta',
     5: 'orange',
     6: 'green',
-    8: 'yellow',
+    8: 'grey',
 }
 
 
@@ -49,7 +49,7 @@ os.makedirs('plots', exist_ok=True)
 
 sns.set_theme(style="whitegrid", rc={
     "axes.edgecolor": "black",   # Set outer border to black
-    "axes.linewidth": 1.,       # Set outer border thickness
+    "axes.linewidth": 0.5,       # Set outer border thickness
     "grid.color": "#d3d3d3",     # Set internal grid lines to light grey
     "grid.linewidth": 0.5,       # Thinner internal grid lines
 })
@@ -67,7 +67,7 @@ for metric_avg, metric_std, metric_label in metrics:
         metric_avg = 'remaining_energy_avg'  # New name for the calculated metric
         final_df[metric_avg] = final_df['drone_battery'] - final_df['total_energy_avg']  # Calculate remaining energy
 
-    fig, axes = plt.subplots(2, 4, figsize=(12, 4.8), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, 4, figsize=(11, 4.2), sharex=True, sharey=True)
 
     # Flatten the axes array for easier indexing
     axes = axes.flatten()
