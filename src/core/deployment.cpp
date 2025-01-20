@@ -80,16 +80,28 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
 
 
 tuple<int, int> deployment::compute_LR(const vector<int> &flight) {
-    vector<int> launch_points;
-    vector<int> rendezvous_points;
+    int total = static_cast<int>(flight.size());
 
-    for (auto id: flight) {
-        launch_points.push_back(launches[id]);
-        rendezvous_points.push_back(rendezvouses[id]);
+    int L;
+    int R;
+    if (total == 1) {
+        L = launches[flight[0]];
+        R = rendezvouses[flight[0]];
+    } else {
+        L = launches[flight[0]];
+        R = rendezvouses[flight[1]];
     }
 
-    int L = *min_element(launch_points.begin(), launch_points.end());
-    int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
+    // vector<int> launch_points;
+    // vector<int> rendezvous_points;
+
+    // for (auto id: flight) {
+    //     launch_points.push_back(launches[id]);
+    //     rendezvous_points.push_back(rendezvouses[id]);
+    // }
+
+    // int L = *min_element(launch_points.begin(), launch_points.end());
+    // int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
 
     return {L, R};
 }
