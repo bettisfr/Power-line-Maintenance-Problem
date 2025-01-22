@@ -81,7 +81,7 @@ void run_experiment(input &par) {
 
         if (out.total_energy > par.drone_battery) {
             cerr << "Error: Used energy is=" << out.total_energy << " while total budget is=" << par.drone_battery << endl;
-	    exit(-1);
+	        exit(-1);
         }
 
         auto end_time = high_resolution_clock::now();
