@@ -14,6 +14,7 @@ for filename in os.listdir(output_dir):
         df_list.append(df)
 
 final_df = pd.concat(df_list, ignore_index=True)
+final_df.to_csv('all.csv')
 
 # Parameter vectors
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
