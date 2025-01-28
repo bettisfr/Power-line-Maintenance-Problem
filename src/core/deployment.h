@@ -17,11 +17,11 @@ class deployment {
 private:
     // Delivery parameters
     int num_deliveries;
-    vector<int> launches;
-    vector<int> rendezvouses;
+    vector<double> launches;
+    vector<double> rendezvouses;
     vector<int> profits;
     vector<int> weights;
-    vector<int> delivery_points;
+    vector<double> delivery_points;
 
     // Drone's parameters
     int drone_battery;
@@ -41,15 +41,15 @@ public:
 
     [[nodiscard]] int get_num_deliveries() const;
 
-    [[nodiscard]] const vector<int> &get_launches() const;
+    [[nodiscard]] const vector<double> &get_launches() const;
 
-    [[nodiscard]] const vector<int> &get_rendezvouses() const;
+    [[nodiscard]] const vector<double> &get_rendezvouses() const;
 
     [[nodiscard]] const vector<int> &get_profits() const;
 
     [[nodiscard]] const vector<int> &get_weights() const;
 
-    [[nodiscard]] const vector<int> &get_delivery_points() const;
+    [[nodiscard]] const vector<double> &get_delivery_points() const;
 
     [[nodiscard]] int get_drone_battery() const;
 
@@ -61,25 +61,25 @@ public:
 
     //static bool check_intersection(const vector<int> &, vector<int>);
 
-    static vector<int> largest_non_overlap_delivery(vector<int>, vector<int>);
+    static vector<int> largest_non_overlap_delivery(vector<double>, vector<double>);
 
-    tuple<int, int> compute_LR(const vector<int> &);
+    tuple<double, double> compute_LR(const vector<int> &);
 
     int compute_profit(const vector<int> &);
 
     int compute_load(const vector<int> &);
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>> sorting_with_rendezvouses_in_apx();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<double>> sorting_with_rendezvouses_in_apx();
 
-    static bool check_correct_interval(const vector<vector<int>> &, vector<int>, vector<int>, int, int);
-
-    static vector<int>
-    weighted_interval(const vector<int> &, const vector<int> &, const vector<int> &, vector<int>, const vector<int> &);
-
-    static int compute_opt(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>);
+    static bool check_correct_interval(const vector<vector<int>> &, vector<double>, vector<double>, double, double);
 
     static vector<int>
-    find_solution(int, const vector<int> &, const vector<int> &, vector<int>, vector<int>, vector<int>, vector<int>);
+    weighted_interval(const vector<double> &, const vector<double> &, const vector<int> &, vector<int>, const vector<int> &);
+
+    static int compute_opt(int, const vector<double> &, const vector<double> &, vector<int>, vector<int>, vector<int>);
+
+    static vector<int>
+    find_solution(int, const vector<double> &, const vector<double> &, vector<int>, vector<int>, vector<int>, vector<int>);
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_equal_weight();
 

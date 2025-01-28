@@ -184,13 +184,16 @@ solution algorithms::bin_packing() {
     vector<vector<int>> all_flights = get<0>(parameters);
     vector<double> energy_costs = get<1>(parameters);
     vector<int> profits = get<2>(parameters);
-    vector<int> launches = get<3>(parameters);
-    vector<int> rendezvouses = get<4>(parameters);
+    vector<double> launches = get<3>(parameters);
+    vector<double> rendezvouses = get<4>(parameters);
+
+    int tot = static_cast<int>(all_flights.size());
 
     // compute p
-    vector<int> p = deployment::largest_non_overlap_delivery(launches, rendezvouses);
+    vector<int> p(tot);
+    p = deployment::largest_non_overlap_delivery(launches, rendezvouses);
 
-    vector<int> opt; // profits
+    vector<int> opt(tot); // profits
     vector<int> pp = deployment::weighted_interval(launches, rendezvouses, profits, opt, p);
 
     vector<int> O;  // ids
@@ -273,8 +276,8 @@ solution algorithms::knapsack() {
     vector<vector<int>> all_flights = get<0>(parameters);
     vector<double> energy_costs = get<1>(parameters);
     vector<int> profits = get<2>(parameters);
-    vector<int> launches = get<3>(parameters);
-    vector<int> rendezvouses = get<4>(parameters);
+    vector<double> launches = get<3>(parameters);
+    vector<double> rendezvouses = get<4>(parameters);
 
     // for (int i=0; i < all_flights.size(); i++) {
     //     cout << "i: " << i << " profit: " << profits[i] << " cost: " << energy_costs[i] << " launch: " << launches[i] << " rendezvous: " << rendezvouses[i] << endl;
@@ -387,14 +390,14 @@ solution algorithms::coloring() {
     vector<vector<int>> all_flights = get<0>(parameters);
     vector<double> energy_costs = get<1>(parameters);
     vector<int> profits = get<2>(parameters);
-    vector<int> launches = get<3>(parameters);
-    vector<int> rendezvouses = get<4>(parameters);
+    vector<double> launches = get<3>(parameters);
+    vector<double> rendezvouses = get<4>(parameters);
 
     // for (int i=0; i<rendezvouses.size(); i++) {
     //     cout << "[" << launches[i] << "," << rendezvouses[i] << "]" << endl;
     // }
 
-    vector<vector<vector<int>>> colors;
+    vector<vector<vector<double>>> colors;
     auto n = rendezvouses.size();
 
     // initialize the colors which is at most n, the number of total_flights
@@ -402,8 +405,8 @@ solution algorithms::coloring() {
         colors.emplace_back();
     }
 
-    vector<int> last_interval;
-    vector<int> current_interval;
+    vector<double> last_interval;
+    vector<double> current_interval;
     bool compatible;
     int index = 0;
 
@@ -411,7 +414,7 @@ solution algorithms::coloring() {
         current_interval.clear();
         current_interval.push_back(launches[i]);
         current_interval.push_back(rendezvouses[i]);
-        //index
+        //index = 2
         current_interval.push_back(i);
 
         index = 0;
@@ -422,8 +425,8 @@ solution algorithms::coloring() {
                 compatible = true;
             } else {
                 last_interval = colors[index].back();
-                int max_start = max(last_interval[0], current_interval[0]);
-                int min_end = min(current_interval[1], last_interval[1]);
+                double max_start = max(last_interval[0], current_interval[0]);
+                double min_end = min(current_interval[1], last_interval[1]);
                 if (max_start > min_end) {
                     colors[index].push_back(current_interval);
                     compatible = true;
@@ -436,7 +439,7 @@ solution algorithms::coloring() {
 
     // compute ratios
     vector<vector<double>> color_ratios;
-    vector<vector<int>> color = {{1}};
+    vector<vector<double>> color = {{1}};
     int max_profit = 0;
     double max_cost = 0;
     vector<int> max_selection;
@@ -455,7 +458,8 @@ solution algorithms::coloring() {
         // cout << "#Color: " << index << endl;
         for (auto &i: color) {
             // cout << "interval: " << color[i][2] <<" [" << color[i][0] << "," << color[i][1] << "] . profit: " << profits[color[i][2]] << " cost: " << energy_costs[color[i][2]] << " ratio: " <<profits[color[i][2]]/energy_costs[color[i][2]] << endl;
-            color_ratios.push_back({(profits[i[2]] / energy_costs[i[2]]), static_cast<double>(i[2])});
+            // i[2] is double, but is always the id of the delivery: so, safe
+            color_ratios.push_back({(profits[i[2]] / energy_costs[i[2]]), (i[2])});
         }
         cost = 0;
         profit = 0;
@@ -511,13 +515,13 @@ solution algorithms::coloring() {
 
 /////////////   Heuristics   ////////////////
 solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, vector<double> energy_costs,
-                                             vector<int> profits, vector<int> launches, vector<int> rendezvouses) {
+                                             vector<int> profits, vector<double> launches, vector<double> rendezvouses) {
     vector<vector<int>> selected_intervals;
     vector<int> sel_int_profits;
     vector<double> sel_int_energies;
     vector<int> sel_int_weights;
-    vector<int> launches_result;
-    vector<int> rendezvouses_result;
+    vector<double> launches_result;
+    vector<double> rendezvouses_result;
 
     int total_profit = 0;
     double total_energy = 0.0;
@@ -525,8 +529,8 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
 
     while (!all_flights.empty() && B != 0) {
         vector<int> task = all_flights[0];
-        int L = launches[0];
-        int R = rendezvouses[0];
+        double L = launches[0];
+        double R = rendezvouses[0];
 
         if (energy_costs[0] <= B &&
             (selected_intervals.empty() ||
@@ -604,8 +608,8 @@ solution algorithms::greedy_profit() {
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
     vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
+    vector<double> launches;
+    vector<double> rendezvouses;
 
     for (auto [value, i]: Ri) {
         all_flights.push_back(all_flights_temp[i]);
@@ -632,8 +636,8 @@ solution algorithms::greedy_energy() {
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
     vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
+    vector<double> launches;
+    vector<double> rendezvouses;
 
     for (auto [value, i]: Ri) {
         all_flights.push_back(all_flights_temp[i]);
@@ -660,8 +664,8 @@ solution algorithms::greedy_profit_energy() {
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
     vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
+    vector<double> launches;
+    vector<double> rendezvouses;
 
     for (auto [value, i]: Ri) {
         all_flights.push_back(all_flights_temp[i]);
@@ -688,8 +692,8 @@ solution algorithms::greedy_profit_load() {
     vector<vector<int>> all_flights;
     vector<double> energy_costs;
     vector<int> profits;
-    vector<int> launches;
-    vector<int> rendezvouses;
+    vector<double> launches;
+    vector<double> rendezvouses;
 
     for (auto [value, i]: Ri) {
         all_flights.push_back(all_flights_temp[i]);

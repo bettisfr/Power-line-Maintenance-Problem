@@ -107,7 +107,7 @@ input load_parameters(input &par) {
             } else if (key == "max_len_road") {
                 par.max_len_road = stoi(value);
             } else if (key == "max_interval_len") {
-                par.max_interval_len = stoi(value);
+                par.max_interval_len = stod(value);
             } else if (key == "max_profit") {
                 par.max_profit = stoi(value);
             } else if (key == "max_weight") {

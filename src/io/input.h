@@ -25,15 +25,15 @@ struct input {
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
 
-    // opt_multi 0
-    // bin_packing 1
-    // knapsack 2
-    // coloring 3
-    // greedy_profit 4
-    // greedy_energy 5
-    // greedy_profit_energy 6
-    // greedy_profit_load 7
-    // max_profit_extended 8
+    // opt_multi - OPT - 0
+    // bin_packing - 1
+    // knapsack - KNA - 2
+    // coloring - COL - 3
+    // greedy_max_profit 4
+    // greedy_max_energy 5
+    // greedy_max_profit/energy - GMP/E - 6
+    // greedy_max_profit_load 7
+    // opt_single - OPTs - 8
     int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
@@ -49,7 +49,7 @@ struct input {
     int max_len_road = 100;
 
     // Maximum length of an interval
-    int max_interval_len = 15;
+    double max_interval_len = 15;
 
     // Maximum value for a delivery
     int max_profit = 10;

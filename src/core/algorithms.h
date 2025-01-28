@@ -34,7 +34,7 @@ private:
 
     solution ilp_solver(tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>>);
 
-    solution flight_selection_in_heu(vector<vector<int>>, vector<double>, vector<int>, vector<int>, vector<int>);
+    solution flight_selection_in_heu(vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<double>);
 
 public:
     explicit algorithms(const deployment&);
