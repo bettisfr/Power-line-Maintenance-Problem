@@ -8,13 +8,14 @@ BIN_FILE = 'dcoss'
 os.makedirs('output', exist_ok=True)
 
 # Parameter vectors
-NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+#NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+NUM_DELIVERIES_VEC = [70, 80, 90, 100]
 # NUM_DELIVERIES_VEC = [100]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [2, 3, 6, 8, 0]
-#ALGORITHMS = [0]
+#ALGORITHMS = [2, 3, 6, 8, 0]
+ALGORITHMS = [2, 3, 6, 8]
 
 # Default parameter values
 DEFAULT_LOG = 0
@@ -30,7 +31,7 @@ DEFAULT_SOLUTION_SPACE = 1
 DEFAULT_SAVE = 1
 
 # Seed initialization
-seed = 0
+seed = 48
 
 # Loop through all parameter combinations
 for num_deliveries in NUM_DELIVERIES_VEC:
