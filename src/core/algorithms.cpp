@@ -49,8 +49,8 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         // env.set("LogFile", "mip1.log");
         env.set("OutputFlag", "0");
 
-        int maxThreads = static_cast<int>(thread::hardware_concurrency());
-        env.set(GRB_IntParam_Threads, maxThreads);
+        int max_threads = static_cast<int>(thread::hardware_concurrency());
+        env.set(GRB_IntParam_Threads, max_threads);
 
         env.start();
         GRBModel model = GRBModel(env);

@@ -8,30 +8,27 @@ BIN_FILE = 'dcoss'
 os.makedirs('output', exist_ok=True)
 
 # Parameter vectors
-#NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-NUM_DELIVERIES_VEC = [70]
-# NUM_DELIVERIES_VEC = [100]
+NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 MAX_WEIGHT_VEC = [1, 5]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-#ALGORITHMS = [2, 3, 6, 8, 0]
 ALGORITHMS = [2, 3, 6, 8]
 
 # Default parameter values
 DEFAULT_LOG = 0
 DEFAULT_ITERATIONS = 33
-DEFAULT_MAX_LEN_ROAD = 50
+DEFAULT_MAX_LEN_ROAD = 100
 DEFAULT_MAX_INTERVAL_LEN = 2
 DEFAULT_MAX_PROFIT = 10
 DEFAULT_HEIGHT = 0.5
-DEFAULT_DISTANCE = 0.5
-DEFAULT_ENERGY_UNIT_COST = 200
+DEFAULT_DISTANCE = 1
+DEFAULT_ENERGY_UNIT_COST = 50
 DEFAULT_ENERGY_PER_DELIVERY = 0
 DEFAULT_SOLUTION_SPACE = 1
 DEFAULT_SAVE = 1
 
 # Seed initialization
-seed = 48
+seed = 0
 
 # Loop through all parameter combinations
 for num_deliveries in NUM_DELIVERIES_VEC:
@@ -43,7 +40,7 @@ for num_deliveries in NUM_DELIVERIES_VEC:
                 for algorithm in ALGORITHMS:
 
                     if algorithm == 0:
-                        if num_deliveries > 150:
+                        if num_deliveries > 40:
                             continue
 
                     exp_name = f"out_alg{algorithm}_ndel{num_deliveries}_maxw{max_weight}_load{drone_load}_batt{drone_battery}"
