@@ -366,7 +366,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                             }
 
                             int load_flight_temp = compute_load(flight_temp);
-                            double energy_flight_temp = compute_energy(flight_temp);
+                            double energy_flight_temp = compute_energy(flight_temp); // no need to do this
 
                             if (load_flight_temp <= drone_load && energy_flight_temp <= drone_battery){
                                 all_flights.push_back(flight_temp);
@@ -464,7 +464,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
             double L = launches[id_i];
             for (int id_j: ids) {
                 double R = rendezvouses[id_j];
-                if (R > L) {  // && rendezvouses[id_i] <= R && launches[id_j] >= L                   
+                if (R > L) {                  
                     vector<int> flight;
                     if (id_i == id_j) {
                         flight.push_back(id_i);
@@ -475,33 +475,66 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     // check [L, R] is energy and drone_load feasible
                     double energy_L_R = compute_energy(flight);
                     if (energy_L_R <= drone_battery && flight.size() <= total_load) {
-                        // add all flights of size <= L
-                        all_flights.push_back(flight);
-                        energy_flight.push_back(energy_L_R);
+                        // consider only one flight with max profit
                         for (int id_k: ids) {
                             if (id_k != id_i && id_k != id_j && 
                                 delivery_points[id_k] >= delivery_points[id_i] &&
                                 delivery_points[id_k] <= delivery_points[id_j] && flight.size() < total_load ) {
-                                // L <= launches[id_k] && launches[id_k] <= R &&
-                                // L <= rendezvouses[id_k] && rendezvouses[id_k] <= R && 
-                                vector<int> flight_temp;
-                                for (auto x : flight){
-                                    flight_temp.push_back(x);
-                                }
-                                flight_temp.push_back(id_k);
-                                double energy_flight_temp = compute_energy(flight_temp);
-
-                                if (energy_flight_temp <= drone_battery){
-                                    all_flights.push_back(flight_temp);
-                                    energy_flight.push_back(energy_flight_temp);
-                                    flight = flight_temp;
-                                }
+                                
+                                flight.push_back(id_k);
                             }
-                        }
+                        }                        
+                        all_flights.push_back(flight);
+                        energy_flight.push_back(energy_L_R);
                     }
                 }
             }
         }
+
+    /////////////////////////////////// can be removed
+        // for (int id_i: ids) {
+        //     double L = launches[id_i];
+        //     for (int id_j: ids) {
+        //         double R = rendezvouses[id_j];
+        //         if (R > L) {  // && rendezvouses[id_i] <= R && launches[id_j] >= L                   
+        //             vector<int> flight;
+        //             if (id_i == id_j) {
+        //                 flight.push_back(id_i);
+        //             } else {
+        //                 flight.push_back(id_i);
+        //                 flight.push_back(id_j);
+        //             }
+        //             // check [L, R] is energy and drone_load feasible
+        //             double energy_L_R = compute_energy(flight);
+        //             if (energy_L_R <= drone_battery && flight.size() <= total_load) {
+        //                 // add all flights of size <= L
+        //                 all_flights.push_back(flight);
+        //                 energy_flight.push_back(energy_L_R);
+        //                 for (int id_k: ids) {
+        //                     if (id_k != id_i && id_k != id_j && 
+        //                         delivery_points[id_k] >= delivery_points[id_i] &&
+        //                         delivery_points[id_k] <= delivery_points[id_j] && flight.size() < total_load ) {
+        //                         // L <= launches[id_k] && launches[id_k] <= R &&
+        //                         // L <= rendezvouses[id_k] && rendezvouses[id_k] <= R && 
+        //                         vector<int> flight_temp;
+        //                         for (auto x : flight){
+        //                             flight_temp.push_back(x);
+        //                         }
+        //                         flight_temp.push_back(id_k);
+        //                         double energy_flight_temp = compute_energy(flight_temp);
+
+        //                         if (energy_flight_temp <= drone_battery){
+        //                             all_flights.push_back(flight_temp);
+        //                             energy_flight.push_back(energy_flight_temp);
+        //                             flight = flight_temp;
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+    ///////////////////
     }
 
     vector<int> profits_flight;
@@ -523,12 +556,12 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     for (int i = 0; i < num_deliveries; i++){
         ids.push_back(i);
     }
-    
+
     for (int id_i: ids) {
         double L = launches[id_i];
         for (int id_j: ids) {
             double R = rendezvouses[id_j];
-            if (R > L) {      // && rendezvouses[id_i] <= R && launches[id_j] >= L              
+            if (R > L) {            
                 vector<int> flight;
                 if (id_i == id_j) {
                     flight.push_back(id_i);
@@ -547,37 +580,83 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                         if (id_k != id_i && id_k != id_j &&
                             delivery_points[id_k] >= delivery_points[id_i] &&
                             delivery_points[id_k] <= delivery_points[id_j]) {
-                            // && L <= launches[id_k] && launches[id_k] <= R &&
-                            // L <= rendezvouses[id_k] && rendezvouses[id_k] <= R &&
                             deliveries_L_R.push_back(id_k);
                         }
                     }  
 
-                    all_flights.push_back(flight);
-                    energy_flight.push_back(energy_L_R);
-
+                    vector<int> flight_knapsack;
                     if (!deliveries_L_R.empty()) {
                         int available_load = drone_load - load_flight;
-                        vector<int> flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, available_load);
-                        for (int f : flight_knapsack){
-                            vector<int> flight_temp;
-                            for (int d : flight){
-                                flight_temp.push_back(d);
-                            }
-                            flight_temp.push_back(f);
-                            double energy_flight_temp = compute_energy(flight_temp);
-                            
-                            if (energy_flight_temp <= drone_battery){
-                                all_flights.push_back(flight_temp);
-                                energy_flight.push_back(energy_flight_temp);
-                                flight = flight_temp;
-                            }
-                        }
+                        flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, available_load);
                     } 
+
+                    for (int f : flight_knapsack){
+                        flight.push_back(f);
+                    }
+
+                    all_flights.push_back(flight);
+                    energy_flight.push_back(energy_L_R);
                 }
             }
         }
     }
+
+////////////////////////////////////////////  can be removed
+    // for (int id_i: ids) {
+    //     double L = launches[id_i];
+    //     for (int id_j: ids) {
+    //         double R = rendezvouses[id_j];
+    //         if (R > L) {      // && rendezvouses[id_i] <= R && launches[id_j] >= L              
+    //             vector<int> flight;
+    //             if (id_i == id_j) {
+    //                 flight.push_back(id_i);
+    //             } else {
+    //                 flight.push_back(id_i);
+    //                 flight.push_back(id_j);
+    //             }
+    //             // check [L, R] is energy and drone_load feasible
+    //             double energy_L_R = compute_energy(flight);
+    //             int load_flight = compute_load(flight);
+
+    //             if (energy_L_R <= drone_battery && load_flight <= drone_load) {
+    //                 // run knapsack for all deliveries between L and R
+    //                 vector<int> deliveries_L_R;
+    //                 for (int id_k: ids) {
+    //                     if (id_k != id_i && id_k != id_j &&
+    //                         delivery_points[id_k] >= delivery_points[id_i] &&
+    //                         delivery_points[id_k] <= delivery_points[id_j]) {
+    //                         // && L <= launches[id_k] && launches[id_k] <= R &&
+    //                         // L <= rendezvouses[id_k] && rendezvouses[id_k] <= R &&
+    //                         deliveries_L_R.push_back(id_k);
+    //                     }
+    //                 }  
+
+    //                 all_flights.push_back(flight);
+    //                 energy_flight.push_back(energy_L_R);
+
+    //                 if (!deliveries_L_R.empty()) {
+    //                     int available_load = drone_load - load_flight;
+    //                     vector<int> flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, available_load);
+    //                     for (int f : flight_knapsack){
+    //                         vector<int> flight_temp;
+    //                         for (int d : flight){
+    //                             flight_temp.push_back(d);
+    //                         }
+    //                         flight_temp.push_back(f);
+    //                         double energy_flight_temp = compute_energy(flight_temp);
+                            
+    //                         if (energy_flight_temp <= drone_battery){
+    //                             all_flights.push_back(flight_temp);
+    //                             energy_flight.push_back(energy_flight_temp);
+    //                             flight = flight_temp;
+    //                         }
+    //                     }
+    //                 } 
+    //             }
+    //         }
+    //     }
+    // }
+/////////////////////////////////////
 
     vector<int> profits_flight;
     vector<int> loads_flight;

@@ -20,7 +20,7 @@ struct input {
     int save = 0;
 
     // Application parameters
-    int seed = 79;
+    int seed = 10;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -43,7 +43,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 30;
+    int num_deliveries = 50;
 
     // Maximum length of the road
     int max_len_road = 100;
