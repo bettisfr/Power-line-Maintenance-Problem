@@ -20,7 +20,7 @@ struct input {
     int save = 0;
 
     // Application parameters
-    int seed = 25;
+    int seed = 45;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
