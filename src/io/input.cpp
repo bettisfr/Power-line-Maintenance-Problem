@@ -26,6 +26,9 @@ void print_parameters(const input &par) {
     map<int, string> solution_space_str = {
             {0, "Exhaustively"},
             {1, "Knapsack"},
+            {2, "Same weight"},
+            {3, "Exhaustively-additional-cost"},
+            {4, "DP-additional-cost"},
     };
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;

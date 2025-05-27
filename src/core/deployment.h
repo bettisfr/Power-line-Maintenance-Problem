@@ -59,8 +59,6 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_solution_space();
 
-    //static bool check_intersection(const vector<int> &, vector<int>);
-
     static vector<int> largest_non_overlap_delivery(vector<double>, vector<double>);
 
     tuple<double, double> compute_LR(const vector<int> &);
@@ -83,11 +81,13 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_equal_weight();
 
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_extra_cost_DP();
+
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_individual_deliveries();
 
-    //tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_arbitrary_weight();
-
     double compute_energy(const vector<int> &);
+
+    double compute_energy_extra_cost(const vector<int> &);
 
     void find_subsets(vector<int> &, int, vector<int> &, set<vector<int>> &);
 
