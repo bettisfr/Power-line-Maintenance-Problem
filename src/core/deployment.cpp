@@ -1,6 +1,7 @@
 #include <random>
 #include <iostream>
 #include <set>
+#include <algorithm>
 #include "deployment.h"
 #include "../util/util.h"
 
@@ -19,10 +20,16 @@ deployment::deployment(const input &par) {
     // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
     static mt19937 g(seed);
 
-    int max_len_road = par.max_len_road;
-    double max_interval_len = par.max_interval_len;
+    int max_len_road = par.max_len_road;            // for random
+    double max_interval_len = par.max_interval_len;     
     int max_profit = par.max_profit;
     int max_load = par.max_weight;
+    int regularly_spaced = par.regularly_spaced;
+
+    double deliveries_starting_point = par.deliveries_starting_point;
+    double error = par.error;
+
+    uniform_real_distribution<double> distr(-error, error);
 
     num_deliveries = par.num_deliveries;
     unit_weight = (max_load == 1);
@@ -37,29 +44,105 @@ deployment::deployment(const input &par) {
 
     solution_space = par.solution_space;
 
-    for (int i = 0; i < num_deliveries; i++) {
-        double departure = numpy(g) * max_len_road;
-        double arrival = departure + numpy(g) * max_interval_len;
+    for (int i = 1; i <= num_deliveries; i++) {
+
+        double delivery_location = 0.0;
+        if (regularly_spaced == 1){
+            delivery_location = i * deliveries_starting_point + distr(g);
+        } else {        // random
+            delivery_location = numpy(g) * max_len_road;
+        }
+
+        // max_interval_len is too much when regularly_spaced == 1
+        double departure = delivery_location - numpy(g) * max_interval_len;
+        if (departure < 0){
+            departure = 0;
+        }
+
+        double arrival = delivery_location + numpy(g) * (max_interval_len - (delivery_location - departure));
+        
         if (arrival == departure) {
             arrival++;
         }
-        if (arrival > max_len_road) {
+        if (regularly_spaced == 0 && arrival > max_len_road) {
             arrival = max_len_road;
         }
 
-        int profit = static_cast<int>(numpy(g) * max_profit) + 1;
+        int profit = static_cast<int>(numpy(g) * max_profit) + 1; // use Zip
         int weight = static_cast<int>(numpy(g) * max_load) + 1;
 
-        double x = arrival - departure;
-        double delivery_location = departure + (numpy(g) * x) + 1;
-
-        // for single delivery
         delivery_points.push_back(delivery_location);
         launches.push_back(departure);
         rendezvouses.push_back(arrival);
         profits.push_back(profit);
         weights.push_back(weight);
     }
+
+    // Zipf distribution for profits
+    double H_Ns = 0.0;
+    double s = 1;
+    
+    vector<double> v;
+
+    for (int i = 1; i <= num_deliveries; i++)
+        H_Ns += 1.0 / pow(i, s);
+
+    for (int i = 1; i <= num_deliveries; i++)
+        // profits.push_back(((1.0 / pow(i, s)) / H_Ns) * max_profit);
+        v.push_back(((1.0 / pow(i, s)) / H_Ns));
+
+    // for (auto i : v){
+    //     cout << i << " ";
+    // }
+    
+
+    //////////////////////////////
+    // // creating random instance by using par.seed
+    // int seed = par.seed;
+    // // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
+    // static mt19937 g(seed);
+
+    // int max_len_road = par.max_len_road;
+    // double max_interval_len = par.max_interval_len;
+    // int max_profit = par.max_profit;
+    // int max_load = par.max_weight;
+
+    // num_deliveries = par.num_deliveries;
+    // unit_weight = (max_load == 1);
+
+    // height = par.height;
+    // distance = par.distance;
+    // energy_unit_cost = par.energy_unit_cost;
+    // energy_per_delivery = par.energy_per_delivery;
+
+    // drone_battery = par.drone_battery;
+    // drone_load = par.drone_load;
+
+    // solution_space = par.solution_space;
+
+    // for (int i = 0; i < num_deliveries; i++) {
+    //     double departure = numpy(g) * max_len_road;
+    //     double arrival = departure + numpy(g) * max_interval_len;
+    //     if (arrival == departure) {
+    //         arrival++;
+    //     }
+    //     if (arrival > max_len_road) {
+    //         arrival = max_len_road;
+    //     }
+
+    //     int profit = static_cast<int>(numpy(g) * max_profit) + 1;
+    //     int weight = static_cast<int>(numpy(g) * max_load) + 1;
+
+    //     double x = arrival - departure;
+    //     double delivery_location = departure + (numpy(g) * x) + 1;
+
+    //     // for single delivery
+    //     delivery_points.push_back(delivery_location);
+    //     launches.push_back(departure);
+    //     rendezvouses.push_back(arrival);
+    //     profits.push_back(profit);
+    //     weights.push_back(weight);
+    // }
 }
 
 

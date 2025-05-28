@@ -44,6 +44,9 @@ void print_parameters(const input &par) {
     cout << "Distance from the road=" << par.distance << endl;
     cout << "Energy unit cost per distance=" << par.energy_unit_cost << endl;
     cout << "Energy per delivery=" << par.energy_per_delivery << endl;
+    cout << "Deliveries are regularly spaced=" << par.regularly_spaced << endl;
+    cout << "Starting location of deliveries (regularly_spaced)=" << par.deliveries_starting_point << endl;
+    cout << "Error in deliveries locations (regularly_spaced)=" << par.error << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
     cout << "Solution space=" << solution_space_str[par.solution_space] << endl;
     cout << "Iterations=" << par.iterations << endl;
@@ -72,6 +75,9 @@ void save_parameters(const input &par) {
     file_cfg << "algorithm=" << par.algorithm << endl;
     file_cfg << "iterations=" << par.iterations << endl;
     file_cfg << "solution_space=" << par.solution_space << endl;
+    file_cfg << "regularly_spaced=" << par.regularly_spaced << endl;
+    file_cfg << "deliveries_starting_point=" << par.deliveries_starting_point << endl;
+    file_cfg << "error=" << par.error << endl;
 
     file_cfg << endl;
 
@@ -129,7 +135,14 @@ input load_parameters(input &par) {
                 par.energy_per_delivery = stod(value);
             } else if (key == "solution_space") {
                 par.solution_space = stoi(value);
+            } else if (key == "regularly_spaced") {
+                par.regularly_spaced = stoi(value);
+            } else if (key == "deliveries_starting_point") {
+                par.deliveries_starting_point = stoi(value);
+            } else if (key == "error") {
+                par.error = stoi(value);
             }
+
         }
     }
 

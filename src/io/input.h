@@ -43,19 +43,19 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 30;
+    int num_deliveries = 25;
 
     // Maximum length of the road
     int max_len_road = 100;
 
     // Maximum length of an interval
-    double max_interval_len = 10;
+    double max_interval_len = 8;
 
     // Maximum value for a delivery
     int max_profit = 10;
 
     // Maximum weight for a delivery
-    int max_weight = 4;
+    int max_weight = 5;
 
     // How the solution space is computed
     // exhaustively 0 (optimal)
@@ -82,6 +82,13 @@ struct input {
 
     // Energy consumption to drop the delivery at the delivery location (assumes 100 seconds at 0.3 kJ/s)
     double energy_per_delivery = 50;
+
+    // If the trellises are located at a regular distance from each othere (1), otherwise random (0)
+    int regularly_spaced = 0;
+
+    // Starting point of deliveries, if regularily_spaced = 1
+    double deliveries_starting_point = 0.5;
+    double error = 0.05;
 };
 
 void print_parameters(const input &);
