@@ -29,7 +29,7 @@ deployment::deployment(const input &par) {
     double deliveries_starting_point = par.deliveries_starting_point;
     double error = par.error;
 
-    uniform_real_distribution<double> distr(-error, error);
+    uniform_real_distribution<double> uniform_dist(-error, error);
 
     num_deliveries = par.num_deliveries;
     unit_weight = (max_load == 1);
@@ -48,7 +48,7 @@ deployment::deployment(const input &par) {
 
         double delivery_location = 0.0;
         if (regularly_spaced == 1){
-            delivery_location = i * deliveries_starting_point + distr(g);
+            delivery_location = i * deliveries_starting_point + uniform_dist(g);
         } else {        // random
             delivery_location = numpy(g) * max_len_road;
         }
@@ -68,32 +68,34 @@ deployment::deployment(const input &par) {
             arrival = max_len_road;
         }
 
-        int profit = static_cast<int>(numpy(g) * max_profit) + 1; // use Zip
+        // int profit = static_cast<int>(numpy(g) * max_profit) + 1; // use Zip
         int weight = static_cast<int>(numpy(g) * max_load) + 1;
 
         delivery_points.push_back(delivery_location);
         launches.push_back(departure);
         rendezvouses.push_back(arrival);
-        profits.push_back(profit);
+        // profits.push_back(profit);
         weights.push_back(weight);
     }
 
     // Zipf distribution for profits
     double H_Ns = 0.0;
-    double s = 1;
+    double s = 2;
     
-    vector<double> v;
+    vector<double> probs;
 
-    for (int i = 1; i <= num_deliveries; i++)
+    for (int i = 1; i <= max_profit; i++)
         H_Ns += 1.0 / pow(i, s);
 
-    for (int i = 1; i <= num_deliveries; i++)
-        // profits.push_back(((1.0 / pow(i, s)) / H_Ns) * max_profit);
-        v.push_back(((1.0 / pow(i, s)) / H_Ns));
+    for (int i = 1; i <= max_profit; i++){
+        probs.push_back(((1.0 / pow(i, s)) / H_Ns));
+    }
 
-    // for (auto i : v){
-    //     cout << i << " ";
-    // }
+    for (int i = 0; i < num_deliveries; i++){
+        discrete_distribution<int> discrete_dist(probs.begin(), probs.end());
+        int profit = discrete_dist(g) + 1;
+        profits.push_back(profit);
+    }
     
 
     //////////////////////////////
