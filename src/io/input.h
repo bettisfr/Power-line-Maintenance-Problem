@@ -43,7 +43,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 25;
+    int num_deliveries = 100;
 
     // Maximum length of the road
     int max_len_road = 100;
@@ -89,6 +89,9 @@ struct input {
     // Starting point of deliveries, if regularily_spaced = 1
     double deliveries_starting_point = 0.5;
     double error = 0.05;
+
+    // Fot Zipf distribution
+    double exponent = .01;
 };
 
 void print_parameters(const input &);

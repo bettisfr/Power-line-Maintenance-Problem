@@ -28,6 +28,7 @@ deployment::deployment(const input &par) {
 
     double deliveries_starting_point = par.deliveries_starting_point;
     double error = par.error;
+    double exponent = par.exponent;
 
     uniform_real_distribution<double> uniform_dist(-error, error);
 
@@ -80,15 +81,14 @@ deployment::deployment(const input &par) {
 
     // Zipf distribution for profits
     double H_Ns = 0.0;
-    double s = 2;
     
     vector<double> probs;
 
     for (int i = 1; i <= max_profit; i++)
-        H_Ns += 1.0 / pow(i, s);
+        H_Ns += 1.0 / pow(i, exponent);
 
     for (int i = 1; i <= max_profit; i++){
-        probs.push_back(((1.0 / pow(i, s)) / H_Ns));
+        probs.push_back(((1.0 / pow(i, exponent)) / H_Ns));
     }
 
     for (int i = 0; i < num_deliveries; i++){
@@ -96,6 +96,12 @@ deployment::deployment(const input &par) {
         int profit = discrete_dist(g) + 1;
         profits.push_back(profit);
     }
+
+    for (int i : profits)
+    {
+        cout << i << " " ;
+    }
+    cout << endl;
     
 
     //////////////////////////////

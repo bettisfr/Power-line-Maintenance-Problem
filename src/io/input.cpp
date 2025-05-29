@@ -78,7 +78,7 @@ void save_parameters(const input &par) {
     file_cfg << "regularly_spaced=" << par.regularly_spaced << endl;
     file_cfg << "deliveries_starting_point=" << par.deliveries_starting_point << endl;
     file_cfg << "error=" << par.error << endl;
-
+    file_cfg << "exponent=" << par.exponent << endl;
     file_cfg << endl;
 
     file_cfg.close();
@@ -141,6 +141,8 @@ input load_parameters(input &par) {
                 par.deliveries_starting_point = stoi(value);
             } else if (key == "error") {
                 par.error = stoi(value);
+            } else if (key == "exponent") {
+                par.exponent = stoi(value);
             }
 
         }
