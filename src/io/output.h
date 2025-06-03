@@ -21,6 +21,7 @@ struct solution {
     vector<int> profits;
     vector<double> energies;
     vector<int> weights;
+    int all_flights_size = 0;
 
     double running_time = -1;
 

@@ -25,6 +25,10 @@ DEFAULT_DISTANCE = 1
 DEFAULT_ENERGY_UNIT_COST = 50
 DEFAULT_ENERGY_PER_DELIVERY = 0
 DEFAULT_SOLUTION_SPACE = 1
+DEFAULT_REGULARLY_SPACED = 0     #####
+DEFAULT_DELIVERIES_STARTING_POINT = 1  ##
+DEFAULT_ERROR = 0.1                 ###
+DEFAULT_EXPONENT = 0.01    ###
 DEFAULT_SAVE = 1
 
 # Seed initialization
@@ -64,6 +68,10 @@ for num_deliveries in NUM_DELIVERIES_VEC:
                         f"-solution_space {DEFAULT_SOLUTION_SPACE} "
                         f"-energy_unit_cost {DEFAULT_ENERGY_UNIT_COST} "
                         f"-energy_per_delivery {DEFAULT_ENERGY_PER_DELIVERY} "
+                        f"-regularly_spaced {DEFAULT_REGULARLY_SPACED} "
+                        f"-deliveries_starting_point {DEFAULT_DELIVERIES_STARTING_POINT} "
+                        f"-error {DEFAULT_ERROR} "
+                        f"-exponent {DEFAULT_EXPONENT} "
                     )
 
                     print(f"Executing: {cmd}")

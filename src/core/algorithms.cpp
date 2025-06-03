@@ -157,6 +157,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         sol.profits = sel_int_profits;
         sol.weights = sel_int_weights;
         sol.energies = sel_int_energies;
+        sol.all_flights_size = static_cast<int>(all_flights.size());
 
     } catch (GRBException &e) {
         cout << "Error code = " << e.getErrorCode() << endl;
@@ -263,6 +264,7 @@ solution algorithms::bin_packing() {
         sol.profits = sel_int_profits;
         sol.weights = sel_int_weights;
         sol.energies = sel_int_energies;
+        sol.all_flights_size = static_cast<int>(all_flights.size());
     }
 
     return sol;
@@ -378,6 +380,7 @@ solution algorithms::knapsack() {
     sol.profits = sel_int_profits;
     sol.weights = sel_int_weights;
     sol.energies = sel_int_energies;
+    sol.all_flights_size = static_cast<int>(all_flights.size());
 
     return sol;
 }
@@ -508,6 +511,7 @@ solution algorithms::coloring() {
     sol.profits = sel_int_profits;
     sol.weights = sel_int_weights;
     sol.energies = sel_int_energies;
+    sol.all_flights_size = static_cast<int>(all_flights.size());
 
     return sol;
 }
@@ -522,6 +526,8 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     vector<int> sel_int_weights;
     vector<double> launches_result;
     vector<double> rendezvouses_result;
+
+    int X = static_cast<int>(all_flights.size());
 
     int total_profit = 0;
     double total_energy = 0.0;
@@ -582,8 +588,6 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
         rendezvouses.erase(rendezvouses.begin());
     }
 
-//    cout << total_profit << endl;
-
     sol.total_profit = total_profit;
     sol.total_energy = total_energy;
     sol.total_flights = selected_intervals;
@@ -591,6 +595,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     sol.profits = sel_int_profits;
     sol.weights = sel_int_weights;
     sol.energies = sel_int_energies;
+    sol.all_flights_size = X;
 
     return sol;
 }

@@ -10,6 +10,7 @@ void save_output(const input &par, const vector<solution> &results) {
     double total_energy_avg, total_energy_std;
     double total_flights_avg, total_flights_std;
     double running_time_avg, running_time_std;
+    double all_flights_size_avg, all_flights_size_std;
 
     // Calculate averages and standard deviations
     if (!results.empty()) {
@@ -17,23 +18,26 @@ void save_output(const input &par, const vector<solution> &results) {
         vector<double> total_energy;
         vector<int> total_flights;
         vector<double> running_times;
+        vector<int> all_flights_size;
 
         for (const auto &out: results) {
             total_profits.push_back(out.total_profit);
             total_energy.push_back(out.total_energy);
             total_flights.push_back(static_cast<int>(out.total_flights.size()));
             running_times.push_back(out.running_time);
+            all_flights_size.push_back(out.all_flights_size);
         }
 
         tie(total_profit_avg, total_profit_std) = util::calculate_avg_std(total_profits);
         tie(total_energy_avg, total_energy_std) = util::calculate_avg_std(total_energy);
         tie(total_flights_avg, total_flights_std) = util::calculate_avg_std(total_flights);
         tie(running_time_avg, running_time_std) = util::calculate_avg_std(running_times);
+        tie(all_flights_size_avg, all_flights_size_std) = util::calculate_avg_std(all_flights_size);
     }
 
     if (file.is_open()) {
         file
-                << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,drone_battery,drone_load,height,distance,algorithm,solution_space,iterations,energy_unit_cost,energy_per_delivery,total_profit_avg,regularly_spaced,deliveries_starting_point,error,exponent,total_profit_std,total_energy_avg,total_energy_std,total_flights_avg,total_flights_std" //,running_time_avg,running_time_std"
+                << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,drone_battery,drone_load,height,distance,algorithm,solution_space,iterations,energy_unit_cost,energy_per_delivery,total_profit_avg,regularly_spaced,deliveries_starting_point,error,exponent,total_profit_std,total_energy_avg,total_energy_std,total_flights_avg,total_flights_std,running_time_avg,running_time_std,all_flights_size_avg,all_flights_size_std"
                 << endl;
         file
                 // input
@@ -62,9 +66,11 @@ void save_output(const input &par, const vector<solution> &results) {
                 << total_energy_avg << ","
                 << total_energy_std << ","
                 << total_flights_avg << ","
-                << total_flights_std << endl;
-//                << running_time_avg << ","
-//                << running_time_std << endl;
+                << total_flights_std << ","
+                << running_time_avg << ","
+                << running_time_std << ","
+                << all_flights_size_avg << ","
+                << all_flights_size_std << endl;
         file.close();
         cout << "Output saved to: " << filename << endl;
     } else {
