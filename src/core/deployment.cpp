@@ -97,13 +97,6 @@ deployment::deployment(const input &par) {
         profits.push_back(profit);
     }
 
-    for (int i : profits)
-    {
-        cout << i << " " ;
-    }
-    cout << endl;
-    
-
     //////////////////////////////
     // // creating random instance by using par.seed
     // int seed = par.seed;
@@ -449,7 +442,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
 
     vector<int> profits_flight;
 
-    for (auto f:all_flights){
+    for (const auto& f:all_flights){
         energy_flight.push_back(compute_energy_extra_cost(f));
         loads_flight.push_back(compute_load(f));
         profits_flight.push_back(compute_profit(f));
@@ -862,11 +855,12 @@ int deployment::get_solution_space() const {
 }
 
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_solution_space() {
-    if (is_unit_weight()) {
-        // It works also with unitary weights
-        return compute_all_flights_equal_weight();
-    }
+    // if (is_unit_weight()) {
+    //     // It works also with unitary weights
+    //     return compute_all_flights_equal_weight();
+    // }
     int type = get_solution_space();
+    // cout << "type: " << type << endl;
     if (type == 0 or type == 3) {
         // Exhaustively, optimal
         return compute_all_flights();

@@ -24,11 +24,11 @@ void print_parameters(const input &par) {
     };
 
     map<int, string> solution_space_str = {
-            {0, "Exhaustively"},
-            {1, "Knapsack"},
-            {2, "Same weight"},
-            {3, "Exhaustively-additional-cost"},
-            {4, "DP-additional-cost"},
+            {0, "No additional cost - Exhaustively"},
+            {1, "No additional cost - Knapsack"},
+            {2, "No additional cost - Same weight"},
+            {3, "Additional cost - Exhaustively"},
+            {4, "Additional cost - DP"},
     };
 
     cout << "Experiment=" << par.experiment << " (" << experiment_str[par.experiment] << ")" << endl << endl;
@@ -103,6 +103,10 @@ input load_parameters(input &par) {
         if (getline(lineStream, key, '=') && lineStream >> value) {
             if (key == "log") {
                 par.log = stoi(value);
+            } else if (key == "exp_name") {
+                par.exp_name = value;
+            } else if (key == "save") {
+                par.save = stoi(value);
             } else if (key == "save") {
                 par.save = stoi(value);
             } else if (key == "seed") {

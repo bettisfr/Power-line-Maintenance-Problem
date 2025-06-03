@@ -29,6 +29,7 @@ struct solution {
         os << "Total profit=" << out.total_profit << endl;
         os << "Total energy=" << out.total_energy << endl;
         os << "Total flights=" << out.total_flights.size() << endl;
+        os << "Total 'all flights' size=" << out.all_flights_size << endl;
         int i = 0;
         for (const auto &s: out.total_flights) {
             os << "Flight=" << i << " -> ";

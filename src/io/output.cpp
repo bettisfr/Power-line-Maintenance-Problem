@@ -37,40 +37,47 @@ void save_output(const input &par, const vector<solution> &results) {
 
     if (file.is_open()) {
         file
-                << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,drone_battery,drone_load,height,distance,algorithm,solution_space,iterations,energy_unit_cost,energy_per_delivery,total_profit_avg,regularly_spaced,deliveries_starting_point,error,exponent,total_profit_std,total_energy_avg,total_energy_std,total_flights_avg,total_flights_std,running_time_avg,running_time_std,all_flights_size_avg,all_flights_size_std"
-                << endl;
+            << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,"
+            << "drone_battery,drone_load,height,distance,algorithm,solution_space,iterations,"
+            << "energy_unit_cost,energy_per_delivery,"
+            << "total_profit_avg,total_profit_std,"
+            << "total_energy_avg,total_energy_std,"
+            << "total_flights_avg,total_flights_std,"
+            << "running_time_avg,running_time_std,"
+            << "all_flights_size_avg,all_flights_size_std,"
+            << "regularly_spaced,deliveries_starting_point,error,exponent"
+            << endl;
+
         file
-                // input
-                << par.seed << ","
-                << par.num_deliveries << ","
-                << par.max_len_road << ","
-                << par.max_interval_len << ","
-                << par.max_profit << ","
-                << par.max_weight << ","
-                << par.drone_battery << ","
-                << par.drone_load << ","
-                << par.height << ","
-                << par.distance << ","
-                << par.algorithm << ","
-                << par.solution_space << ","
-                << par.iterations << ","
-                << par.energy_unit_cost << ","
-                << par.energy_per_delivery << ","
-                << par.regularly_spaced << ","
-                << par.deliveries_starting_point << ","
-                << par.error << ","
-                << par.exponent << ","
-                // output
-                << total_profit_avg << ","
-                << total_profit_std << ","
-                << total_energy_avg << ","
-                << total_energy_std << ","
-                << total_flights_avg << ","
-                << total_flights_std << ","
-                << running_time_avg << ","
-                << running_time_std << ","
-                << all_flights_size_avg << ","
-                << all_flights_size_std << endl;
+            // input
+            << par.seed << ","
+            << par.num_deliveries << ","
+            << par.max_len_road << ","
+            << par.max_interval_len << ","
+            << par.max_profit << ","
+            << par.max_weight << ","
+            << par.drone_battery << ","
+            << par.drone_load << ","
+            << par.height << ","
+            << par.distance << ","
+            << par.algorithm << ","
+            << par.solution_space << ","
+            << par.iterations << ","
+            << par.energy_unit_cost << ","
+            << par.energy_per_delivery << ","
+            // output metrics: avg + std pairs
+            << total_profit_avg << "," << total_profit_std << ","
+            << total_energy_avg << "," << total_energy_std << ","
+            << total_flights_avg << "," << total_flights_std << ","
+            << running_time_avg << "," << running_time_std << ","
+            << all_flights_size_avg << "," << all_flights_size_std << ","
+            // remaining config values
+            << par.regularly_spaced << ","
+            << par.deliveries_starting_point << ","
+            << par.error << ","
+            << par.exponent
+            << endl;
+
         file.close();
         cout << "Output saved to: " << filename << endl;
     } else {
