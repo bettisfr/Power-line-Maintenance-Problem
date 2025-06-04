@@ -141,7 +141,7 @@ void run_test(input &par) {
             cerr << "Error - Found counterexample" << endl;
 
             cout << "Exhaustive=" << solutions[0] << endl;
-            cout << "Knapsack=" << solutions[1] << endl;
+            cout << "DP=" << solutions[1] << endl;
 
             exit(-1);
         }
