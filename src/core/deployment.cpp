@@ -383,8 +383,15 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     }
 
                     int n = deliveries_L_R.size();
-                    int available_load = drone_load - weights[id_i] - weights[id_j];
-                    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(available_load + 1, vector<int>(n+1, 0)));
+
+                    int available_load = 0;
+                    if (id_i == id_j) {
+                        available_load = drone_load - weights[id_i];
+                    } else {
+                        available_load = drone_load - weights[id_i] - weights[id_j];
+                    }
+
+                    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(available_load + 1, vector<int>(n + 1, 0)));
 
                     for (int i = 0; i <= n; i++){ // deliveris start from 1
                         for (int w = 0; w <= available_load; w++){

@@ -113,7 +113,7 @@ void run_test(input &par) {
         cout << "Seed: " << (i) << "/" << max_seed << endl;
 
         vector<solution> solutions;
-        for (int j = 0; j < 2; j++) {
+        for (int j = 3; j < 5; j++) {
             par.solution_space = j;
             par.seed = i;
             deployment dep(par);
