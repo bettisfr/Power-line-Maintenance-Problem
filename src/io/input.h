@@ -72,7 +72,7 @@ struct input {
     int drone_load = 10;
 
     // Height of the deliveries
-    double height = 0.5;
+    double height = 0.05;
 
     // Distance from the road
     double distance = 0.5;
@@ -90,7 +90,7 @@ struct input {
     double deliveries_starting_point = 0.5;
     double error = 0.05;
 
-    // Fot Zipf distribution
+    // For Zipf distribution
     double exponent = .01;
 };
 

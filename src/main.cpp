@@ -113,10 +113,16 @@ void run_test(input &par) {
         cout << "Seed: " << (i) << "/" << max_seed << endl;
 
         vector<solution> solutions;
-        for (int j = 3; j < 5; j++) {
+        vector<int> vals = {3, 4};
+        for (int j : vals) {
             par.solution_space = j;
             par.seed = i;
-            deployment dep(par);
+
+            // WARNING: if using this, you must remove "static" on line 21 in deployment.cpp
+            // static mt19937 g(seed);                          <<<---------------- EYE!!!!!!
+            // When done with this, please readd static         <<<---------------- EYE!!!!!!
+            deployment dep(par);  /////////////////////////////////////////
+
         //    if (par.log == 1) {
         //        cout << dep << endl;
         //    }
