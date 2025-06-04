@@ -20,6 +20,8 @@ struct input {
     int save = 0;
 
     // Application parameters
+    // 360
+    // 2100
     int seed = 357;
 
     // 0: Default values; 1: From cfg file; 2 From command line
@@ -43,7 +45,7 @@ struct input {
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 20;
+    int num_deliveries = 15;
 
     // Maximum length of the road
     int max_len_road = 100;
@@ -55,7 +57,7 @@ struct input {
     int max_profit = 10;
 
     // Maximum weight for a delivery
-    int max_weight = 4;
+    int max_weight = 5;
 
     // How the solution space is computed
     // no additional cost - exhaustively 0 (optimal)
@@ -66,10 +68,10 @@ struct input {
     int solution_space = 4;
 
     // Drone's energy drone_battery
-    int drone_battery = 3500;
+    int drone_battery = 5000;
 
     // Drone's drone_load capacity
-    int drone_load = 8;
+    int drone_load = 10;
 
     // Height of the deliveries
     double height = 0.05;

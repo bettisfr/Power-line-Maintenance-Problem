@@ -438,10 +438,6 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                             // cout << " dp[n][available_load][t]: " << dp[n][available_load][t] << endl;
                             vector<int> selectedItems;
                             int w = available_load;
-
-                            // if (t == 1){
-                            //     selectedItems.push_back(deliveries_L_R[n-1]); ?? // only one element
-                            // } else { }
                                 
                             for (int i = n; i > 0; i--) {
                                 if (dp[i][w][t] != dp[i - 1][w][t]) {  // deliveries_L_R[i-1] is selected
@@ -451,13 +447,6 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                                     if (t == 1 && selectedItems.size() == 1){
                                         break;
                                     }
-
-                                    max_profit -= profits[deliveries_L_R[i-1]];
-                                    if (max_profit == 0){
-                                        break;
-                                    }
-                                    
-                                    
                                 }
                             }
                             

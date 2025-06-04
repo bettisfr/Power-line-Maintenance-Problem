@@ -109,7 +109,7 @@ void run_test(input &par) {
 //    }
 
     int max_seed = 10000;
-    for (int i = 0; i < max_seed; i++) {
+    for (int i = 361; i < max_seed; i++) {
         cout << "Seed: " << (i) << "/" << max_seed << endl;
 
         vector<solution> solutions;
