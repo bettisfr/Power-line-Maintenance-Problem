@@ -20,7 +20,9 @@ struct input {
     int save = 0;
 
     // Application parameters
-    int seed = 40;
+    // 360
+    // 2100
+    int seed = 2100;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -37,7 +39,7 @@ struct input {
     int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
-    int iterations = -1;                                         
+    int iterations = 1;                                         
 
     // Name of the experiment (just a string to be used when loading/saving)
     string exp_name = "default";
@@ -63,7 +65,7 @@ struct input {
     // no additional cost - sorting 2 (not optimal) [in this case, is optimal is costs are unitary]
     // with additional cost - exhaustively 3 (optimal)
     // with additional cost - DP 4 (optimal)
-    int solution_space = 4;
+    int solution_space = 3;
 
     // Drone's energy drone_battery
     int drone_battery = 5000;
