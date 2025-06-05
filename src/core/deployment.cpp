@@ -402,6 +402,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     // cout << " available_load: " << available_load << endl;
 
                     vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(available_load + 1, vector<int>(n + 1, 0)));
+                    // vector<vector<vector<vector<int>>>> items(n + 1, vector<vector<vector<int>>>(available_load + 1, vector<vector<int>>(n + 1, vector<int>() )));
 
                     for (int i = 0; i <= n; i++){ // deliveris start from 1
                         for (int w = 0; w <= available_load; w++){
@@ -424,55 +425,80 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                                         } else if(w < weights[deliveries_L_R[i-1]]){
                                             dp[i][w][t] = dp[i-1][w][t];
                                         }
-                                    }   
+                                    }  
+
+                                    // if (id_i == 4 && id_j == 0){
+                                    //     cout << "i, w, t : " << i << " , " << w << " , " << t << " : " << dp[i][w][t] << endl;
+                                    // }
+                                    
                                 }
                             }
                         }                       
                     }
 
                     // from t=1 to ..., do backtracking to compute the mission, update by L, R
-                    for (int t = 1; t <= n; t++){
-                        // cout << " ttttttt: " << t << endl;
-                        if (dp[n][available_load][t] > 0){
-                            int max_profit = dp[n][available_load][t];
-                            // cout << " dp[n][available_load][t]: " << dp[n][available_load][t] << endl;
-                            vector<int> selectedItems;
-                            int w = available_load;
-                                
-                            for (int i = n; i > 0; i--) {
-                                if (dp[i][w][t] != dp[i - 1][w][t]) {  // deliveries_L_R[i-1] is selected
-                                    selectedItems.push_back(deliveries_L_R[i-1]);
-                                    w -= weights[deliveries_L_R[i-1]]; 
-                                    // cout << " w = " << w << endl;
-                                    if (t == 1 && selectedItems.size() == 1){
-                                        break;
-                                    }
-                                }
-                            }
-                            
-                            // update
-                            vector<int> flight_temp;
-                            flight_temp = flight;
-                            // cout << " selectedItems: " ;
-                            for (int i : selectedItems){
-                                // cout << i << " ";
-                                flight_temp.push_back(i);
-                            }
-                            // cout << endl;
+                    // or from each t select exactly one item
 
-                            // cout << " flight_temp: ";
-                            // for (int r : flight_temp)
-                            // {
-                            //     cout << r << " ";
-                            // }
-                            // cout << endl;
+                    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NOT CORRECT
+                    // for (int t = 1; t <= n; t++){
+                    //     if (dp[n][available_load][t] > 0){
+                    //         int max_profit = dp[n][available_load][t];
+                    //         vector<int> selectedItems;
+                    //         int w = available_load;
+                                
+                    //         for (int i = n; i > 0; i--) {
+                    //             if (dp[i][w][t] != dp[i - 1][w][t]) {  // deliveries_L_R[i-1] is selected
+                    //                 selectedItems.push_back(deliveries_L_R[i-1]);
+                    //                 w -= weights[deliveries_L_R[i-1]]; 
+                    //                 if (t == 1 && selectedItems.size() == 1){
+                    //                     break;
+                    //                 }  
+
+                    //             }
+                    //         }
                             
-                            if (compute_energy_extra_cost(flight_temp) <= drone_battery){
-                                // && compute_load(flight_temp) <= drone_load
-                                all_flights.push_back(flight_temp);
-                            }
+                    //         // update
+                    //         vector<int> flight_temp;
+                    //         flight_temp = flight;
+                    //         for (int i : selectedItems){
+                    //             flight_temp.push_back(i);
+                    //         }
+                                                
+                    //         if (compute_energy_extra_cost(flight_temp) <= drone_battery){
+                    //             all_flights.push_back(flight_temp);
+                    //         }
+                    //     }
+                    // }
+                    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    ////////////////////////////////////////////
+                    vector<int> selectedItems;
+                    int w = available_load;
+                    int j = n;
+                    for (int t = n; t > 0; t--){
+                        if (dp[j][w][t] > 0){        
+                            for (int i = j; i > 0; i--) {
+                                if (dp[i][w][t] != dp[i - 1][w][t]) {  // deliveries_L_R[i-1] is selected    
+                                    if (find(selectedItems.begin(), selectedItems.end(), deliveries_L_R[i-1]) == selectedItems.end()){
+                                        selectedItems.push_back(deliveries_L_R[i-1]);
+                                    }
+                                    
+                                    w -= weights[deliveries_L_R[i-1]]; 
+                                    // break;       /////?????
+                                }
+                            }       
+                        }
+                    }            
+                    // update
+                    reverse(selectedItems.begin(), selectedItems.end());
+                    for (int i : selectedItems){
+                        flight.push_back(i);
+                        if (compute_energy_extra_cost(flight) <= drone_battery){
+                            all_flights.push_back(flight);
                         }
                     }
+                    /////////////////////////////////////////
+
                 }
             }
         }

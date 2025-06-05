@@ -20,9 +20,7 @@ struct input {
     int save = 0;
 
     // Application parameters
-    // 360
-    // 2100
-    int seed = 357;
+    int seed = 40;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -39,13 +37,13 @@ struct input {
     int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
-    int iterations = -1;                                         ////////////////////////
+    int iterations = -1;                                         
 
     // Name of the experiment (just a string to be used when loading/saving)
     string exp_name = "default";
 
     // Number of deliveries
-    int num_deliveries = 15;
+    int num_deliveries = 10;
 
     // Maximum length of the road
     int max_len_road = 100;
