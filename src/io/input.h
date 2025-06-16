@@ -47,16 +47,16 @@ struct input {
     // Number of deliveries
     int num_deliveries = 10;
 
-    // Maximum length of the road
+    // Maximum length of the road (in km)
     int max_len_road = 100;
 
-    // Maximum length of an interval
+    // Maximum length of an interval (in km)
     double max_interval_len = 8;
 
     // Maximum value for a delivery
     int max_profit = 10;
 
-    // Maximum weight for a delivery
+    // Maximum weight for a delivery (in kg)
     int max_weight = 5;
 
     // How the solution space is computed
@@ -67,33 +67,36 @@ struct input {
     // with additional cost - DP 4 (optimal)
     int solution_space = 3;
 
-    // Drone's energy drone_battery
+    // Drone's energy drone_battery (in kJ)
     int drone_battery = 5000;
 
-    // Drone's drone_load capacity
+    // Drone's drone_load capacity (in kg)
     int drone_load = 10;
 
-    // Height of the deliveries
+    // Height of the deliveries (in km)
     double height = 0.05;
 
-    // Distance from the road
+    // Distance from the road (in km)
     double distance = 0.5;
 
-    // Energy consumption of a drone per distance
-    double energy_unit_cost = 200;
+    // Energy consumption of a drone per distance (normally it is 150 J/m, so 150 kJ/km) (in kJ)
+    double energy_unit_cost = 150;
 
-    // Energy consumption to drop the delivery at the delivery location (assumes 100 seconds at 0.3 kJ/s)
-    double energy_per_delivery = 50;
+    // Energy consumption to drop the delivery at the delivery location (assumes 100 seconds at 300 J/s) (in kJ)
+    double energy_per_delivery = 30;
 
-    // If the trellises are located at a regular distance from each othere (1), otherwise random (0)
+    // If the trellises are located at a regular distance from each other (1), otherwise random (0)
     int regularly_spaced = 0;
 
-    // Starting point of deliveries, if regularily_spaced = 1
+    // Starting point of deliveries, if regularly_spaced = 1 (in km)
     double deliveries_starting_point = 0.5;
     double error = 0.05;
 
     // For Zipf distribution
-    double exponent = .01;
+    // 0 - uniform
+    // 1 - logarithmic
+    // 2 - exponential
+    double exponent = 0;
 };
 
 void print_parameters(const input &);
