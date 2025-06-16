@@ -148,7 +148,6 @@ input load_parameters(input &par) {
             } else if (key == "exponent") {
                 par.exponent = stoi(value);
             }
-
         }
     }
 
@@ -183,7 +182,7 @@ input read_parameters(input &par, int argc, char *argv[]) {
             } else if (arg == "-max_len_road") {
                 par.max_len_road = stoi(argv[i + 1]);
             } else if (arg == "-max_interval_len") {
-                par.max_interval_len = stoi(argv[i + 1]);
+                par.max_interval_len = stod(argv[i + 1]);
             } else if (arg == "-max_profit") {
                 par.max_profit = stoi(argv[i + 1]);
             } else if (arg == "-max_weight") {
@@ -202,6 +201,14 @@ input read_parameters(input &par, int argc, char *argv[]) {
                 par.energy_per_delivery = stod(argv[i + 1]);
             } else if (arg == "-solution_space") {
                 par.solution_space = stoi(argv[i + 1]);
+            } else if (arg == "-regularly_spaced") {
+                par.regularly_spaced = stoi(argv[i + 1]);
+            } else if (arg == "-deliveries_starting_point") {
+                par.deliveries_starting_point = stoi(argv[i + 1]);
+            } else if (arg == "-error") {
+                par.error = stoi(argv[i + 1]);
+            } else if (arg == "-exponent") {
+                par.exponent = stoi(argv[i + 1]);
             } else {
                 cerr << "Unknown option: " << arg << endl;
             }

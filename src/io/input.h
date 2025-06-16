@@ -60,11 +60,11 @@ struct input {
     int max_weight = 5;
 
     // How the solution space is computed
-    // no additional cost - exhaustively 0 (optimal)
-    // no additional cost - knapsack 1 (optimal)
-    // no additional cost - sorting 2 (not optimal) [in this case, is optimal is costs are unitary]
-    // with additional cost - exhaustively 3 (optimal)
-    // with additional cost - DP 4 (optimal)
+    // 0 - no additional cost - exhaustively (optimal),
+    // 1 - no additional cost - knapsack (optimal),
+    // 2 - no additional cost - sorting (not optimal) [optimal if costs are unitary],
+    // 3 - with additional cost - exhaustively (optimal),
+    // 4 - with additional cost - DP (optimal)
     int solution_space = 3;
 
     // Drone's energy drone_battery (in kJ)
