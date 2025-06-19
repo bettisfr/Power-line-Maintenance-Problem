@@ -20,8 +20,8 @@ DEFAULT_SAVE = 1
 
 ########################################################################################################################
 # Parameter vectors
-DEFAULT_ENERGY_PER_DELIVERY = 30 # either 0 or 30
-NUM_DELIVERIES_VEC = [80, 90, 100]
+DEFAULT_ENERGY_PER_DELIVERY = 0 # either 0 or 30
+NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
 # ALGORITHMS = [0, 2, 3, 6]
@@ -62,7 +62,7 @@ DEFAULT_ERROR = 0.1 # this applies is DEFAULT_REGULARLY_SPACED = 1
 DEFAULT_EXPONENT = 0 # either 0 (uniform), or 1 (normal zipf), or 2 (skewed)
 
 # Seed initialization
-seed = 28
+seed = 0
 
 # Loop through all parameter combinations
 for num_deliveries in NUM_DELIVERIES_VEC:
