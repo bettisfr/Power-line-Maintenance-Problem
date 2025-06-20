@@ -20,7 +20,7 @@ DEFAULT_SAVE = 1
 
 ########################################################################################################################
 # Parameter vectors
-DEFAULT_ENERGY_PER_DELIVERY = 0 # either 0 or 30
+DEFAULT_ENERGY_PER_DELIVERY = 30 # either 0 or 30
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
@@ -28,7 +28,7 @@ DRONE_BATTERY_VEC = [2500, 5000]
 ALGORITHMS = [0]
 
 # Other "variable" parameters
-MAX_WEIGHT = 1 # unitary if 1, arbitrary otherwise > 1
+MAX_WEIGHT = 5 # unitary if 1, arbitrary otherwise > 1 (like 5)
 EXHAUSTIVE = 0 # 1 exhaustive, 0 smart way
 ########################################################################################################################
 
