@@ -134,7 +134,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         int total_profit = 0;
         for (int i = 0; i < X; i++) {
             // cout << x[i].get(GRB_StringAttr_VarName) << " " << x[i].get(GRB_DoubleAttr_X) << endl;
-            if (x[i].get(GRB_DoubleAttr_X) > 0) {
+            if (x[i].get(GRB_DoubleAttr_X) > 0.5) {
                 selected_intervals.push_back(all_flights[i]);
                 total_cost = total_cost + energy_costs[i];
                 total_profit = total_profit + flights_profit[i];
@@ -158,6 +158,8 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         sol.weights = sel_int_weights;
         sol.energies = sel_int_energies;
         sol.all_flights_size = static_cast<int>(all_flights.size());
+
+        // cout << sol << endl;
 
     } catch (GRBException &e) {
         cout << "Error code = " << e.getErrorCode() << endl;

@@ -81,12 +81,14 @@ void run_experiment(input &par) {
 
         if (static_cast<int>(out.total_energy) > par.drone_battery) {
             cerr << "Error: Used energy is=" << out.total_energy << " while total budget is=" << par.drone_battery << endl;
+            cout << out << endl;
+            // cout << "-----" << endl;
+            // cout << dep << endl;
 	        exit(-1);
         }
 
         auto end_time = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(end_time - start_time);
-        // std::cout << "Measured duration: " << duration.count() << " ms" << std::endl;
         out.running_time = static_cast<double>(duration.count()) / 1e+3;
 
         if (par.log == 1) {
