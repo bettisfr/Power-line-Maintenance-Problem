@@ -20,95 +20,84 @@ DEFAULT_SAVE = 1
 
 ########################################################################################################################
 # Parameter vectors
-DEFAULT_ENERGY_PER_DELIVERY = 30 # either 0 or 30
+ENERGY_PER_DELIVERY_VEC = [0, 30]
+MAX_WEIGHT_VEC = [1, 5]
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-#NUM_DELIVERIES_VEC = [10, 20, 30]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
 ALGORITHMS = [0, 2, 3, 6]
-#ALGORITHMS = [0]
 ZIPF_EXPONENT_VEC = [0, 1, 2]
-
-# Other "variable" parameters
-MAX_WEIGHT = 5 # unitary if 1, arbitrary otherwise > 1 (like 5)
-EXHAUSTIVE = 0 # 1 exhaustive, 0 DP
+EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
 
-if EXHAUSTIVE == 1: # exhaustive
-    STR_SOLUTION_SPACE = "exhaustive"
-    if DEFAULT_ENERGY_PER_DELIVERY == 0: # no additional cost
-        SOLUTION_SPACE = 0
-    else: # with an additional cost
-        SOLUTION_SPACE = 3
-else: # smart way
-    STR_SOLUTION_SPACE = "dp"
-    if DEFAULT_ENERGY_PER_DELIVERY == 0: # no additional cost
-        SOLUTION_SPACE = 1
-    else: # with an additional cost
-        SOLUTION_SPACE = 4
-
-if MAX_WEIGHT == 1: # unitary
-    if DEFAULT_ENERGY_PER_DELIVERY == 0: # no additional cost
-        STR_PROB = "tmp-u"
-    else: # with an additional cost
-        STR_PROB = "tmp-ud"
-else: # arbitrary
-    if DEFAULT_ENERGY_PER_DELIVERY == 0: # no additional cost
-        STR_PROB = "tmp-a"
-    else: # with an additional cost
-        STR_PROB = "tmp-ad"
-
 DEFAULT_REGULARLY_SPACED = 0
-DEFAULT_DELIVERIES_STARTING_POINT = 1 # this applies is DEFAULT_REGULARLY_SPACED = 1
-DEFAULT_ERROR = 0.1 # this applies is DEFAULT_REGULARLY_SPACED = 1
+DEFAULT_DELIVERIES_STARTING_POINT = 1
+DEFAULT_ERROR = 0.1
 
 # Seed initialization
 seed = 0
 
 # Loop through all parameter combinations
-for zipf_exponent in ZIPF_EXPONENT_VEC:
-    for num_deliveries in NUM_DELIVERIES_VEC:
-        for drone_battery in DRONE_BATTERY_VEC:
-            for drone_load in DRONE_LOAD_VEC:
-                # The seed MUST be the same for each algorithm!
+for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
+    for max_weight in MAX_WEIGHT_VEC:
 
-                for algorithm in ALGORITHMS:
+        # Determine solution space
+        if EXHAUSTIVE == 1:
+            STR_SOLUTION_SPACE = "exhaustive"
+            SOLUTION_SPACE = 0 if energy_per_delivery == 0 else 3
+        else:
+            STR_SOLUTION_SPACE = "dp"
+            SOLUTION_SPACE = 1 if energy_per_delivery == 0 else 4
 
-                    exp_name = f"out_{STR_PROB}_{STR_SOLUTION_SPACE}_alg{algorithm}_ndel{num_deliveries}_load{drone_load}_batt{drone_battery}_maxw{MAX_WEIGHT}_zipf{zipf_exponent}"
-                    cmd = (
-                        f"./{BUILD_DIR}/{BIN_FILE} --params "
-                        f"-exp_name {exp_name} "
-                        f"-log {DEFAULT_LOG} "
-                        f"-seed {seed} "
-                        f"-num_deliveries {num_deliveries} "
-                        f"-drone_battery {drone_battery} "
-                        f"-algorithm {algorithm} "
-                        f"-max_weight {MAX_WEIGHT} "
-                        f"-drone_load {drone_load} "
-                        f"-max_len_road {DEFAULT_MAX_LEN_ROAD} "
-                        f"-max_interval_len {DEFAULT_MAX_INTERVAL_LEN} "
-                        f"-max_profit {DEFAULT_MAX_PROFIT} "
-                        f"-height {DEFAULT_HEIGHT} "
-                        f"-distance {DEFAULT_DISTANCE} "
-                        f"-iterations {DEFAULT_ITERATIONS} "
-                        f"-save {DEFAULT_SAVE} "
-                        f"-solution_space {SOLUTION_SPACE} "
-                        f"-energy_unit_cost {DEFAULT_ENERGY_UNIT_COST} "
-                        f"-energy_per_delivery {DEFAULT_ENERGY_PER_DELIVERY} "
-                        f"-regularly_spaced {DEFAULT_REGULARLY_SPACED} "
-                        f"-deliveries_starting_point {DEFAULT_DELIVERIES_STARTING_POINT} "
-                        f"-error {DEFAULT_ERROR} "
-                        f"-exponent {zipf_exponent} "
-                    )
+        # Determine problem type string
+        if max_weight == 1:
+            STR_PROB = "tmp-u" if energy_per_delivery == 0 else "tmp-ud"
+        else:
+            STR_PROB = "tmp-a" if energy_per_delivery == 0 else "tmp-ad"
 
-                    print(f"Executing: {cmd}")
-                    try:
-                        # Execute the command
-                        result = subprocess.run(cmd, shell=True, check=True, text=True)
-                        #print(f"Command completed successfully")
-                    except subprocess.CalledProcessError as e:
-                        print(f"Error: Command failed with exit code {e.returncode}")
-                        exit(1)
+        for zipf_exponent in ZIPF_EXPONENT_VEC:
+            for num_deliveries in NUM_DELIVERIES_VEC:
+                for drone_battery in DRONE_BATTERY_VEC:
+                    for drone_load in DRONE_LOAD_VEC:
+                        for algorithm in ALGORITHMS:
 
-                # Increment the seed
-                seed += 1
+                            exp_name = (
+                                f"out_{STR_PROB}_{STR_SOLUTION_SPACE}_alg{algorithm}"
+                                f"_ndel{num_deliveries}_load{drone_load}_batt{drone_battery}"
+                                f"_maxw{max_weight}_zipf{zipf_exponent}"
+                            )
+
+                            cmd = (
+                                f"./{BUILD_DIR}/{BIN_FILE} --params "
+                                f"-exp_name {exp_name} "
+                                f"-log {DEFAULT_LOG} "
+                                f"-seed {seed} "
+                                f"-num_deliveries {num_deliveries} "
+                                f"-drone_battery {drone_battery} "
+                                f"-algorithm {algorithm} "
+                                f"-max_weight {max_weight} "
+                                f"-drone_load {drone_load} "
+                                f"-max_len_road {DEFAULT_MAX_LEN_ROAD} "
+                                f"-max_interval_len {DEFAULT_MAX_INTERVAL_LEN} "
+                                f"-max_profit {DEFAULT_MAX_PROFIT} "
+                                f"-height {DEFAULT_HEIGHT} "
+                                f"-distance {DEFAULT_DISTANCE} "
+                                f"-iterations {DEFAULT_ITERATIONS} "
+                                f"-save {DEFAULT_SAVE} "
+                                f"-solution_space {SOLUTION_SPACE} "
+                                f"-energy_unit_cost {DEFAULT_ENERGY_UNIT_COST} "
+                                f"-energy_per_delivery {energy_per_delivery} "
+                                f"-regularly_spaced {DEFAULT_REGULARLY_SPACED} "
+                                f"-deliveries_starting_point {DEFAULT_DELIVERIES_STARTING_POINT} "
+                                f"-error {DEFAULT_ERROR} "
+                                f"-exponent {zipf_exponent} "
+                            )
+
+                            print(f"Executing: {cmd}")
+                            try:
+                                subprocess.run(cmd, shell=True, check=True, text=True)
+                            except subprocess.CalledProcessError as e:
+                                print(f"Error: Command failed with exit code {e.returncode}")
+                                exit(1)
+
+                        seed += 1
