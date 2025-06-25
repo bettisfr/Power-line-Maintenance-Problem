@@ -26,7 +26,7 @@ MAX_WEIGHT_VEC = [1, 5]
 NUM_DELIVERIES_VEC = [10, 20, 30, 40]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS = [0, 2, 3, 6]
+ALGORITHMS_VEC = [0, 2, 3, 6]
 ZIPF_EXPONENT_VEC = [0, 1, 2]
 EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
@@ -60,7 +60,7 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
             for num_deliveries in NUM_DELIVERIES_VEC:
                 for drone_battery in DRONE_BATTERY_VEC:
                     for drone_load in DRONE_LOAD_VEC:
-                        for algorithm in ALGORITHMS:
+                        for algorithm in ALGORITHMS_VEC:
 
                             exp_name = (
                                 f"out_{STR_PROB}_{STR_SOLUTION_SPACE}_alg{algorithm}"
