@@ -1,2 +1,2 @@
 seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,drone_battery,drone_load,height,distance,algorithm,solution_space,iterations,energy_unit_cost,energy_per_delivery,regularly_spaced,deliveries_starting_point,error,exponent,total_profit_avg,total_profit_std,total_energy_avg,total_energy_std,total_flights_avg,total_flights_std,running_time_avg,running_time_std,all_flights_size_avg,all_flights_size_std
-128,30,100,8,10,5,2500,5,0.05,0.5,3,1,33,150,0,0,1,0,2,16.6667,4.76095,2242.13,188.939,3.39394,0.951972,0,0,80.697,18.7241
+88,30,100,8,10,5,2500,5,0.05,0.5,3,1,33,150,0,0,1,0,2,17.1212,4.05245,2235.87,221.644,3.09091,1.07529,0,0,82.5758,19.3641
