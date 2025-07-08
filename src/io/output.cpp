@@ -11,6 +11,7 @@ void save_output(const input &par, const vector<solution> &results) {
     double total_flights_avg, total_flights_std;
     double running_time_avg, running_time_std;
     double all_flights_size_avg, all_flights_size_std;
+    double deliveries_per_flight_avg, deliveries_per_flight_std;
 
     // Calculate averages and standard deviations
     if (!results.empty()) {
@@ -19,13 +20,23 @@ void save_output(const input &par, const vector<solution> &results) {
         vector<int> total_flights;
         vector<double> running_times;
         vector<int> all_flights_size;
+        vector<double> avg_deliveries_per_flight;
 
-        for (const auto &out: results) {
+        for (const auto &out : results) {
             total_profits.push_back(out.total_profit);
             total_energy.push_back(out.total_energy);
             total_flights.push_back(static_cast<int>(out.total_flights.size()));
             running_times.push_back(out.running_time);
             all_flights_size.push_back(out.all_flights_size);
+
+            // Compute avg deliveries per flight for this solution (if there are flights)
+            if (!out.deliveries_per_flight.empty()) {
+                double sum = 0.0;
+                for (int d : out.deliveries_per_flight) sum += d;
+                avg_deliveries_per_flight.push_back(sum / out.deliveries_per_flight.size());
+            } else {
+                avg_deliveries_per_flight.push_back(0.0);
+            }
         }
 
         tie(total_profit_avg, total_profit_std) = util::calculate_avg_std(total_profits);
@@ -33,6 +44,7 @@ void save_output(const input &par, const vector<solution> &results) {
         tie(total_flights_avg, total_flights_std) = util::calculate_avg_std(total_flights);
         tie(running_time_avg, running_time_std) = util::calculate_avg_std(running_times);
         tie(all_flights_size_avg, all_flights_size_std) = util::calculate_avg_std(all_flights_size);
+        tie(deliveries_per_flight_avg, deliveries_per_flight_std) = util::calculate_avg_std(avg_deliveries_per_flight);
     }
 
     if (file.is_open()) {
@@ -45,7 +57,8 @@ void save_output(const input &par, const vector<solution> &results) {
             << "total_energy_avg,total_energy_std,"
             << "total_flights_avg,total_flights_std,"
             << "running_time_avg,running_time_std,"
-            << "all_flights_size_avg,all_flights_size_std"
+            << "all_flights_size_avg,all_flights_size_std,"
+            << "deliveries_per_flight_avg,deliveries_per_flight_std"
             << endl;
 
         file
@@ -74,7 +87,8 @@ void save_output(const input &par, const vector<solution> &results) {
             << total_energy_avg << "," << total_energy_std << ","
             << total_flights_avg << "," << total_flights_std << ","
             << running_time_avg << "," << running_time_std << ","
-            << all_flights_size_avg << "," << all_flights_size_std
+            << all_flights_size_avg << "," << all_flights_size_std << ","
+            << deliveries_per_flight_avg << "," << deliveries_per_flight_std
             << endl;
 
         file.close();

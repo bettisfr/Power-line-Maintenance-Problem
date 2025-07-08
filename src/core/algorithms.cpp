@@ -29,7 +29,7 @@ solution algorithms::run_experiment(int algorithm) {
 }
 
 solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> input) {
-    auto [all_flights, energy_costs, profits, loads] = std::move(input);
+    auto [all_flights, energy_costs, profits, loads] = move(input);
 
     int X = static_cast<int>(all_flights.size());
     int num_deliveries = dep.get_num_deliveries();
@@ -129,6 +129,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         vector<int> sel_int_profits;
         vector<double> sel_int_energies;
         vector<int> sel_int_weights;
+        vector<int> deliveries_per_flight;
 
         double total_cost = 0.0;
         int total_profit = 0;
@@ -149,6 +150,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
                 sel_int_profits.push_back(tmp_profit);
                 sel_int_weights.push_back(tmp_weight);
                 sel_int_energies.push_back(total_cost);
+                deliveries_per_flight.push_back(static_cast<int>(all_flights[i].size()));
             }
         }
         sol.total_flights = selected_intervals;
@@ -158,6 +160,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         sol.weights = sel_int_weights;
         sol.energies = sel_int_energies;
         sol.all_flights_size = static_cast<int>(all_flights.size());
+        sol.deliveries_per_flight = deliveries_per_flight;
 
         // cout << sol << endl;
 
@@ -239,12 +242,13 @@ solution algorithms::bin_packing() {
 
     int opt_id = static_cast<int>(distance(reward.begin(), max_element(reward.begin(), reward.end())));
 
-    vector<vector<int>> selected_intervals;
-    vector<int> sel_int_profits;
-    vector<double> sel_int_energies;
-    vector<int> sel_int_weights;
-
     if (!bin_sol.empty()) {
+        vector<vector<int>> selected_intervals;
+        vector<int> sel_int_profits;
+        vector<double> sel_int_energies;
+        vector<int> sel_int_weights;
+        vector<int> deliveries_per_flight;
+
         for (auto flight_id: bin_sol[opt_id]) {
             selected_intervals.push_back(all_flights[flight_id]);
             int tmp_profit = 0;
@@ -257,6 +261,7 @@ solution algorithms::bin_packing() {
             sel_int_profits.push_back(tmp_profit);
             sel_int_weights.push_back(tmp_weight);
             sel_int_energies.push_back(dep.compute_energy(all_flights[flight_id]));
+            deliveries_per_flight.push_back(static_cast<int>(all_flights[flight_id].size()));
         }
 
         sol.total_energy = cost[opt_id];
@@ -267,6 +272,7 @@ solution algorithms::bin_packing() {
         sol.weights = sel_int_weights;
         sol.energies = sel_int_energies;
         sol.all_flights_size = static_cast<int>(all_flights.size());
+        sol.deliveries_per_flight = deliveries_per_flight;
     }
 
     return sol;
@@ -343,8 +349,8 @@ solution algorithms::knapsack() {
                 opt_intervals[i][b] = opt_intervals[i - 1][b];
             }
             // just for print and debug
-            // std::stringstream result;
-            // std::copy(opt_intervals[i][b].begin(), opt_intervals[i][b].end(), std::ostream_iterator<int>(result, " "));
+            // stringstream result;
+            // copy(opt_intervals[i][b].begin(), opt_intervals[i][b].end(), ostream_iterator<int>(result, " "));
             // cout << "OPT[" << i << "][" << b << "] = {r: " << opt_reward[i][b] << ", c: " << opt_costs[i][b] << ", int: " << result.str().c_str() << endl;
         }
     }
@@ -353,6 +359,7 @@ solution algorithms::knapsack() {
     vector<int> sel_int_profits;
     vector<double> sel_int_energies;
     vector<int> sel_int_weights;
+    vector<int> deliveries_per_flight;
 
     // cout << " OPT reward = " << opt_reward[numFlights][B] << endl;
     // cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
@@ -374,6 +381,7 @@ solution algorithms::knapsack() {
         sel_int_profits.push_back(tmp_profit);
         sel_int_weights.push_back(tmp_weight);
         sel_int_energies.push_back(dep.compute_energy(all_flights[i - 1]));
+        deliveries_per_flight.push_back(static_cast<int>(all_flights[i - 1].size()));
     }
 
     sol.total_profit = opt_reward[numFlights][B];
@@ -383,6 +391,7 @@ solution algorithms::knapsack() {
     sol.weights = sel_int_weights;
     sol.energies = sel_int_energies;
     sol.all_flights_size = static_cast<int>(all_flights.size());
+    sol.deliveries_per_flight = deliveries_per_flight;
 
     return sol;
 }
@@ -405,7 +414,7 @@ solution algorithms::coloring() {
     vector<vector<vector<double>>> colors;
     auto n = rendezvouses.size();
 
-    // initialize the colors which is at most n, the number of total_flights
+    // initialize the colors that are at most n, the number of total_flights
     for (int i = 0; i < n; i++) {
         colors.emplace_back();
     }
@@ -491,6 +500,7 @@ solution algorithms::coloring() {
     vector<int> sel_int_profits;
     vector<double> sel_int_energies;
     vector<int> sel_int_weights;
+    vector<int> deliveries_per_flight;
 
     for (int i: max_selection) {
         selected_intervals.push_back(all_flights[i]);
@@ -505,6 +515,7 @@ solution algorithms::coloring() {
         sel_int_profits.push_back(tmp_profit);
         sel_int_weights.push_back(tmp_weight);
         sel_int_energies.push_back(dep.compute_energy(all_flights[i]));
+        deliveries_per_flight.push_back(static_cast<int>(all_flights[i].size()));
     }
 
     sol.total_profit = max_profit;
@@ -514,6 +525,7 @@ solution algorithms::coloring() {
     sol.weights = sel_int_weights;
     sol.energies = sel_int_energies;
     sol.all_flights_size = static_cast<int>(all_flights.size());
+    sol.deliveries_per_flight = deliveries_per_flight;
 
     return sol;
 }
@@ -528,6 +540,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     vector<int> sel_int_weights;
     vector<double> launches_result;
     vector<double> rendezvouses_result;
+    vector<int> deliveries_per_flight;
 
     int X = static_cast<int>(all_flights.size());
 
@@ -560,6 +573,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
             sel_int_profits.push_back(tmp_profit);
             sel_int_weights.push_back(tmp_weight);
             sel_int_energies.push_back(dep.compute_energy(all_flights[0]));
+            deliveries_per_flight.push_back(static_cast<int>(all_flights[0].size()));
         }
 
 //        if (selected_intervals.empty()) {
@@ -598,6 +612,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     sol.weights = sel_int_weights;
     sol.energies = sel_int_energies;
     sol.all_flights_size = X;
+    sol.deliveries_per_flight = deliveries_per_flight;
 
     return sol;
 }
@@ -605,7 +620,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
 solution algorithms::greedy_profit() {
     auto [all_flights_temp, energy_costs_temp, profits_temp, loads_temp] = dep.compute_solution_space();
 
-    // sort according to profits_temp (decreasing order)
+    // sort, according to profits_temp (decreasing order)
     vector<pair<int, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
         Ri.emplace_back(dep.compute_profit(all_flights_temp[i]), i);
@@ -633,7 +648,7 @@ solution algorithms::greedy_profit() {
 solution algorithms::greedy_energy() {
     auto [all_flights_temp, energy_costs_temp, profits_temp, loads_temp] = dep.compute_solution_space();
 
-    // sort according to energy_costs_temp
+    // sort, according to energy_costs_temp
     vector<pair<double, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
         Ri.emplace_back(energy_costs_temp[i], i);

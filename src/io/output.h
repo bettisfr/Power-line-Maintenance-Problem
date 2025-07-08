@@ -22,6 +22,7 @@ struct solution {
     vector<double> energies;
     vector<int> weights;
     int all_flights_size = 0;
+    vector<int> deliveries_per_flight;
 
     double running_time = -1;
 
@@ -31,20 +32,22 @@ struct solution {
         os << "Total flights=" << out.total_flights.size() << endl;
         os << "Total 'all flights' size=" << out.all_flights_size << endl;
         int i = 0;
-        for (const auto &s: out.total_flights) {
+        for (const auto &s : out.total_flights) {
             os << "Flight=" << i << " -> ";
-            for (auto e: s) {
+            for (const auto e : s) {
                 os << "[" << e << "] ";
             }
-            os << "profit=" << out.profits[i] << ", energy=" << out.energies[i] << ", weight=" << out.weights[i]
+            os << "profit=" << out.profits[i]
+               << ", energy=" << out.energies[i]
+               << ", weight=" << out.weights[i]
+               << ", deliveries=" << out.deliveries_per_flight[i]
                << endl;
-
             i++;
         }
         os << "Running time: " << out.running_time << endl;
-
         return os;
     }
+
 };
 
 void save_output(const input &, const vector<solution> &);
