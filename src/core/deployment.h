@@ -69,7 +69,7 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<double>> sorting_with_rendezvouses_in_apx();
 
-    static bool check_correct_interval(const vector<vector<int>> &, vector<double>, vector<double>, double, double);
+    static bool check_correct_interval(const vector<vector<int>> &, const vector<double> &, const vector<double> &, double, double);
 
     static vector<int>
     weighted_interval(const vector<double> &, const vector<double> &, const vector<int> &, vector<int>, const vector<int> &);

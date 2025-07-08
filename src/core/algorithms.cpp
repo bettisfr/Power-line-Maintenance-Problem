@@ -32,6 +32,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
     auto [all_flights, energy_costs, profits, loads] = move(input);
 
     int X = static_cast<int>(all_flights.size());
+
     int num_deliveries = dep.get_num_deliveries();
     int B = dep.get_drone_battery();
     // vector<int> flights_load;
@@ -89,21 +90,38 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         }
 
         // constr (4)
-        for (int i = 0; i < X; i++) {
-            for (int k = 0; k < X; k++) {
-                if (i != k) {
-                    if (!deployment::check_correct_interval({all_flights[i]},
-                                                            {get<0>(dep.compute_LR(all_flights[i]))}, {get<1>(dep.compute_LR(all_flights[i]))},
-                                                            get<0>(dep.compute_LR(all_flights[k])), get<1>(dep.compute_LR(all_flights[k])))) {
-                        model.addConstr(x[i] + x[k] <= 1);
-                    }
+        vector<double> L(X), R(X);
+        for (int i = 0; i < X; ++i) {
+            tie(L[i], R[i]) = dep.compute_LR(all_flights[i]);
+        }
+
+        vector<pair<int, int>> constraint_pairs;
+
+#pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i < X; ++i) {
+            vector<pair<int, int>> local_buffer;
+            for (int k = i + 1; k < X; ++k) {
+                if (!(R[i] < L[k] || L[i] > R[k])) {
+                    local_buffer.emplace_back(i, k);
+                }
+            }
+
+            // Critical section to merge results from this thread
+#pragma omp critical
+            {
+                for (auto& p : local_buffer) {
+                    model.addConstr(x[p.first] + x[p.second] <= 1);
                 }
             }
         }
 
-        // constr (5), this is already satisfied
-        // for (int i = 0; i < X; i++){
-        //     model.addConstr(flights_load[i] * x[i] <= drone_load);
+        // for (int i = 0; i < X; ++i) {
+        //     for (int k = i + 1; k < X; ++k) {
+        //         // Skip if intervals don't overlap
+        //         if (!(R[i] < L[k] || L[i] > R[k])) {
+        //             model.addConstr(x[i] + x[k] <= 1);
+        //         }
+        //     }
         // }
 
         // constr (6)

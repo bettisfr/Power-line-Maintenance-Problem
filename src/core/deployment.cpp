@@ -176,17 +176,6 @@ tuple<double, double> deployment::compute_LR(const vector<int> &flight) {
         R = rendezvouses[flight[1]];
     }
 
-    // vector<int> launch_points;
-    // vector<int> rendezvous_points;
-
-    // for (auto id: flight) {
-    //     launch_points.push_back(launches[id]);
-    //     rendezvous_points.push_back(rendezvouses[id]);
-    // }
-
-    // int L = *min_element(launch_points.begin(), launch_points.end());
-    // int R = *max_element(rendezvous_points.begin(), rendezvous_points.end());
-
     return {L, R};
 }
 
@@ -227,27 +216,19 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<d
     return {all_flights, energy_costs, new_profits, new_launches, new_rendezvouses};
 }
 
-
-bool deployment::check_correct_interval(const vector<vector<int>> &flights, vector<double> launches_flights,
-                                        vector<double> rendezvouses_flights, double L, double R) {
-    // no intersection: true
-    for (int i = 0; i < flights.size(); i++) {
-        if (L <= launches_flights[i] && launches_flights[i] <= R) {
-            return false;
-        }
-
-        if ((launches_flights[i] <= L && L <= rendezvouses_flights[i]) ||
-            (launches_flights[i] <= R && R <= rendezvouses_flights[i])) {
-            return false;
-        }
-
-        if (L <= rendezvouses_flights[i] && rendezvouses_flights[i] <= R) {
+bool deployment::check_correct_interval(const vector<vector<int>> &flights,
+                                        const vector<double> &launches_flights,
+                                        const vector<double> &rendezvouses_flights,
+                                        double L, double R) {
+    for (size_t i = 0; i < flights.size(); ++i) {
+        // If intervals [launch, rendezvous] and [L, R] overlap
+        if (!(rendezvouses_flights[i] < L || launches_flights[i] > R)) {
             return false;
         }
     }
-
     return true;
 }
+
 
 int deployment::compute_opt(int id, const vector<double> &launches, const vector<double> &rendezvouses,
                             vector<int> profits, vector<int> opt,
@@ -480,6 +461,8 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
 }
 
 
+#include <omp.h>
+
 
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights() {
     vector<vector<int>> all_flights;
@@ -492,12 +475,12 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     }
 
     int type = get_solution_space();
-    
+
     for (int id_i: ids) {
         double L = launches[id_i];
         for (int id_j: ids) {
             double R = rendezvouses[id_j];
-            if (R > L) {         // && rendezvouses[id_i] <= R && launches[id_j] >= L       
+            if (R > L) {
                 vector<int> flight;
                 if (id_i == id_j) {
                     flight.push_back(id_i);
@@ -505,14 +488,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     flight.push_back(id_i);
                     flight.push_back(id_j);
                 }
-                // check [L, R] is energy and drone_load feasible
-                double energy_L_R = 0;
-                if (type == 0){
-                    energy_L_R = compute_energy(flight); 
-                } else { // type == 3
-                    energy_L_R = compute_energy_extra_cost(flight);
-                }
-                
+                double energy_L_R = (type == 0) ? compute_energy(flight) : compute_energy_extra_cost(flight);
                 int load_flight = compute_load(flight);
 
                 if (energy_L_R <= drone_battery && load_flight <= drone_load) {
@@ -520,45 +496,31 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     energy_flight.push_back(energy_L_R);
                     loads_flight.push_back(load_flight);
 
-                    // compute all deliveries between L and R 
                     vector<int> deliveries_L_R;
                     for (int id_k: ids) {
-                        if (id_k != id_i && id_k != id_j && 
+                        if (id_k != id_i && id_k != id_j &&
                             delivery_points[id_k] >= delivery_points[id_i] &&
                             delivery_points[id_k] <= delivery_points[id_j]) {
-                            // L <= launches[id_k] && launches[id_k] <= R &&
-                            // L <= rendezvouses[id_k] && rendezvouses[id_k] <= R &&
                             deliveries_L_R.push_back(id_k);
                         }
                     }
 
-                    if (!deliveries_L_R.empty()) {                        
-                        vector<int> flights_L_R; // after computing, update indices based on deliveries_L_R
-                        // using deliveries_L_R[indices]
+                    if (!deliveries_L_R.empty()) {
                         vector<int> indices;
                         for (int i = 0; i < deliveries_L_R.size(); i++) {
                             indices.push_back(i);
                         }
-                        vector<vector<int> > all_subsets = compute_all_subsets(indices);
+                        vector<vector<int>> all_subsets = compute_all_subsets(indices);
 
                         for (const auto& f : all_subsets){
-                            vector<int> flight_temp;
-
-                            for (int i : flight){
-                                flight_temp.push_back(i);
-                            }
+                            vector<int> flight_temp = flight;
 
                             for (int index : f){
                                 flight_temp.push_back(deliveries_L_R[index]);
                             }
 
                             int load_flight_temp = compute_load(flight_temp);
-                            double energy_flight_temp = 0;
-                            if (type == 0){
-                                energy_flight_temp = compute_energy(flight_temp); 
-                            } else { // type == 3
-                                energy_flight_temp = compute_energy_extra_cost(flight_temp);
-                            }
+                            double energy_flight_temp = (type == 0) ? compute_energy(flight_temp) : compute_energy_extra_cost(flight_temp);
 
                             if (load_flight_temp <= drone_load && energy_flight_temp <= drone_battery){
                                 all_flights.push_back(flight_temp);
@@ -566,7 +528,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                                 loads_flight.push_back(load_flight_temp);
                             }
                         }
-                    } 
+                    }
                 }
             }
         }
@@ -575,18 +537,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     vector<int> profits_flight;
     for (const auto &flight: all_flights) {
         profits_flight.push_back(compute_profit(flight));
-        //loads_flight.push_back(compute_load(flight));
     }
-
-
-
-    // for (int i = 0 ; i < all_flights.size(); i++){
-
-    //     for (auto j : all_flights[i]){
-    //         cout << j << " ";
-    //     }
-    //     cout << " energy: " << energy_flight[i] << " load: " << loads_flight[i] << " profit: " << profits_flight[i] << endl;    
-    // }
 
     return {all_flights, energy_flight, profits_flight, loads_flight};
 }
