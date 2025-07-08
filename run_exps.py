@@ -77,7 +77,7 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
                             )
 
                             cmd = (
-                                f"OMP_NUM_THREADS=28 ./{BUILD_DIR}/{BIN_FILE} --params "
+                                f"OMP_NUM_THREADS=98 ./{BUILD_DIR}/{BIN_FILE} --params "
                                 f"-exp_name {exp_name} "
                                 f"-log {DEFAULT_LOG} "
                                 f"-seed {seed} "
