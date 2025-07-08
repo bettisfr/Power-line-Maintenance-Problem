@@ -11,7 +11,6 @@ os.makedirs('output', exist_ok=True)
 DEFAULT_LOG = 0
 DEFAULT_ITERATIONS = 33
 DEFAULT_MAX_LEN_ROAD = 100
-DEFAULT_MAX_INTERVAL_LEN = 8
 DEFAULT_MAX_PROFIT = 10
 DEFAULT_HEIGHT = 0.05
 DEFAULT_DISTANCE = 0.5
@@ -22,7 +21,7 @@ DEFAULT_SAVE = 1
 # Parameter vectors
 ENERGY_PER_DELIVERY_VEC = [0] # 0, 30
 MAX_WEIGHT_VEC = [1] # 1, 5
-NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
 #NUM_DELIVERIES_VEC = [10, 20, 30, 40]
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
@@ -31,6 +30,7 @@ ZIPF_EXPONENT_VEC = [0] # 1, 2
 EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
 
+DEFAULT_MAX_INTERVAL_LEN = 4
 DEFAULT_REGULARLY_SPACED = 1 # 0 = randomly, 1 = regularly spaced
 DEFAULT_DELIVERIES_STARTING_POINT = 1 # 1 km
 DEFAULT_ERROR = 0.05 # 5% error
@@ -70,6 +70,7 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
                                 f"_load{drone_load}"
                                 f"_batt{drone_battery}"
                                 f"_maxw{max_weight}"
+                                f"_maxint{DEFAULT_MAX_INTERVAL_LEN}"
                                 f"_regsp{DEFAULT_REGULARLY_SPACED}"
                                 f"_delta{DEFAULT_DELIVERIES_STARTING_POINT}"
                                 f"_zipf{zipf_exponent}"
