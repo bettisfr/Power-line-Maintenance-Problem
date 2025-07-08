@@ -56,7 +56,7 @@ deployment::deployment(const input &par) {
 
         // max_interval_len is too much when regularly_spaced == 1
         double departure = delivery_location - numpy(g) * max_interval_len;
-        if (departure < 0){
+        if (departure < 0) {
             departure = 0;
         }
 

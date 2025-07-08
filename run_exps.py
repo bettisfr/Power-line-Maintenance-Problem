@@ -20,8 +20,8 @@ DEFAULT_SAVE = 1
 
 ########################################################################################################################
 # Parameter vectors
-ENERGY_PER_DELIVERY_VEC = [30] # 0
-MAX_WEIGHT_VEC = [5] # 1
+ENERGY_PER_DELIVERY_VEC = [0] # 0, 30
+MAX_WEIGHT_VEC = [1] # 1, 5
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 #NUM_DELIVERIES_VEC = [10, 20, 30, 40]
 DRONE_LOAD_VEC = [5, 10]
@@ -31,9 +31,9 @@ ZIPF_EXPONENT_VEC = [0] # 1, 2
 EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
 
-DEFAULT_REGULARLY_SPACED = 0
-DEFAULT_DELIVERIES_STARTING_POINT = 1
-DEFAULT_ERROR = 0.1
+DEFAULT_REGULARLY_SPACED = 1 # 0 = randomly, 1 = regularly spaced
+DEFAULT_DELIVERIES_STARTING_POINT = 1 # 1 km
+DEFAULT_ERROR = 0.05 # 5% error
 
 # Seed initialization
 seed = 0
@@ -63,9 +63,16 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
                         for algorithm in ALGORITHMS_VEC:
 
                             exp_name = (
-                                f"out_{STR_PROB}_{STR_SOLUTION_SPACE}_alg{algorithm}"
-                                f"_ndel{num_deliveries}_load{drone_load}_batt{drone_battery}"
-                                f"_maxw{max_weight}_zipf{zipf_exponent}"
+                                f"out_{STR_PROB}"
+                                f"_{STR_SOLUTION_SPACE}"
+                                f"_alg{algorithm}"
+                                f"_ndel{num_deliveries}"
+                                f"_load{drone_load}"
+                                f"_batt{drone_battery}"
+                                f"_maxw{max_weight}"
+                                f"_regsp{DEFAULT_REGULARLY_SPACED}"
+                                f"_delta{DEFAULT_DELIVERIES_STARTING_POINT}"
+                                f"_zipf{zipf_exponent}"
                             )
 
                             cmd = (
