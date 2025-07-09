@@ -28,7 +28,7 @@ DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
 ALGORITHMS_VEC = [0] # 2, 3, 6
 ZIPF_EXPONENT_VEC = [0] # 1, 2
-EXHAUSTIVE = 1  # 1 = exhaustive, 0 = DP
+EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
 DEFAULT_MAX_INTERVAL_LEN = 2
 DEFAULT_REGULARLY_SPACED = 1 # 0 = randomly, 1 = regularly spaced
