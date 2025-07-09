@@ -31,14 +31,14 @@ EXHAUSTIVE_VEC = [0, 1]
 ALGORITHMS_VEC = [0]
 # ALGORITHMS_VEC = [0]
 MAX_INTERVAL_LEN_VEC = [2, 4]
-DELTA_VEC = [1]
+DELTA_VEC = [1, 0.5]
 
 # Iterate over all combinations
 for algorithm in ALGORITHMS_VEC:
-    # for zipf_exponent in MAX_INTERVAL_LEN_VEC:
+    # for zipf_exponent in ZIPF_EXPONENT_VEC:
     for delta in DELTA_VEC:
-        for drone_load in DRONE_LOAD_VEC:
-            for max_interval_len in MAX_INTERVAL_LEN_VEC:
+        for max_interval_len in MAX_INTERVAL_LEN_VEC:
+            for drone_load in DRONE_LOAD_VEC:
                 for drone_battery in DRONE_BATTERY_VEC:
                     for max_weight in MAX_WEIGHT_VEC:
                         for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:

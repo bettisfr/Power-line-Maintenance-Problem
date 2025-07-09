@@ -142,7 +142,7 @@ input load_parameters(input &par) {
             } else if (key == "regularly_spaced") {
                 par.regularly_spaced = stoi(value);
             } else if (key == "deliveries_starting_point") {
-                par.deliveries_starting_point = stoi(value);
+                par.deliveries_starting_point = stod(value);
             } else if (key == "error") {
                 par.error = stoi(value);
             } else if (key == "exponent") {
@@ -204,7 +204,7 @@ input read_parameters(input &par, int argc, char *argv[]) {
             } else if (arg == "-regularly_spaced") {
                 par.regularly_spaced = stoi(argv[i + 1]);
             } else if (arg == "-deliveries_starting_point") {
-                par.deliveries_starting_point = stoi(argv[i + 1]);
+                par.deliveries_starting_point = stod(argv[i + 1]);
             } else if (arg == "-error") {
                 par.error = stoi(argv[i + 1]);
             } else if (arg == "-exponent") {
