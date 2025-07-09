@@ -30,9 +30,9 @@ ALGORITHMS_VEC = [0] # 2, 3, 6
 ZIPF_EXPONENT_VEC = [0] # 1, 2
 EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
-DEFAULT_MAX_INTERVAL_LEN = 2
 DEFAULT_REGULARLY_SPACED = 1 # 0 = randomly, 1 = regularly spaced
-DEFAULT_DELIVERIES_STARTING_POINT = 1 # 1 km
+DEFAULT_MAX_INTERVAL_LEN = 2 # in km
+DEFAULT_DELIVERIES_STARTING_POINT = 0.5 # in km
 ########################################################################################################################
 
 # Seed initialization

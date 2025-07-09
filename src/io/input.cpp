@@ -217,3 +217,67 @@ input read_parameters(input &par, int argc, char *argv[]) {
 
     return par;
 }
+
+bool check_parameters(const input &par) {
+    bool error = false;
+
+    if (par.seed < 0)
+        cerr << "Error: seed cannot be negative" << endl, error = true;
+
+    if (par.algorithm < 0 || par.algorithm > 8)
+        cerr << "Error: algorithm index out of range (0-8)" << endl, error = true;
+
+    if (par.iterations <= 0)
+        cerr << "Error: iterations must be > 0" << endl, error = true;
+
+    if (par.num_deliveries <= 0)
+        cerr << "Error: num_deliveries must be > 0" << endl, error = true;
+
+    if (par.max_len_road <= 0)
+        cerr << "Error: max_len_road must be > 0" << endl, error = true;
+
+    if (par.max_interval_len <= 0.0 || par.max_interval_len > par.max_len_road)
+        cerr << "Error: max_interval_len must be > 0 and <= max_len_road" << endl, error = true;
+
+    if (par.max_profit <= 0)
+        cerr << "Error: max_profit must be > 0" << endl, error = true;
+
+    if (par.max_weight <= 0)
+        cerr << "Error: max_weight must be > 0" << endl, error = true;
+
+    if (par.solution_space < 0 || par.solution_space > 4)
+        cerr << "Error: solution_space must be in [0, 4]" << endl, error = true;
+
+    if (par.drone_battery <= 0)
+        cerr << "Error: drone_battery must be > 0" << endl, error = true;
+
+    if (par.drone_load <= 0)
+        cerr << "Error: drone_load must be > 0" << endl, error = true;
+
+    if (par.height < 0)
+        cerr << "Error: height cannot be negative" << endl, error = true;
+
+    if (par.distance < 0)
+        cerr << "Error: distance cannot be negative" << endl, error = true;
+
+    if (par.energy_unit_cost <= 0)
+        cerr << "Error: energy_unit_cost must be > 0" << endl, error = true;
+
+    if (par.energy_per_delivery < 0)
+        cerr << "Error: energy_per_delivery cannot be negative" << endl, error = true;
+
+    if (par.regularly_spaced != 0 && par.regularly_spaced != 1)
+        cerr << "Error: regularly_spaced must be 0 or 1" << endl, error = true;
+
+    if (par.deliveries_starting_point < 0)
+        cerr << "Error: deliveries_starting_point cannot be negative" << endl, error = true;
+
+    if (par.error < 0.0 || par.error >= 1.0)
+        cerr << "Error: error must be in [0, 1)" << endl, error = true;
+
+    if (par.exponent < 0 || par.exponent > 2)
+        cerr << "Error: exponent must be 0 (uniform), 1 (log), or 2 (exp)" << endl, error = true;
+
+    return error;
+}
+

@@ -99,6 +99,8 @@ struct input {
     double exponent = 0;
 };
 
+bool check_parameters(const input &);
+
 void print_parameters(const input &);
 
 void save_parameters(const input &);

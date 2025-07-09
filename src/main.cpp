@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
         // Choose the behavior based on the command line argument
         if (option == "--file") {
             if (argc > 2) {
-                // Read from config file
+                // Read from a config file
                 cout << "Reading parameters from file" << endl;
                 par.experiment = 1;
                 par.exp_name = argv[2];
@@ -45,6 +45,14 @@ int main(int argc, char **argv) {
     } else {
         par.experiment = 0;
         cout << "Loading default parameters" << endl;
+    }
+
+    // Test if parameters are meaningful
+    bool error = false;
+    error = check_parameters(par);
+    if (error) {
+        cerr << "Wrong parameters" << endl;
+        exit(-1);
     }
 
     // Fake iteration numbers to execute this test part!
