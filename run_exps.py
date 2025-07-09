@@ -21,7 +21,7 @@ DEFAULT_ERROR = 0.05 # 5% error
 ########################################################################################################################
 # Variable parameters
 ENERGY_PER_DELIVERY_VEC = [0, 30] # 0, 30
-MAX_WEIGHT_VEC = [1, 5] # 1, 5
+MAX_WEIGHT_VEC = [5, 1] # 1, 5
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 # NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50]
 DRONE_LOAD_VEC = [5, 10]
