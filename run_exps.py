@@ -16,9 +16,10 @@ DEFAULT_HEIGHT = 0.05
 DEFAULT_DISTANCE = 0.5
 DEFAULT_ENERGY_UNIT_COST = 150
 DEFAULT_SAVE = 1
+DEFAULT_ERROR = 0.05 # 5% error
 
 ########################################################################################################################
-# Parameter vectors
+# Variable vectors
 ENERGY_PER_DELIVERY_VEC = [0] # 0, 30
 MAX_WEIGHT_VEC = [1] # 1, 5
 NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -29,11 +30,10 @@ ALGORITHMS_VEC = [0] # 2, 3, 6
 ZIPF_EXPONENT_VEC = [0] # 1, 2
 EXHAUSTIVE = 1  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
-
-DEFAULT_MAX_INTERVAL_LEN = 4
+DEFAULT_MAX_INTERVAL_LEN = 2
 DEFAULT_REGULARLY_SPACED = 1 # 0 = randomly, 1 = regularly spaced
 DEFAULT_DELIVERIES_STARTING_POINT = 1 # 1 km
-DEFAULT_ERROR = 0.05 # 5% error
+########################################################################################################################
 
 # Seed initialization
 seed = 0
