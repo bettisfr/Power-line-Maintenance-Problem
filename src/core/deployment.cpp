@@ -838,6 +838,20 @@ int deployment::get_solution_space() const {
     return solution_space;
 }
 
+int deployment::compute_n_prime(const vector<int>& flight) {
+    double del_L = delivery_points[flight[0]];
+    double del_R = delivery_points[flight[flight.size() - 1]];
+
+    int count = 0;
+    for (double point : delivery_points) {
+        if (point >= del_L && point <= del_R) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
 tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_solution_space() {
     // if (is_unit_weight()) {
     //     // It works also with unitary weights

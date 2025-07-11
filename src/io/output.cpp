@@ -14,6 +14,7 @@ void save_output(const input &par, const vector<solution> &results) {
     double deliveries_per_flight_avg, deliveries_per_flight_std;
     double avg_energy_per_flight_avg, avg_energy_per_flight_std;
     double avg_weight_per_flight_avg, avg_weight_per_flight_std;
+    double n_prime_avg, n_prime_std;
 
     // Calculate averages and standard deviations
     if (!results.empty()) {
@@ -25,6 +26,7 @@ void save_output(const input &par, const vector<solution> &results) {
         vector<double> avg_deliveries_per_flight;
         vector<double> avg_energy_per_flight;
         vector<double> avg_weight_per_flight;
+        vector<double> avg_n_prime;
 
         for (const auto &out : results) {
             total_profits.push_back(out.total_profit);
@@ -33,7 +35,7 @@ void save_output(const input &par, const vector<solution> &results) {
             running_times.push_back(out.running_time);
             all_flights_size.push_back(out.all_flights_size);
 
-            // Compute avg deliveries per flight for this solution (if there are flights)
+            // Compute avg deliveries per flight
             if (!out.deliveries_per_flight.empty()) {
                 double sum = 0.0;
                 for (int d : out.deliveries_per_flight) {
@@ -57,6 +59,16 @@ void save_output(const input &par, const vector<solution> &results) {
                 avg_weight_per_flight.push_back(0.0);
             }
 
+            // Compute avg n_prime per solution (if any)
+            if (!out.n_prime.empty()) {
+                double sum = 0.0;
+                for (int np : out.n_prime) {
+                    sum += np;
+                }
+                avg_n_prime.push_back(sum / out.n_prime.size());
+            } else {
+                avg_n_prime.push_back(0.0);
+            }
         }
 
         tie(total_profit_avg, total_profit_std) = util::calculate_avg_std(total_profits);
@@ -67,6 +79,7 @@ void save_output(const input &par, const vector<solution> &results) {
         tie(deliveries_per_flight_avg, deliveries_per_flight_std) = util::calculate_avg_std(avg_deliveries_per_flight);
         tie(avg_energy_per_flight_avg, avg_energy_per_flight_std) = util::calculate_avg_std(avg_energy_per_flight);
         tie(avg_weight_per_flight_avg, avg_weight_per_flight_std) = util::calculate_avg_std(avg_weight_per_flight);
+        tie(n_prime_avg, n_prime_std) = util::calculate_avg_std(avg_n_prime);
     }
 
     if (file.is_open()) {
@@ -82,11 +95,11 @@ void save_output(const input &par, const vector<solution> &results) {
             << "all_flights_size_avg,all_flights_size_std,"
             << "deliveries_per_flight_avg,deliveries_per_flight_std,"
             << "avg_energy_per_flight_avg,avg_energy_per_flight_std,"
-            << "avg_weight_per_flight_avg,avg_weight_per_flight_std"
+            << "avg_weight_per_flight_avg,avg_weight_per_flight_std,"
+            << "n_prime_avg,n_prime_std"
             << endl;
 
         file
-            // input
             << par.seed << ","
             << par.num_deliveries << ","
             << par.max_len_road << ","
@@ -106,7 +119,6 @@ void save_output(const input &par, const vector<solution> &results) {
             << par.deliveries_starting_point << ","
             << par.error << ","
             << par.exponent << ","
-            // output metrics: avg + std pairs
             << total_profit_avg << "," << total_profit_std << ","
             << total_energy_avg << "," << total_energy_std << ","
             << total_flights_avg << "," << total_flights_std << ","
@@ -114,7 +126,8 @@ void save_output(const input &par, const vector<solution> &results) {
             << all_flights_size_avg << "," << all_flights_size_std << ","
             << deliveries_per_flight_avg << "," << deliveries_per_flight_std << ","
             << avg_energy_per_flight_avg << "," << avg_energy_per_flight_std << ","
-            << avg_weight_per_flight_avg << "," << avg_weight_per_flight_std
+            << avg_weight_per_flight_avg << "," << avg_weight_per_flight_std << ","
+            << n_prime_avg << "," << n_prime_std
             << endl;
 
         file.close();

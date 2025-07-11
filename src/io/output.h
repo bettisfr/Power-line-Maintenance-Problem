@@ -23,6 +23,7 @@ struct solution {
     vector<int> weights;
     int all_flights_size = 0;
     vector<int> deliveries_per_flight;
+    vector<int> n_prime;
 
     double running_time = -1;
 

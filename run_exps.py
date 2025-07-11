@@ -22,11 +22,13 @@ DEFAULT_ERROR = 0.05 # 5% error
 # Variable parameters
 ENERGY_PER_DELIVERY_VEC = [0, 30] # 0, 30
 MAX_WEIGHT_VEC = [5, 1] # 1, 5
-NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80]
-# NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50]
+# NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80]
+NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50]
+# NUM_DELIVERIES_VEC = list(range(10, 301, 10))
 DRONE_LOAD_VEC = [5, 10]
 DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS_VEC = [0, 2, 3, 6, 8] # 2, 3, 6
+# ALGORITHMS_VEC = [0, 2, 3, 6, 8] # 2, 3, 6
+ALGORITHMS_VEC = [0, 2]
 ZIPF_EXPONENT_VEC = [0] # 1, 2
 EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################

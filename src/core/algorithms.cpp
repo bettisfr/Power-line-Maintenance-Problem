@@ -95,6 +95,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
             tie(L[i], R[i]) = dep.compute_LR(all_flights[i]);
         }
 
+        // Parallel version
         vector<pair<int, int>> constraint_pairs;
 
 #pragma omp parallel for schedule(dynamic)
@@ -115,6 +116,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
             }
         }
 
+        // Serial version
         // for (int i = 0; i < X; ++i) {
         //     for (int k = i + 1; k < X; ++k) {
         //         // Skip if intervals don't overlap
@@ -148,6 +150,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         vector<double> sel_int_energies;
         vector<int> sel_int_weights;
         vector<int> deliveries_per_flight;
+        vector<int> n_prime_vector;
 
         double total_cost = 0.0;
         int total_profit = 0;
@@ -171,6 +174,11 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
                 deliveries_per_flight.push_back(static_cast<int>(all_flights[i].size()));
             }
         }
+
+        for (const auto& flight : all_flights) {
+            n_prime_vector.push_back(dep.compute_n_prime(flight));
+        }
+
         sol.total_flights = selected_intervals;
         sol.total_energy = total_cost;
         sol.total_profit = total_profit;
@@ -179,6 +187,7 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         sol.energies = sel_int_energies;
         sol.all_flights_size = static_cast<int>(all_flights.size());
         sol.deliveries_per_flight = deliveries_per_flight;
+        sol.n_prime = n_prime_vector;
 
         // cout << sol << endl;
 
@@ -266,6 +275,7 @@ solution algorithms::bin_packing() {
         vector<double> sel_int_energies;
         vector<int> sel_int_weights;
         vector<int> deliveries_per_flight;
+        vector<int> n_prime_vector;
 
         for (auto flight_id: bin_sol[opt_id]) {
             selected_intervals.push_back(all_flights[flight_id]);
@@ -282,9 +292,14 @@ solution algorithms::bin_packing() {
             deliveries_per_flight.push_back(static_cast<int>(all_flights[flight_id].size()));
         }
 
+        for (const auto& flight : all_flights) {
+            n_prime_vector.push_back(dep.compute_n_prime(flight));
+        }
+
         sol.total_energy = cost[opt_id];
         sol.total_profit = reward[opt_id];
 
+        sol.n_prime = n_prime_vector;
         sol.total_flights = selected_intervals;
         sol.profits = sel_int_profits;
         sol.weights = sel_int_weights;
@@ -378,6 +393,7 @@ solution algorithms::knapsack() {
     vector<double> sel_int_energies;
     vector<int> sel_int_weights;
     vector<int> deliveries_per_flight;
+    vector<int> n_prime_vector;
 
     // cout << " OPT reward = " << opt_reward[numFlights][B] << endl;
     // cout << " OPT cost = " << opt_costs[numFlights][B] << endl;
@@ -402,6 +418,11 @@ solution algorithms::knapsack() {
         deliveries_per_flight.push_back(static_cast<int>(all_flights[i - 1].size()));
     }
 
+    for (const auto& flight : all_flights) {
+        n_prime_vector.push_back(dep.compute_n_prime(flight));
+    }
+
+    sol.n_prime = n_prime_vector;
     sol.total_profit = opt_reward[numFlights][B];
     sol.total_energy = opt_costs[numFlights][B];
     sol.total_flights = selected_intervals;
@@ -519,6 +540,7 @@ solution algorithms::coloring() {
     vector<double> sel_int_energies;
     vector<int> sel_int_weights;
     vector<int> deliveries_per_flight;
+    vector<int> n_prime_vector;
 
     for (int i: max_selection) {
         selected_intervals.push_back(all_flights[i]);
@@ -536,6 +558,11 @@ solution algorithms::coloring() {
         deliveries_per_flight.push_back(static_cast<int>(all_flights[i].size()));
     }
 
+    for (const auto& flight : all_flights) {
+        n_prime_vector.push_back(dep.compute_n_prime(flight));
+    }
+
+    sol.n_prime = n_prime_vector;
     sol.total_profit = max_profit;
     sol.total_energy = max_cost;
     sol.total_flights = selected_intervals;
@@ -559,6 +586,7 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
     vector<double> launches_result;
     vector<double> rendezvouses_result;
     vector<int> deliveries_per_flight;
+    vector<int> n_prime_vector;
 
     int X = static_cast<int>(all_flights.size());
 
@@ -622,6 +650,11 @@ solution algorithms::flight_selection_in_heu(vector<vector<int>> all_flights, ve
         rendezvouses.erase(rendezvouses.begin());
     }
 
+    for (const auto& flight : all_flights) {
+        n_prime_vector.push_back(dep.compute_n_prime(flight));
+    }
+
+    sol.n_prime = n_prime_vector;
     sol.total_profit = total_profit;
     sol.total_energy = total_energy;
     sol.total_flights = selected_intervals;

@@ -63,6 +63,8 @@ public:
 
     tuple<double, double> compute_LR(const vector<int> &);
 
+    int compute_n_prime(const vector<int> &);
+
     int compute_profit(const vector<int> &);
 
     int compute_load(const vector<int> &);
