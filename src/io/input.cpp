@@ -224,8 +224,8 @@ bool check_parameters(const input &par) {
     if (par.seed < 0)
         cerr << "Error: seed cannot be negative" << endl, error = true;
 
-    if (par.algorithm < 0 || par.algorithm > 8)
-        cerr << "Error: algorithm index out of range (0-8)" << endl, error = true;
+    if (par.algorithm < 0 || par.algorithm > 9)
+        cerr << "Error: algorithm index out of range (0-9)" << endl, error = true;
 
     if (par.iterations <= 0)
         cerr << "Error: iterations must be > 0" << endl, error = true;

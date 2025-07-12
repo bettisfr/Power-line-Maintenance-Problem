@@ -19,7 +19,7 @@ solution algorithms::run_experiment(int algorithm) {
     int index = algorithm;
     solution out;
 
-    if (index >= 0 && index <= 8) {
+    if (index >= 0 && index <= 9) {
         out = algorithm_functions[index](*this);
     } else {
         cerr << "Invalid algorithm index." << endl;
@@ -208,6 +208,21 @@ solution algorithms::opt_multi() {
 
 solution algorithms::opt_single() {
     return ilp_solver(dep.compute_individual_deliveries());
+}
+
+solution algorithms::no_alg() {
+    auto [all_flights, energy_costs, profits, loads] = dep.compute_solution_space();
+
+    vector<int> n_prime_vector;
+
+    for (const auto& flight : all_flights) {
+        n_prime_vector.push_back(dep.compute_n_prime(flight));
+    }
+
+    sol.all_flights_size = static_cast<int>(all_flights.size());
+    sol.n_prime = n_prime_vector;
+
+    return sol;
 }
 
 solution algorithms::bin_packing() {

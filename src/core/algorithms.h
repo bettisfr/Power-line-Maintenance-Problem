@@ -30,6 +30,7 @@ private:
             &algorithms::greedy_profit_energy, // 6
             &algorithms::greedy_profit_load, // 7
             &algorithms::opt_single, // 8
+            &algorithms::no_alg, // 9
     };
 
     solution ilp_solver(tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>>);
@@ -40,6 +41,8 @@ public:
     explicit algorithms(const deployment&);
 
     solution run_experiment(int);
+
+    solution no_alg();
 
     solution opt_multi();
 
