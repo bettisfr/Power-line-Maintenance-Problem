@@ -9,10 +9,10 @@
 using namespace std;
 using namespace chrono;
 
-void run_experiment(input&);
+void run_experiment(const input&);
 void run_test(input&);
 
-int main(int argc, char **argv) {
+int main(const int argc, char **argv) {
     // Set global precision for printing
     cout << fixed << setprecision(2);
 
@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void run_experiment(input &par) {
+void run_experiment(const input &par) {
     if (par.log == 1) {
         print_parameters(par);
     }
@@ -119,33 +119,24 @@ void run_test(input &par) {
 //        print_parameters(par);
 //    }
 
-    int max_seed = 10000;
+    const int max_seed = 10000;
     for (int i = 0; i < max_seed; i++) {
         cout << "Seed: " << (i) << "/" << max_seed << endl;
 
         vector<solution> solutions;
-        vector<int> vals = {3, 4};
-        for (int j : vals) {
+        vector vals = {3, 4};
+        for (const int j : vals) {
             par.solution_space = j;
             par.seed = i;
 
             // WARNING: if using this, you must remove "static" on line 21 in deployment.cpp
             // static mt19937 g(seed);                          <<<---------------- EYE!!!!!!
             // When done with this, please readd static         <<<---------------- EYE!!!!!!
-            deployment dep(par);  /////////////////////////////////////////
-
-        //    if (par.log == 1) {
-        //        cout << dep << endl;
-        //    }
-
+            const deployment dep(par);  /////////////////////////////////////////
             algorithms alg(dep);
 
             solution out = alg.run_experiment(par.algorithm);
             solutions.push_back(out);
-
-//            if (par.log == 1) {
-//                cout << out << endl;
-//            }
         }
 
         if (solutions[0].total_profit != solutions[1].total_profit) {

@@ -55,7 +55,7 @@ void print_parameters(const input &par) {
 }
 
 void save_parameters(const input &par) {
-    string cfg_filename = "input/" + par.exp_name + ".cfg";
+    const string cfg_filename = "input/" + par.exp_name + ".cfg";
     ofstream file_cfg(cfg_filename);
 
     file_cfg << "log=" << par.log << endl;
@@ -156,7 +156,7 @@ input load_parameters(input &par) {
     return par;
 }
 
-input read_parameters(input &par, int argc, char *argv[]) {
+input read_parameters(input &par, const int argc, char *argv[]) {
     // Iterate through command line arguments
     // Start from 2 to skip program name and --params
     for (int i = 2; i < argc; ++i) {

@@ -11,7 +11,19 @@
 
 using namespace std;
 
-algorithms::algorithms(const deployment& m_dep) : dep(m_dep) {
+algorithms::algorithms(deployment m_dep) : dep(std::move(m_dep)) {
+    algorithm_functions = {
+        &algorithms::opt_multi,
+        &algorithms::bin_packing,
+        &algorithms::knapsack,
+        &algorithms::coloring,
+        &algorithms::greedy_profit,
+        &algorithms::greedy_energy,
+        &algorithms::greedy_profit_energy,
+        &algorithms::greedy_profit_load,
+        &algorithms::opt_single,
+        &algorithms::no_alg,
+    };
 }
 
 // Useless (and stupid) method, but it was nice to use a vector of pointers to methods :-D

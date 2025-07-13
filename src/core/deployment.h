@@ -1,11 +1,7 @@
 #ifndef DEPLOYMENT_H
 #define DEPLOYMENT_H
 
-#include <iostream>
 #include <vector>
-#include <random>
-#include <numeric>
-#include <algorithm>
 #include <set>
 
 #include "../io/input.h"
@@ -14,7 +10,6 @@ using namespace std;
 
 class deployment {
 
-private:
     // Delivery parameters
     int num_deliveries;
     vector<double> launches;
@@ -59,15 +54,15 @@ public:
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_solution_space();
 
-    static vector<int> largest_non_overlap_delivery(vector<double>, vector<double>);
+    static vector<int> largest_non_overlap_delivery(const vector<double>&, const vector<double>&);
 
-    tuple<double, double> compute_LR(const vector<int> &);
+    [[nodiscard]] tuple<double, double> compute_LR(const vector<int> &) const;
 
-    int compute_n_prime(const vector<int> &);
+    int compute_n_prime(const vector<int> &) const;
 
-    int compute_profit(const vector<int> &);
+    [[nodiscard]] int compute_profit(const vector<int> &) const;
 
-    int compute_load(const vector<int> &);
+    [[nodiscard]] int compute_load(const vector<int> &) const;
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<double>> sorting_with_rendezvouses_in_apx();
 
@@ -76,30 +71,30 @@ public:
     static vector<int>
     weighted_interval(const vector<double> &, const vector<double> &, const vector<int> &, vector<int>, const vector<int> &);
 
-    static int compute_opt(int, const vector<double> &, const vector<double> &, vector<int>, vector<int>, vector<int>);
+    static int compute_opt(int, const vector<double> &, const vector<double> &, const vector<int>&, const vector<int>&, const vector<int>&);
 
     static vector<int>
-    find_solution(int, const vector<double> &, const vector<double> &, vector<int>, vector<int>, vector<int>, vector<int>);
+    find_solution(int, const vector<double> &, const vector<double> &, const vector<int>&, const vector<int>&, const vector<int>&, vector<int>);
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_equal_weight();
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_extra_cost_DP();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_extra_cost_DP() const;
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_individual_deliveries();
 
-    double compute_energy(const vector<int> &);
+    double compute_energy(const vector<int> &) const;
 
-    double compute_energy_extra_cost(const vector<int> &);
+    double compute_energy_extra_cost(const vector<int> &) const;
 
-    void find_subsets(vector<int> &, int, vector<int> &, set<vector<int>> &);
+    static void find_subsets(vector<int> &, int, vector<int> &, set<vector<int>> &);
 
-    vector<vector<int>> compute_all_subsets(vector<int> &);
+    static vector<vector<int>> compute_all_subsets(vector<int> &);
 
-    vector<int> compute_flight_using_knapsack(vector<int>, int);
+    vector<int> compute_flight_using_knapsack(const vector<int>&, int);
 
     tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights_using_knapsack();
 
-    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights();
+    tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> compute_all_flights() const;
 
     //tuple<vector<vector<int>>, vector<double>> compute_all_flights_arbitrary_weight_limited();
 

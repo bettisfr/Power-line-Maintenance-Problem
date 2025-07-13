@@ -20,25 +20,14 @@ private:
     deployment dep;
     solution sol;
 
-    vector<function<solution(algorithms &)>> algorithm_functions = {
-            &algorithms::opt_multi, // 0
-            &algorithms::bin_packing, // 1
-            &algorithms::knapsack, // 2
-            &algorithms::coloring, // 3
-            &algorithms::greedy_profit, // 4
-            &algorithms::greedy_energy, // 5
-            &algorithms::greedy_profit_energy, // 6
-            &algorithms::greedy_profit_load, // 7
-            &algorithms::opt_single, // 8
-            &algorithms::no_alg, // 9
-    };
+    vector<function<solution(algorithms &)>> algorithm_functions;
 
     solution ilp_solver(tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>>);
 
     solution flight_selection_in_heu(vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<double>);
 
 public:
-    explicit algorithms(const deployment&);
+    explicit algorithms(deployment );
 
     solution run_experiment(int);
 

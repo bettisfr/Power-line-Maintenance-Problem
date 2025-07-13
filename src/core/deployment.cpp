@@ -8,9 +8,9 @@
 using namespace std;
 
 double numpy(mt19937 &g) {
-    int a = static_cast<int>(g() >> 5);
-    int b = static_cast<int>(g() >> 6);
-    double value = (a * 67108864.0 + b) / 9007199254740992.0;
+    const int a = static_cast<int>(g() >> 5);
+    const int b = static_cast<int>(g() >> 6);
+    const double value = (a * 67108864.0 + b) / 9007199254740992.0;
     return value;
 }
 
@@ -30,10 +30,10 @@ deployment::deployment(const input &par) {
     double error = par.error;
     double exponent = par.exponent;
 
-    uniform_real_distribution<double> uniform_dist(-error, error);
+    uniform_real_distribution uniform_dist(-error, error);
 
     num_deliveries = par.num_deliveries;
-    unit_weight = (max_load == 1);
+    unit_weight = max_load == 1;
 
     height = par.height;
     distance = par.distance;
@@ -81,24 +81,59 @@ deployment::deployment(const input &par) {
 
     // Zipf distribution for profits
     double H_Ns = 0.0;
-    
     vector<double> probs;
 
+    // Compute normalization constant for Zipf
     for (int i = 1; i <= max_profit; i++)
         H_Ns += 1.0 / pow(i, exponent);
 
-    for (int i = 1; i <= max_profit; i++){
-        probs.push_back(((1.0 / pow(i, exponent)) / H_Ns));
-    }
+    for (int i = 1; i <= max_profit; i++)
+        probs.push_back(1.0 / pow(i, exponent) / H_Ns);
 
-    for (int i = 0; i < num_deliveries; i++){
-        discrete_distribution<int> discrete_dist(probs.begin(), probs.end());
-        int profit = discrete_dist(g) + 1;
-        profits.push_back(profit);
+    if (exponent == 0.0) {
+        // Uniform distribution case: same as before
+        for (int i = 0; i < num_deliveries; i++) {
+            discrete_distribution discrete_dist(probs.begin(), probs.end());
+            int profit = discrete_dist(g) + 1;
+            profits.push_back(profit);
+        }
+    } else {
+        // Skewed case with interpolation
+        int num_samples = num_deliveries / 5;
+        vector<int> anchor_positions;
+        vector<int> anchor_values;
+
+        // 1. Compute anchor positions (equally spaced)
+        for (int i = 0; i < num_samples; i++) {
+            int pos = i * (num_deliveries - 1) / (num_samples - 1);
+            anchor_positions.push_back(pos);
+        }
+
+        // 2. Generate anchor values from Zipf
+        discrete_distribution discrete_dist(probs.begin(), probs.end());
+        for (int i = 0; i < num_samples; i++) {
+            int profit = discrete_dist(g) + 1;
+            anchor_values.push_back(profit);
+        }
+
+        // 3. Fill profits via interpolation
+        profits.resize(num_deliveries);
+        for (int seg = 0; seg < num_samples - 1; seg++) {
+            int pos_start = anchor_positions[seg];
+            int pos_end = anchor_positions[seg + 1];
+            int val_start = anchor_values[seg];
+            int val_end = anchor_values[seg + 1];
+            int len = pos_end - pos_start;
+            for (int i = 0; i <= len; i++) {
+                double t = static_cast<double>(i) / len;
+                int interpolated = static_cast<int>(round((1 - t) * val_start + t * val_end));
+                profits[pos_start + i] = interpolated;
+            }
+        }
     }
 
     //////////////////////////////
-    // // creating random instance by using par.seed
+    // // creating a random instance by using par.seed
     // int seed = par.seed;
     // // This must be static otherwise during the next iteration "g" will be recreated, while if static it remains alive
     // static mt19937 g(seed);
@@ -163,8 +198,8 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
 }
 
 
-tuple<double, double> deployment::compute_LR(const vector<int> &flight) {
-    int total = static_cast<int>(flight.size());
+tuple<double, double> deployment::compute_LR(const vector<int> &flight) const {
+    const int total = static_cast<int>(flight.size());
 
     double L;
     double R;
@@ -191,7 +226,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<d
         rendezvouses_temp.push_back(get<1>(points));
     }
 
-    // sort according to rendezvouses_temp
+    // sort, according to rendezvouses_temp
     vector<pair<int, int> > Ri;
     for (int i = 0; i < all_flights_temp.size(); i++) {
         Ri.emplace_back(rendezvouses_temp[i], i);
@@ -205,12 +240,12 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<d
     vector<double> new_launches;
     vector<double> new_rendezvouses;
 
-    for (auto it: Ri) {
-        all_flights.push_back(all_flights_temp[it.second]);
-        energy_costs.push_back(energy_costs_temp[it.second]);
-        new_launches.push_back(launches_temp[it.second]);
-        new_rendezvouses.push_back(rendezvouses_temp[it.second]);
-        new_profits.push_back(profits_temp[it.second]);
+    for (auto [fst, snd]: Ri) {
+        all_flights.push_back(all_flights_temp[snd]);
+        energy_costs.push_back(energy_costs_temp[snd]);
+        new_launches.push_back(launches_temp[snd]);
+        new_rendezvouses.push_back(rendezvouses_temp[snd]);
+        new_profits.push_back(profits_temp[snd]);
     }
 
     return {all_flights, energy_costs, new_profits, new_launches, new_rendezvouses};
@@ -219,7 +254,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<double>, vector<d
 bool deployment::check_correct_interval(const vector<vector<int>> &flights,
                                         const vector<double> &launches_flights,
                                         const vector<double> &rendezvouses_flights,
-                                        double L, double R) {
+                                        const double L, const double R) {
     for (size_t i = 0; i < flights.size(); ++i) {
         // If intervals [launch, rendezvous] and [L, R] overlap
         if (!(rendezvouses_flights[i] < L || launches_flights[i] > R)) {
@@ -230,18 +265,18 @@ bool deployment::check_correct_interval(const vector<vector<int>> &flights,
 }
 
 
-int deployment::compute_opt(int id, const vector<double> &launches, const vector<double> &rendezvouses,
-                            vector<int> profits, vector<int> opt,
-                            vector<int> p) {                                                   
+int deployment::compute_opt(const int id, const vector<double> &launches, const vector<double> &rendezvouses,
+                            const vector<int>& profits, const vector<int>& opt,
+                            const vector<int>& p) {
 
     if (id == -1) {
         return 0;
-    } else if (id >= 0 && id < opt.size()) {
-        return opt[id];
-    } else {
-        return max(profits[id] + compute_opt(p[id], launches, rendezvouses, profits, opt, p),
-                   compute_opt(id - 1, launches, rendezvouses, profits, opt, p));
     }
+    if (id >= 0 && id < opt.size()) {
+        return opt[id];
+    }
+    return max(profits[id] + compute_opt(p[id], launches, rendezvouses, profits, opt, p),
+               compute_opt(id - 1, launches, rendezvouses, profits, opt, p));
 }
 
 
@@ -258,22 +293,20 @@ vector<int> deployment::weighted_interval(const vector<double> &launches, const 
 }
 
 vector<int> deployment::find_solution(int j, const vector<double> &launches, const vector<double> &rendezvouses,
-                                      vector<int> profits, vector<int> opt,
-                                      vector<int> p, vector<int> O) {                       
+                                      const vector<int>& profits, const vector<int>& opt,
+                                      const vector<int>& p, vector<int> O) {
     if (j == -1) {
         return O;
-    } else {
-        if (profits[j] + opt[p[j]] >= opt[j - 1]) {
-            O.push_back(j);
-            return find_solution(p[j], launches, rendezvouses, profits, opt, p, O);
-        } else {
-            return find_solution(j - 1, launches, rendezvouses, profits, opt, p, O);
-        }
     }
+    if (profits[j] + opt[p[j]] >= opt[j - 1]) {
+        O.push_back(j);
+        return find_solution(p[j], launches, rendezvouses, profits, opt, p, O);
+    }
+    return find_solution(j - 1, launches, rendezvouses, profits, opt, p, O);
 }
 
 
-vector<int> deployment::largest_non_overlap_delivery(vector<double> launches, vector<double> rendezvouses) {
+vector<int> deployment::largest_non_overlap_delivery(const vector<double>& launches, const vector<double>& rendezvouses) {
     vector<int> p;  // >= -1
     for (int i = 0; i < launches.size(); i++) {
         int id = -10;
@@ -287,9 +320,8 @@ vector<int> deployment::largest_non_overlap_delivery(vector<double> launches, ve
                     p.push_back(id);
                     id = -10;
                     break;
-                } else {
-                    id = j;
                 }
+                id = j;
             }
         }
         if (id >= 0) {
@@ -301,7 +333,7 @@ vector<int> deployment::largest_non_overlap_delivery(vector<double> launches, ve
 }
 
 // find all unique subsets
-void deployment::find_subsets(vector<int> &v, int idx, vector<int> &subset, set<vector<int>> &result) {
+void deployment::find_subsets(vector<int> &v, const int idx, vector<int> &subset, set<vector<int>> &result) {
     if (!subset.empty())
         result.insert(subset);
 
@@ -326,7 +358,7 @@ vector<vector<int> > deployment::compute_all_subsets(vector<int> &v) {
 }
 
 
-tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_extra_cost_DP() {
+tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights_extra_cost_DP() const {
     vector<vector<int>> all_flights;
     vector<double> energy_flight;
     vector<int> loads_flight;
@@ -337,10 +369,9 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     }
 
     for (int id_i: ids) {
-        double L = launches[id_i];  // x-coordinate
+        const double L = launches[id_i];  // x-coordinate
         for (int id_j: ids) {
-            double R = rendezvouses[id_j];  // x-coordinate
-            if (R > L) {
+            if (double R = rendezvouses[id_j]; R > L) {
                 vector<int> flight;
                 if (id_i == id_j) {
                     flight.push_back(id_i);
@@ -367,8 +398,8 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                     // for (int a: deliveries_L_R){
                     //     cout << a << " ";
                     // } cout << endl;
-                    
-                    int n = deliveries_L_R.size();
+
+                    const int n = static_cast<int>(deliveries_L_R.size());
 
                     int available_load = 0;
                     if (id_i == id_j) {
@@ -377,9 +408,9 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                         available_load = drone_load - weights[id_i] - weights[id_j];
                     }
 
-                    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(available_load + 1, vector<int>(n + 1, 0)));
+                    vector dp(n + 1, vector(available_load + 1, vector(n + 1, 0)));
                  
-                    for (int i = 0; i <= n; i++){ // deliveris start from 1
+                    for (int i = 0; i <= n; i++){ // deliveries start from 1
                         for (int w = 0; w <= available_load; w++){
                             for (int t = 1; t <= n; t++){
                                 if (compute_energy(flight) + (t+2) * energy_per_delivery <= drone_battery){
@@ -460,11 +491,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     return {all_flights, energy_flight, profits_flight, loads_flight};
 }
 
-
-#include <omp.h>
-
-
-tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights() {
+tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment::compute_all_flights() const {
     vector<vector<int>> all_flights;
     vector<double> energy_flight;
     vector<int> loads_flight;
@@ -515,7 +542,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                         for (const auto& f : all_subsets){
                             vector<int> flight_temp = flight;
 
-                            for (int index : f){
+                            for (const int index : f){
                                 flight_temp.push_back(deliveries_L_R[index]);
                             }
 
@@ -564,7 +591,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     vector<double> energy_flight;
 
     for (const auto &f: load_flight) {
-        int total_load = floor(drone_load / f.first);
+        const int total_load = floor(drone_load / f.first);
 
         vector<int> deliveries_id = f.second;
 
@@ -582,10 +609,10 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
         reverse(ids.begin(), ids.end());
 
         for (int id_i: ids) {
-            double L = launches[id_i];
+            const double L = launches[id_i];
             for (int id_j: ids) {
                 double R = rendezvouses[id_j];
-                if (R > L) {                  
+                if (R > L) {
                     vector<int> flight;
                     if (id_i == id_j) {
                         flight.push_back(id_i);
@@ -634,9 +661,9 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     }
 
     for (int id_i: ids) {
-        double L = launches[id_i];
+        const double L = launches[id_i];
         for (int id_j: ids) {
-            double R = rendezvouses[id_j];
+            const double R = rendezvouses[id_j];
             if (R > L) {            
                 vector<int> flight;
                 if (id_i == id_j) {
@@ -662,7 +689,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
 
                     vector<int> flight_knapsack;
                     if (!deliveries_L_R.empty()) {
-                        int available_load = drone_load - load_flight;
+                        const int available_load = drone_load - load_flight;
                         flight_knapsack = compute_flight_using_knapsack(deliveries_L_R, available_load);
                     } 
 
@@ -688,8 +715,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     return {all_flights, energy_flight, profits_flight, loads_flight};
 }
 
-
-vector<int> deployment::compute_flight_using_knapsack(vector<int> deliveries_id, int total_load) {
+vector<int> deployment::compute_flight_using_knapsack(const vector<int>& deliveries_id, const int total_load) {
     vector<int> weights_temp;
     vector<int> values;
 
@@ -698,19 +724,19 @@ vector<int> deployment::compute_flight_using_knapsack(vector<int> deliveries_id,
         values.push_back(profits[i]);
     }
 
-    int n = static_cast<int>(deliveries_id.size());
+    const int n = static_cast<int>(deliveries_id.size());
     vector<int> selectedItems;
 
     // Create a DP table where dp[i][w] will store the maximum value that can be attained with weight w and first i items
-    vector<vector<int>> dp(n + 1, vector<int>(total_load + 1, 0));
+    vector dp(n + 1, vector(total_load + 1, 0));
 
     for (int i = 1; i <= n; ++i) {
         for (int w = 1; w <= total_load; ++w) {
-            // i can be included in the knapsack
+            // "i" can be included in the knapsack
             if (weights_temp[i - 1] <= w) {
                 dp[i][w] = max(dp[i - 1][w], values[i - 1] + dp[i - 1][w - weights_temp[i - 1]]);
             } else {
-                // i cannot be included
+                // "i" cannot be included
                 dp[i][w] = dp[i - 1][w];
             }
         }
@@ -747,12 +773,12 @@ vector<int> deployment::compute_flight_using_knapsack(vector<int> deliveries_id,
     return flight;
 }
 
-// all_flights : {first_delivery, last_delivery, .... }
-double deployment::compute_energy(const vector<int> &delivery_ids) {
+// all_flights: {first_delivery, last_delivery, .... }
+double deployment::compute_energy(const vector<int> &delivery_ids) const {
     int first_delivery;
     int last_delivery;
 
-    int total = static_cast<int>(delivery_ids.size());
+    const int total = static_cast<int>(delivery_ids.size());
 
     if (total == 1) {
         first_delivery = delivery_ids[0];
@@ -762,36 +788,35 @@ double deployment::compute_energy(const vector<int> &delivery_ids) {
         last_delivery = delivery_ids[1];
     }
 
-    double l = launches[first_delivery];
-    double r = rendezvouses[last_delivery];
+    const double l = launches[first_delivery];
+    const double r = rendezvouses[last_delivery];
 
 //    double a = util::get_2D_distance(l, 0, delivery_points[first_delivery], height);
-    double a = util::get_3D_distance(l, 0, 0, delivery_points[first_delivery], height, distance);
-    double b = abs(delivery_points[first_delivery] - delivery_points[last_delivery]);
+    const double a = util::get_3D_distance(l, 0, 0, delivery_points[first_delivery], height, distance);
+    const double b = abs(delivery_points[first_delivery] - delivery_points[last_delivery]);
 //    double c = util::get_2D_distance(delivery_points[last_delivery], height, r, 0);
-    double c = util::get_3D_distance(delivery_points[last_delivery], height, distance, r, 0, 0);
+    const double c = util::get_3D_distance(delivery_points[last_delivery], height, distance, r, 0, 0);
 
-    return (a + b + c) * energy_unit_cost + (total * energy_per_delivery);
+    return (a + b + c) * energy_unit_cost + total * energy_per_delivery;
 }
 
 
-double deployment::compute_energy_extra_cost(const vector<int> &delivery_ids) {
-    
-    return compute_energy(delivery_ids) + energy_per_delivery * delivery_ids.size();
+double deployment::compute_energy_extra_cost(const vector<int> &delivery_ids) const {
+    return compute_energy(delivery_ids) + energy_per_delivery * static_cast<int>(delivery_ids.size());
 }
 
-int deployment::compute_profit(const vector<int> &delivery_ids) {
+int deployment::compute_profit(const vector<int> &delivery_ids) const {
     int profit = 0;
-    for (auto id: delivery_ids) {
+    for (const auto id: delivery_ids) {
         profit += profits[id];
     }
 
     return profit;
 }
 
-int deployment::compute_load(const vector<int> &delivery_ids) {
+int deployment::compute_load(const vector<int> &delivery_ids) const {
     int load = 0;
-    for (auto id: delivery_ids) {
+    for (const auto id: delivery_ids) {
         load += weights[id];
     }
 
@@ -838,12 +863,12 @@ int deployment::get_solution_space() const {
     return solution_space;
 }
 
-int deployment::compute_n_prime(const vector<int>& flight) {
-    double del_L = delivery_points[flight[0]];
-    double del_R = delivery_points[flight[flight.size() - 1]];
+int deployment::compute_n_prime(const vector<int>& flight) const {
+    const double del_L = delivery_points[flight[0]];
+    const double del_R = delivery_points[flight[flight.size() - 1]];
 
     int count = 0;
-    for (double point : delivery_points) {
+    for (const double point : delivery_points) {
         if (point >= del_L && point <= del_R) {
             count++;
         }
@@ -857,7 +882,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
     //     // It works also with unitary weights
     //     return compute_all_flights_equal_weight();
     // }
-    int type = get_solution_space();
+    const int type = get_solution_space();
     // cout << "type: " << type << endl;
     if (type == 0 or type == 3) {
         // Exhaustively, optimal
