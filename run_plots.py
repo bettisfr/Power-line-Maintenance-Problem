@@ -1,4 +1,6 @@
 import os
+
+import numpy as np
 import pandas as pd
 
 experiments_dir = 'output'
@@ -91,4 +93,78 @@ for algorithm in ALGORITHMS_VEC:
                                     else:
                                         print(f"Skipped: {filename} (no data)")
 
-# For ratio between alg0 and alg8
+
+# --- Save ratios alg0 / alg8 ---
+for zipf_exponent in ZIPF_EXPONENT_VEC:
+    for delta in DELTA_VEC:
+        for max_interval_len in MAX_INTERVAL_LEN_VEC:
+            for drone_load in DRONE_LOAD_VEC:
+                for drone_battery in DRONE_BATTERY_VEC:
+                    for max_weight in MAX_WEIGHT_VEC:
+                        for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
+                            for exhaustive in EXHAUSTIVE_VEC:
+
+                                if exhaustive == 1:
+                                    STR_SOLUTION_SPACE = "exhaustive"
+                                    solution_space = 0 if energy_per_delivery == 0 else 3
+                                else:
+                                    STR_SOLUTION_SPACE = "dp"
+                                    solution_space = 1 if energy_per_delivery == 0 else 4
+
+                                if max_weight == 1:
+                                    STR_PROB = "tmp-u" if energy_per_delivery == 0 else "tmp-ud"
+                                else:
+                                    STR_PROB = "tmp-a" if energy_per_delivery == 0 else "tmp-ad"
+
+                                # Load OPT and OPTs
+                                opt_df = all_df[
+                                    (all_df['algorithm'] == 0) &
+                                    (all_df['max_interval_len'] == max_interval_len) &
+                                    (all_df['deliveries_starting_point'] == delta) &
+                                    (all_df['drone_load'] == drone_load) &
+                                    (all_df['drone_battery'] == drone_battery) &
+                                    (all_df['max_weight'] == max_weight) &
+                                    (all_df['solution_space'] == solution_space) &
+                                    (all_df['energy_per_delivery'] == energy_per_delivery) &
+                                    (all_df['exponent'] == zipf_exponent)
+                                    ][['num_deliveries', 'total_profit_avg']].rename(columns={'total_profit_avg': 'opt_avg'}).dropna()
+
+                                opts_df = all_df[
+                                    (all_df['algorithm'] == 8) &
+                                    (all_df['max_interval_len'] == max_interval_len) &
+                                    (all_df['deliveries_starting_point'] == delta) &
+                                    (all_df['drone_load'] == drone_load) &
+                                    (all_df['drone_battery'] == drone_battery) &
+                                    (all_df['max_weight'] == max_weight) &
+                                    (all_df['solution_space'] == solution_space) &
+                                    (all_df['energy_per_delivery'] == energy_per_delivery) &
+                                    (all_df['exponent'] == zipf_exponent)
+                                    ][['num_deliveries', 'total_profit_avg']].rename(columns={'total_profit_avg': 'opts_avg'}).dropna()
+
+                                if opt_df.empty or opts_df.empty:
+                                    continue
+
+                                # Align on num_deliveries
+                                merged = pd.merge(opt_df, opts_df, on='num_deliveries', how='inner')
+                                merged = merged.replace({'opts_avg': {0: np.nan}})
+
+                                # Ratio
+                                merged['opt_opts_ratio_avg'] = merged['opt_avg'] / merged['opts_avg']
+
+                                # Sort by num_deliveries before saving
+                                ratio_df = merged[['num_deliveries', 'opt_opts_ratio_avg']].sort_values(by='num_deliveries')
+
+                                # Filename
+                                ratio_filename = (f"{STR_PROB}"
+                                                  f"_{STR_SOLUTION_SPACE}"
+                                                  f"_ratio"
+                                                  f"_load{drone_load}"
+                                                  f"_batt{drone_battery}"
+                                                  f"_maxint{max_interval_len}"
+                                                  f"_delta{delta}"
+                                                  f"_zipf{zipf_exponent}"
+                                                  f".csv")
+
+                                ratio_filepath = os.path.join(plots_dir, ratio_filename)
+                                ratio_df.to_csv(ratio_filepath, index=False)
+                                print(f"Saved ratio: {ratio_filename} ({len(ratio_df)} rows)")
