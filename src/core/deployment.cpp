@@ -864,8 +864,14 @@ int deployment::get_solution_space() const {
 }
 
 int deployment::compute_n_prime(const vector<int>& flight) const {
+    // If a single mission, return 1
+    if (flight.size() == 1) {
+        return 1;
+    }
+
+    // If multiple mission, return n'+2
     const double del_L = delivery_points[flight[0]];
-    const double del_R = delivery_points[flight[flight.size() - 1]];
+    const double del_R = delivery_points[flight[1]];
 
     int count = 0;
     for (const double point : delivery_points) {
