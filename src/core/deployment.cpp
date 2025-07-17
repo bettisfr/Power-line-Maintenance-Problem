@@ -685,7 +685,7 @@ tuple<vector<vector<int>>, vector<double>, vector<int>, vector<int>> deployment:
                             delivery_points[id_k] <= delivery_points[id_j]) {
                             deliveries_L_R.push_back(id_k);
                         }
-                    }  
+                    }
 
                     vector<int> flight_knapsack;
                     if (!deliveries_L_R.empty()) {
@@ -870,8 +870,13 @@ int deployment::compute_n_prime(const vector<int>& flight) const {
     }
 
     // If multiple mission, return n'+2
-    const double del_L = delivery_points[flight[0]];
-    const double del_R = delivery_points[flight[1]];
+    double del_L = std::numeric_limits<double>::max();
+    double del_R = std::numeric_limits<double>::lowest();
+
+    for (int idx : flight) {
+        del_L = std::min(del_L, delivery_points[idx]);
+        del_R = std::max(del_R, delivery_points[idx]);
+    }
 
     int count = 0;
     for (const double point : delivery_points) {
