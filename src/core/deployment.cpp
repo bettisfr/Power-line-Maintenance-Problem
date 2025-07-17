@@ -870,12 +870,12 @@ int deployment::compute_n_prime(const vector<int>& flight) const {
     }
 
     // If multiple mission, return n'+2
-    double del_L = std::numeric_limits<double>::max();
-    double del_R = std::numeric_limits<double>::lowest();
+    double del_L = numeric_limits<double>::max();
+    double del_R = numeric_limits<double>::lowest();
 
     for (int idx : flight) {
-        del_L = std::min(del_L, delivery_points[idx]);
-        del_R = std::max(del_R, delivery_points[idx]);
+        del_L = min(del_L, delivery_points[idx]);
+        del_R = max(del_R, delivery_points[idx]);
     }
 
     int count = 0;
