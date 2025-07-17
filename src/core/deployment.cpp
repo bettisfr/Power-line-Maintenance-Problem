@@ -69,13 +69,41 @@ deployment::deployment(const input &par) {
             arrival = max_len_road;
         }
 
-        // int profit = static_cast<int>(numpy(g) * max_profit) + 1; // use Zip
-        int weight = static_cast<int>(numpy(g) * max_load) + 1;
 
         delivery_points.push_back(delivery_location);
+        // int profit = static_cast<int>(numpy(g) * max_profit) + 1; // use Zip
+        // profits.push_back(profit);
+
         launches.push_back(departure);
         rendezvouses.push_back(arrival);
-        // profits.push_back(profit);
+
+        // int weight = static_cast<int>(numpy(g) * max_load) + 1;        
+        // weights.push_back(weight);
+    }
+
+    vector<double> delivery_points_help = delivery_points;
+    vector<double> launches_help = launches;
+    vector<double> rendezvouses_help = rendezvouses;
+
+    vector<pair<double, int> > del_id;
+    for (int i = 0; i < num_deliveries; i++) {
+        del_id.emplace_back(delivery_points[i], i);
+    }
+
+    delivery_points.clear();
+    launches.clear();
+    rendezvouses.clear();
+
+    sort(del_id.begin(), del_id.end());
+
+    for (auto [fst, snd]: del_id) {
+        delivery_points.push_back(delivery_points_help[snd]);
+        launches.push_back(launches_help[snd]);
+        rendezvouses.push_back(rendezvouses_help[snd]);
+    }
+   
+    for (int i = 0; i < num_deliveries; i++) {
+        int weight = static_cast<int>(numpy(g) * max_load) + 1;
         weights.push_back(weight);
     }
 
