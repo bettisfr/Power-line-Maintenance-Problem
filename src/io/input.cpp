@@ -144,7 +144,7 @@ input load_parameters(input &par) {
             } else if (key == "deliveries_starting_point") {
                 par.deliveries_starting_point = stod(value);
             } else if (key == "error") {
-                par.error = stoi(value);
+                par.error = stod(value);
             } else if (key == "exponent") {
                 par.exponent = stoi(value);
             }
@@ -206,7 +206,7 @@ input read_parameters(input &par, const int argc, char *argv[]) {
             } else if (arg == "-deliveries_starting_point") {
                 par.deliveries_starting_point = stod(argv[i + 1]);
             } else if (arg == "-error") {
-                par.error = stoi(argv[i + 1]);
+                par.error = stod(argv[i + 1]);
             } else if (arg == "-exponent") {
                 par.exponent = stoi(argv[i + 1]);
             } else {

@@ -48,7 +48,7 @@ deployment::deployment(const input &par) {
     for (int i = 1; i <= num_deliveries; i++) {
 
         double delivery_location = 0.0;
-        if (regularly_spaced == 1){
+        if (regularly_spaced == 1) {
             delivery_location = i * deliveries_starting_point + uniform_dist(g);
         } else {        // random
             delivery_location = numpy(g) * max_len_road;
