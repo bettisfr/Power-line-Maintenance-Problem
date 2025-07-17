@@ -107,36 +107,36 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
             tie(L[i], R[i]) = dep.compute_LR(all_flights[i]);
         }
 
-        // Parallel version
-        vector<pair<int, int>> constraint_pairs;
+//         // Parallel version
+//         vector<pair<int, int>> constraint_pairs;
+//
+// #pragma omp parallel for schedule(dynamic)
+//         for (int i = 0; i < X; ++i) {
+//             vector<pair<int, int>> local_buffer;
+//             for (int k = i + 1; k < X; ++k) {
+//                 if (!(R[i] < L[k] || L[i] > R[k])) {
+//                     local_buffer.emplace_back(i, k);
+//                 }
+//             }
+//
+//             // Critical section to merge results from this thread
+// #pragma omp critical
+//             {
+//                 for (auto& p : local_buffer) {
+//                     model.addConstr(x[p.first] + x[p.second] <= 1);
+//                 }
+//             }
+//         }
 
-#pragma omp parallel for schedule(dynamic)
+        // Serial version
         for (int i = 0; i < X; ++i) {
-            vector<pair<int, int>> local_buffer;
             for (int k = i + 1; k < X; ++k) {
+                // Skip if intervals don't overlap
                 if (!(R[i] < L[k] || L[i] > R[k])) {
-                    local_buffer.emplace_back(i, k);
-                }
-            }
-
-            // Critical section to merge results from this thread
-#pragma omp critical
-            {
-                for (auto& p : local_buffer) {
-                    model.addConstr(x[p.first] + x[p.second] <= 1);
+                    model.addConstr(x[i] + x[k] <= 1);
                 }
             }
         }
-
-        // Serial version
-        // for (int i = 0; i < X; ++i) {
-        //     for (int k = i + 1; k < X; ++k) {
-        //         // Skip if intervals don't overlap
-        //         if (!(R[i] < L[k] || L[i] > R[k])) {
-        //             model.addConstr(x[i] + x[k] <= 1);
-        //         }
-        //     }
-        // }
 
         // constr (6)
         GRBLinExpr sum_energy = 0;

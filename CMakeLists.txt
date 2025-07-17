@@ -1,25 +1,35 @@
 cmake_minimum_required(VERSION 3.23)
 
 project(dcoss CXX)
+
 set(CMAKE_CXX_STANDARD 17)
 
-# ============ OpenMP ============
-find_package(OpenMP REQUIRED)
-if(OpenMP_CXX_FOUND)
-    message(STATUS "OpenMP found, adding flags: ${OpenMP_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
+option(CXX "enable C++ compilation" ON)
 
-# ============ Gurobi ============
-set(GUROBI_INCLUDE_DIR "/opt/gurobi1200/linux64/include")
-set(GUROBI_LIBRARY "/opt/gurobi1200/linux64/lib/libgurobi120.so")
-set(GUROBI_CXX_LIBRARY "/opt/gurobi1200/linux64/lib/libgurobi_c++.a")
+if (CXX)
+    enable_language(CXX)
+endif ()
 
-include_directories(${GUROBI_INCLUDE_DIR})
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif ()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-# ============ Sources ============
-set(sources
-        src/core/algorithms.cpp
+# Visual Studio compiler with static runtime libraries
+if (MSVC AND MT)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MT")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MTd")
+endif ()
+
+find_package(GUROBI REQUIRED)
+
+include_directories(${GUROBI_INCLUDE_DIRS})
+
+# list source files here
+set(sources src/core/algorithms.cpp
         src/core/algorithms.h
         src/io/input.cpp
         src/io/input.h
@@ -32,17 +42,17 @@ set(sources
         src/main.cpp
 )
 
-add_executable(${PROJECT_NAME} ${sources})
+add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
-# ============ Linking ============
-target_link_libraries(${PROJECT_NAME}
-        PRIVATE ${GUROBI_CXX_LIBRARY}
-        PRIVATE ${GUROBI_LIBRARY}
-        PUBLIC OpenMP::OpenMP_CXX
-)
-
-# ============ Build Type ============
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
+if (CXX)
+    set(CMAKE_CXX_STANDARD 17)
+    target_link_libraries(${CMAKE_PROJECT_NAME} optimized ${GUROBI_CXX_LIBRARY}
+            debug ${GUROBI_CXX_DEBUG_LIBRARY})
 endif ()
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
+target_link_libraries(${CMAKE_PROJECT_NAME} ${GUROBI_LIBRARY})
+
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+    include(FeatureSummary)
+    feature_summary(WHAT ALL)
+endif ()
