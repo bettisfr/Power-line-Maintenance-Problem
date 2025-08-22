@@ -18,8 +18,8 @@ We show that TMP is NP-hard and propose an Integer Linear Programming (ILP) form
 Clone the repository and follow these steps to build the project:
 
 ```bash
-git clone https://github.com/bettisfr/TMP_DCOSS
-cd TMP_DCOSS
+git clone https://github.com/bettisfr/Power-line-Maintenance-Problem
+cd Power-line-Maintenance-Problem
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/dcoss
