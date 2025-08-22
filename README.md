@@ -1,21 +1,43 @@
-# C++ Code for Truck-drone Multi-delivery Problem
+# C++ Code for the Drone–Truck Multi-Delivery Problem
 
 ![C++](https://img.shields.io/badge/-C++-blue?logo=cplusplus)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Overview
 
-This repository contains the C++ implementation of the algorithms and experiments described in our paper, **"Optimizing Single-Drone and Truck Collaboration for Last-Mile Delivery with Energy and Capacity Constraints"**, which has been submitted for publication in **21st IEEE International Conference on Distributed Computing in Smart Systems and the Internet of Things (DCOSS-IoT 2025)**.
+This repository provides the C++ implementation of the algorithms and experiments described in our paper:
 
-In this paper, we investigate the collaboration between a truck and a single drone in a last-mile package delivery scenario, introducing the Truck-drone Multi-delivery Problem (TMP). The truck follows a predefined route and transports the drone, which is capable of carrying multiple packages in a single flight. Each delivery is characterized by an energy cost, a capacity requirement, a profit representing its priority, and a delivery interval defined by two points on the truck’s route: the launch point, where the drone departs, and the rendezvous point, where the drone returns to the truck. The objective of the TMP is to schedule the drone’s flights to maximize the total profit while respecting the constraints of the drone’s energy capacity and payload limit. Conflicts between deliveries, arising when delivery intervals overlap, must be resolved unless the conflicting deliveries are combined into a single flight that satisfies the capacity and energy constraints. 
+> **"Optimizing Drone–Truck Collaboration for Power Line Maintenance with Energy and Capacity Constraints"**,  
+> submitted to **ACM Transactions on Sensor Networks (TOSN), 2025**.
 
-We show that TMP is NP-hard and propose an Integer Linear Programming (ILP) formulation to solve it optimally. We consider two scenarios: TMP with Unitary package weights (TMP-U), and TMP with Arbitrary package weights (TMP-A), making the problem significantly more challenging. For both scenarios, we develop tailored algorithms to address the challenges effectively. Finally, we evaluate the performance of our proposed algorithms on diverse synthetic datasets, demonstrating their efficiency and effectiveness in maximizing delivery profits.
+---
+
+### Problem Description
+
+We study a coordinated delivery problem where a truck transports a drone to deliver tools and equipment to pylons on high-voltage power lines.  
+Each **delivery** is characterized by:
+- a target pylon,
+- package weight,
+- urgency-based profit,
+- feasible launch and rendezvous points on the truck’s route.
+
+The drone faces **energy and payload constraints**, may serve **multiple deliveries per mission**, and can execute multiple missions before recharging.  
+The goal is to **maximize the total profit** of executed deliveries while ensuring feasibility.
+
+We formalize this as the **Drone–Truck Multi-Delivery Problem (DTMDP)** and prove its NP-hardness. Our contributions include:
+
+- A **two-phase solution approach**:
+  - **Mission generation** via dynamic programming, constructing feasible multi-delivery missions.
+  - **Mission selection** formulated as an **Integer Linear Programming (ILP)** problem.
+- **Variants** considering unitary vs. arbitrary package weights and additional energy costs for package dropping.
+- **Algorithms** with polynomial or pseudo-polynomial complexity for mission generation, contrasted with NP-hard mission selection.
+- **Extensive experiments** showing that dynamic programming drastically reduces the number of candidate missions, enabling optimal solutions for instances with up to 80 deliveries and efficient suboptimal solutions for larger inputs.
 
 ---
 
 ## Installation
 
-Clone the repository and follow these steps to build the project:
+Clone the repository and build the project:
 
 ```bash
 git clone https://github.com/bettisfr/Power-line-Maintenance-Problem
@@ -27,11 +49,11 @@ cmake --build build
 
 ---
 
-## Contact Us
+## Contact
 
-For questions, feedback, or collaboration opportunities, feel free to reach out to us:
+For questions, feedback, or collaboration opportunities:
 
-- **Francesco Betti Sorbelli**: [francesco.bettisorbelli@unipg.it](mailto:francesco.bettisorbelli@unipg.it)
-- **Sajjad Ghobadi**: [sajjad.ghobadibabi@unipg.it](mailto:sajjad.ghobadibabi@unipg.it)
-- **Lorenzo Palazzetti**: [lorenzo.palazzetti@unipg.it](mailto:lorenzo.palazzetti@unipg.it)
-- **Cristina M. Pinotti**: [cristina.pinotti@unipg.it](mailto:cristina.pinotti@unipg.it)
+- **Francesco Betti Sorbelli**: [francesco.bettisorbelli@unipg.it](mailto:francesco.bettisorbelli@unipg.it)  
+- **Sajjad Ghobadi**: [sajjad.ghobadibabi@unipg.it](mailto:sajjad.ghobadibabi@unipg.it)  
+- **Lorenzo Palazzetti**: [lorenzo.palazzetti@unipg.it](mailto:lorenzo.palazzetti@unipg.it)  
+- **Cristina M. Pinotti**: [cristina.pinotti@unipg.it](mailto:cristina.pinotti@unipg.it)  
