@@ -1,4 +1,4 @@
-# C++ Code for Truck-drone Multi-delivery Problem (TMP)
+# C++ Code for Truck-drone Multi-delivery Problem
 
 ![C++](https://img.shields.io/badge/-C++-blue?logo=cplusplus)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -23,24 +23,6 @@ cd TMP_DCOSS
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/dcoss
-```
-
----
-
-## Citation
-
-If you use this repository, please cite our paper:
-
-```bibtex
-@inproceedings{betti2025DCOSS,
-  title={Single- and Multi-Depot Optimization for UAV-Based IoT Data Collection in Neighborhoods},
-  author={Betti Sorbelli, Francesco and Ghobadi, Sajjad and Palazzetti, Lorenzo and Pinotti, Cristina M.},
-  booktitle={21st IEEE International Conference on Distributed Computing in Smart Systems and the Internet of Things (DCOSS-IoT 2025)},
-  pages={1-8},
-  year={2025},
-  organization={IEEE},
-  note={Under Review}
-}
 ```
 
 ---
