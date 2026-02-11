@@ -80,26 +80,26 @@ solution algorithms::ilp_solver(tuple<vector<vector<int>>, vector<double>, vecto
         }
 
         // Variables for deliveries
-        GRBVar y[num_deliveries];
-        for (int j = 0; j < num_deliveries; j++) {
-            ostringstream y_name;
-            y_name << "y" << j;
-            y[j] = model.addVar(0.0, 1.0, 0.0, GRB_BINARY, y_name.str());
-        }
+        // GRBVar y[num_deliveries];
+        // for (int j = 0; j < num_deliveries; j++) {
+        //     ostringstream y_name;
+        //     y_name << "y" << j;
+        //     y[j] = model.addVar(0.0, 1.0, 0.0, GRB_BINARY, y_name.str());
+        // }
 
         model.update();
 
         // constr (3)
-        GRBLinExpr sum_y;
-        for (int j = 0; j < num_deliveries; j++) {
-            sum_y = 0;
-            for (int i = 0; i < X; i++) {
-                if (find(all_flights[i].begin(), all_flights[i].end(), j) != all_flights[i].end()) {
-                    sum_y += y[j];
-                }
-            }
-            model.addConstr(sum_y <= 1);
-        }
+        // GRBLinExpr sum_y;
+        // for (int j = 0; j < num_deliveries; j++) {
+        //     sum_y = 0;
+        //     for (int i = 0; i < X; i++) {
+        //         if (find(all_flights[i].begin(), all_flights[i].end(), j) != all_flights[i].end()) {
+        //             sum_y += y[j];
+        //         }
+        //     }
+        //     model.addConstr(sum_y <= 1);
+        // }
 
         // constr (4)
         vector<double> L(X), R(X);

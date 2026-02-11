@@ -21,20 +21,21 @@ DEFAULT_ERROR = 0.05 # 5% error
 ########################################################################################################################
 # Variable parameters
 ENERGY_PER_DELIVERY_VEC = [0] # 0, 30
-MAX_WEIGHT_VEC = [1] # 1, 5
+MAX_WEIGHT_VEC = [5] # 1, 5
 # NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50, 60, 70, 80]
 # NUM_DELIVERIES_VEC = [10, 20, 30, 40, 50]
-NUM_DELIVERIES_VEC = list(range(50, 301, 50))
-DRONE_LOAD_VEC = [5, 10]
-DRONE_BATTERY_VEC = [2500, 5000]
-ALGORITHMS_VEC = [2, 3, 6]
+NUM_DELIVERIES_VEC = list(range(10, 21, 10))
+DRONE_LOAD_VEC = [5]#, 10]
+DRONE_BATTERY_VEC = [2500]#, 5000]
+ALGORITHMS_VEC = [0]#, 3, 6]
 # ALGORITHMS_VEC = [0, 8] # 0, 8, 9
-ZIPF_EXPONENT_VEC = [0, 1, 2] # 0, 1, 2
+ZIPF_EXPONENT_VEC = [0]#, 1, 2] # 0, 1, 2
 EXHAUSTIVE = 0  # 1 = exhaustive, 0 = DP
 ########################################################################################################################
+INSTANCE_TYPE = 1 # 0 = randomly and regularly spaced, 1 = real instance
 DEFAULT_REGULARLY_SPACED = 1 # 0 = randomly, 1 = regularly spaced
-MAX_INTERVAL_LEN_VEC = [2, 4]  # in km
-DELIVERIES_STARTING_POINT_VEC = [0.5, 1.0]  # in km
+MAX_INTERVAL_LEN_VEC = [2]#, 4]  # in km
+DELIVERIES_STARTING_POINT_VEC = [0.5] #, 1.0]  # in km
 ########################################################################################################################
 
 # Seed initialization
@@ -104,6 +105,7 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
                                         f"-deliveries_starting_point {deliveries_starting_point} "
                                         f"-error {DEFAULT_ERROR} "
                                         f"-exponent {zipf_exponent} "
+                                        f"-instance_type {INSTANCE_TYPE} "
                                     )
 
                                     print(f"Executing: {cmd}")

@@ -20,6 +20,7 @@ deployment::deployment(const input &par) {
     // This must be static, otherwise during the next iteration "g" will be recreated, while if static it remains alive
     static mt19937 g(seed);
 
+    int instance_type = par.instance_type;
     int max_len_road = par.max_len_road;            // for random
     double max_interval_len = par.max_interval_len;     
     int max_profit = par.max_profit;
@@ -45,15 +46,54 @@ deployment::deployment(const input &par) {
 
     solution_space = par.solution_space;
 
-    for (int i = 1; i <= num_deliveries; i++) {
-
-        double delivery_location = 0.0;
-        if (regularly_spaced == 1) {
-            delivery_location = i * deliveries_starting_point + uniform_dist(g);
-        } else {        // random
-            delivery_location = numpy(g) * max_len_road;
+    vector <double> real_x_coordinates;
+    if (instance_type == 1){ // real instance
+        // values are in "meter", change to km
+        // read x-coordinates from instance.csv
+        ifstream file("real_instance/instance.csv");
+        if (!file.is_open()) {
+            cerr << "Failed to open file.\n";
         }
 
+        string line;
+        // Read header
+        getline(file, line);
+        int count = 0;
+
+        while (getline(file, line)) {
+            count++;
+            stringstream ss(line);
+            string token;
+            int col_index = 0;
+            double x_val = 0.0;
+
+            while (getline(ss, token, ',')) {
+                if (col_index == 3) {
+                    x_val = stod(token);
+                    real_x_coordinates.push_back(x_val/1000);
+                    break;
+                }
+                col_index++;
+            }
+
+            if (count == num_deliveries){
+                break;
+            }
+        }
+    }
+    
+    for (int i = 1; i <= num_deliveries; i++) {
+        double delivery_location = 0.0;
+        if (instance_type == 0){ // random, regulrly_spaced
+            if (regularly_spaced == 1) {
+                delivery_location = i * deliveries_starting_point + uniform_dist(g);
+            } else {        // random
+                delivery_location = numpy(g) * max_len_road;
+            }
+        } else { // real
+            delivery_location = real_x_coordinates[i-1];
+        }        
+        
         // max_interval_len is too much when regularly_spaced == 1
         double departure = delivery_location - numpy(g) * max_interval_len;
         if (departure < 0) {
@@ -65,10 +105,10 @@ deployment::deployment(const input &par) {
         if (arrival == departure) {
             arrival++;
         }
-        if (regularly_spaced == 0 && arrival > max_len_road) {
+
+        if (instance_type == 0 && regularly_spaced == 0 && arrival > max_len_road) {
             arrival = max_len_road;
         }
-
 
         delivery_points.push_back(delivery_location);
         // int profit = static_cast<int>(numpy(g) * max_profit) + 1; // use Zip

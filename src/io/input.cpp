@@ -47,6 +47,7 @@ void print_parameters(const input &par) {
     cout << "Deliveries are regularly spaced=" << par.regularly_spaced << endl;
     cout << "Starting location of deliveries (regularly_spaced)=" << par.deliveries_starting_point << endl;
     cout << "Error in deliveries locations (regularly_spaced)=" << par.error << endl;
+    cout << "Instance type (random-regularly_spaced, real)=" << par.instance_type << endl;
     cout << "Algorithm=" << algorithm_str[par.algorithm] << endl;
     cout << "Solution space=" << solution_space_str[par.solution_space] << endl;
     cout << "Iterations=" << par.iterations << endl;
@@ -79,6 +80,7 @@ void save_parameters(const input &par) {
     file_cfg << "deliveries_starting_point=" << par.deliveries_starting_point << endl;
     file_cfg << "error=" << par.error << endl;
     file_cfg << "exponent=" << par.exponent << endl;
+    file_cfg << "instance_type=" << par.instance_type << endl;
     file_cfg << endl;
 
     file_cfg.close();
@@ -147,7 +149,10 @@ input load_parameters(input &par) {
                 par.error = stod(value);
             } else if (key == "exponent") {
                 par.exponent = stoi(value);
+            } else if (key == "instance_type") {
+                par.instance_type = stoi(value);
             }
+
         }
     }
 
@@ -209,7 +214,10 @@ input read_parameters(input &par, const int argc, char *argv[]) {
                 par.error = stod(argv[i + 1]);
             } else if (arg == "-exponent") {
                 par.exponent = stoi(argv[i + 1]);
-            } else {
+            } else if (arg == "-instance_type") {
+                par.instance_type = stoi(argv[i + 1]);
+            } 
+            else {
                 cerr << "Unknown option: " << arg << endl;
             }
         }

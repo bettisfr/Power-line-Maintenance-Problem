@@ -84,7 +84,7 @@ void save_output(const input &par, const vector<solution> &results) {
 
     if (file.is_open()) {
         file
-            << "seed,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,"
+            << "seed,instance_type,num_deliveries,max_len_road,max_interval_len,max_profit,max_weight,"
             << "drone_battery,drone_load,height,distance,algorithm,solution_space,iterations,"
             << "energy_unit_cost,energy_per_delivery,"
             << "regularly_spaced,deliveries_starting_point,error,exponent,"
@@ -101,6 +101,7 @@ void save_output(const input &par, const vector<solution> &results) {
 
         file
             << par.seed << ","
+            << par.instance_type << ","
             << par.num_deliveries << ","
             << par.max_len_road << ","
             << par.max_interval_len << ","

@@ -22,7 +22,7 @@ struct input {
     // Application parameters
     // 360
     // 2100
-    int seed = 2100;
+    int seed = 100;
 
     // 0: Default values; 1: From cfg file; 2 From command line
     int experiment = 0;
@@ -39,19 +39,23 @@ struct input {
     int algorithm = 0;
 
     // Number or random instances to be performed (when doing plots)
-    int iterations = 1;                                         
+    int iterations = 10;                                         
 
     // Name of the experiment (just a string to be used when loading/saving)
     string exp_name = "default";
 
-    // Number of deliveries
-    int num_deliveries = 10;
+    // 0 - random, regularly_spaced
+    // 1 - real 
+    int instance_type = 0; 
+
+    // Number of deliveries, max 79 for real instance
+    int num_deliveries = 15;
 
     // Maximum length of the road (in km)
     int max_len_road = 100;
 
     // Maximum length of an interval (in km)
-    double max_interval_len = 8;
+    double max_interval_len = 4;
 
     // Maximum value for a delivery
     int max_profit = 10;
@@ -65,10 +69,10 @@ struct input {
     // 2 - no additional cost - sorting (not optimal) [optimal if costs are unitary],
     // 3 - with additional cost - exhaustively (optimal),
     // 4 - with additional cost - DP (optimal)
-    int solution_space = 3;
+    int solution_space = 1;
 
     // Drone's energy drone_battery (in kJ)
-    int drone_battery = 5000;
+    int drone_battery = 2500;
 
     // Drone's drone_load capacity (in kg)
     int drone_load = 10;
@@ -86,10 +90,10 @@ struct input {
     double energy_per_delivery = 30;
 
     // If the trellises are located at a regular distance from each other (1), otherwise random (0)
-    int regularly_spaced = 0;
+    int regularly_spaced = 1;
 
     // Starting point of deliveries, if regularly_spaced = 1 (in km)
-    double deliveries_starting_point = 0.5;
+    double deliveries_starting_point = 0.3;
     double error = 0.05;
 
     // For Zipf distribution
