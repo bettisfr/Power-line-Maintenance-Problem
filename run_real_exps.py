@@ -41,6 +41,7 @@ DRONE_BATTERY_VEC = [2500, 5000]
 
 seed = 0
 run_count = 0
+skip_count = 0
 
 for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
     for max_weight in MAX_WEIGHT_VEC:
@@ -62,6 +63,16 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
                     for max_interval_len in MAX_INTERVAL_LEN_VEC:
                         for deliveries_starting_point in DELIVERIES_STARTING_POINT_VEC:
                             for algorithm in ALGORITHMS_VEC:
+                                # Skip OPT on tmp-ud/tmp-ad instances (very long runs).
+                                # tmp-ud/tmp-ad correspond to energy_per_delivery = 30.
+                                if energy_per_delivery == 30 and algorithm == 0:
+                                    skip_count += 1
+                                    print(
+                                        f"Skipping: prob={str_prob}, alg={algorithm}, "
+                                        f"load={drone_load}, batt={drone_battery}"
+                                    )
+                                    continue
+
                                 exp_name = (
                                     f"out_{str_prob}"
                                     f"_{str_solution_space}"
@@ -112,4 +123,4 @@ for energy_per_delivery in ENERGY_PER_DELIVERY_VEC:
 
                                 run_count += 1
 
-print(f"Completed {run_count} runs.")
+print(f"Completed {run_count} runs (skipped {skip_count}).")
