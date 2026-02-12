@@ -9,7 +9,7 @@ os.makedirs("output", exist_ok=True)
 
 # Default parameter values
 DEFAULT_LOG = 0
-DEFAULT_ITERATIONS = 33
+DEFAULT_ITERATIONS = 1
 DEFAULT_MAX_LEN_ROAD = 100
 DEFAULT_MAX_PROFIT = 10
 DEFAULT_HEIGHT = 0.025
