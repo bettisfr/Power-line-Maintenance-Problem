@@ -23,7 +23,7 @@ DEFAULT_ERROR = 0.05  # 5% error
 INSTANCE_TYPE = 1  # 0 = random/regularly spaced, 1 = real instance
 NUM_DELIVERIES = 79
 DEFAULT_REGULARLY_SPACED = 1
-MAX_INTERVAL_LEN_VEC = [2]
+MAX_INTERVAL_LEN_VEC = [4]
 DELIVERIES_STARTING_POINT_VEC = [0.5]
 ZIPF_EXPONENT_VEC = [0]
 # 0 = OPT (ILP), 2 = DP (knapsack), 3 = COL (coloring), 6 = GMP/E
